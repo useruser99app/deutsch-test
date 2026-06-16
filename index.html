@@ -1015,8 +1015,7 @@ function evaluateTest() {
   };
 
   var url = 'https://script.google.com/macros/s/AKfycbx5xhvhiuocc_yhvHJABcsX7tEAGKm-lpVdgfMMjppKaIXhTlW-YPB8mKP6t2x418uB/exec?data=' + encodeURIComponent(JSON.stringify(payload));
-  var img = new Image();
-  img.src = url;
+  fetch(url, {method: 'GET', mode: 'no-cors'});
 
   panel.scrollIntoView({behavior: 'smooth', block: 'start'});
   document.getElementById('submitBtn').disabled = true;
