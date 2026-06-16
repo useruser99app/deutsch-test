@@ -936,16 +936,16 @@ function evaluateTest() {
   }
   document.getElementById('nameWarn').style.display = 'none';
   window._name = vn + ' ' + nn;
-  let correctCount = 0;
-  const results = [];
+  var correctCount = 0;
+  var results = [];
 
   // Dropzones (Teil 1, Teil 3) and gaps (Sprachbausteine Teil 2)
   document.querySelectorAll('.dropzone, .gap').forEach(zone => {
-    const qNum = zone.dataset.question;
-    const correctVal = zone.dataset.correct;
-    const placed = zone.querySelector('.placed-chip');
-    const userVal = placed ? placed.dataset.val : null;
-    const isCorrect = userVal === correctVal;
+    var qNum = parseInt(zone.dataset.question);
+    var correctVal = zone.dataset.correct;
+    var placed = zone.querySelector('.placed-chip');
+    var userVal = placed ? placed.dataset.val : null;
+    var isCorrect = userVal === correctVal;
     if (isCorrect) correctCount++;
     zone.classList.remove('correct-box','wrong-box');
     zone.classList.add(isCorrect ? 'correct-box' : 'wrong-box');
@@ -954,11 +954,11 @@ function evaluateTest() {
 
   // MC questions (Teil 2, Sprachbausteine Teil 1)
   document.querySelectorAll('.mc-question').forEach(q => {
-    const qNum = q.dataset.question;
-    const correctVal = q.dataset.correct;
-    const checked = q.querySelector('input[type="radio"]:checked');
-    const userVal = checked ? checked.value : null;
-    const isCorrect = userVal === correctVal;
+    var qNum = parseInt(q.dataset.question);
+    var correctVal = q.dataset.correct;
+    var checked = q.querySelector('input[type="radio"]:checked');
+    var userVal = checked ? checked.value : null;
+    var isCorrect = userVal === correctVal;
     if (isCorrect) correctCount++;
 
     q.querySelectorAll('.mc-option').forEach(opt => {
@@ -971,8 +971,8 @@ function evaluateTest() {
     results.push({q:qNum, correct:correctVal.toUpperCase(), given:userVal?userVal.toUpperCase():'–', ok:isCorrect});
   });
 
-  const percentage = (correctCount / TOTAL_QUESTIONS) * 100;
-  const passed = (correctCount / TOTAL_QUESTIONS) >= PASS_THRESHOLD;
+  var percentage = (correctCount / TOTAL_QUESTIONS) * 100;
+  var passed = (correctCount / TOTAL_QUESTIONS) >= PASS_THRESHOLD;
 
   const panel = document.getElementById('resultPanel');
   panel.className = 'result-panel show ' + (passed ? 'pass' : 'fail');
@@ -1031,8 +1031,7 @@ function pdfHerunterladen() {
   }
 
   var name    = window._name || '—';
-  var richtig = 0;
-  alleErgebnisse.forEach(function(r){ if(r.ok) richtig++; });
+  var richtig = alleErgebnisse.filter(function(r){ return r.ok; }).length;
   var pct    = ((richtig/40)*100).toFixed(1);
   var passed = richtig >= 24;
   var datum  = new Date().toLocaleDateString('de-DE');
