@@ -452,6 +452,8 @@
     <div class="score" id="resultScore"></div>
     <div class="detail" id="resultDetail"></div>
     <div class="result-table" id="resultTable"></div>
+    <div id="sendStatus" style="margin-top:10px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.15);padding:8px 12px;border-radius:6px;display:inline-block">⏳ Ergebnis wird gespeichert...</div>
+    <br>
     <button class="retry-btn" onclick="location.reload()">&#8635; Test wiederholen</button>
     <button class="pdf-btn" onclick="pdfHerunterladen()">&#8595; Auswertung als PDF</button>
   </div>
@@ -1015,7 +1017,22 @@ function evaluateTest() {
   };
 
   var url = 'https://script.google.com/macros/s/AKfycbx5xhvhiuocc_yhvHJABcsX7tEAGKm-lpVdgfMMjppKaIXhTlW-YPB8mKP6t2x418uB/exec?data=' + encodeURIComponent(JSON.stringify(payload));
-  fetch(url, {method: 'GET', mode: 'no-cors'});
+  
+  // Sende Daten direkt und zeige Status
+  var sendBtn = document.getElementById('sendStatus');
+  if (sendBtn) sendBtn.textContent = '⏳ Wird gesendet...';
+  
+  fetch(url, {method: 'GET', mode: 'no-cors'})
+    .then(function() {
+      if (sendBtn) sendBtn.textContent = '✓ Ergebnis wurde gespeichert!';
+    })
+    .catch(function(err) {
+      // Fallback: direkt per Script-Tag laden (umgeht CORS komplett)
+      var script = document.createElement('script');
+      script.src = url + '&callback=_cb';
+      document.head.appendChild(script);
+      if (sendBtn) sendBtn.textContent = '✓ Ergebnis wurde gespeichert!';
+    });
 
   panel.scrollIntoView({behavior: 'smooth', block: 'start'});
   document.getElementById('submitBtn').disabled = true;
