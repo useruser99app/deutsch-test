@@ -452,9 +452,8 @@
     <div class="score" id="resultScore"></div>
     <div class="detail" id="resultDetail"></div>
     <div class="result-table" id="resultTable"></div>
-    <div id="sendStatus" style="margin-top:10px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.15);padding:8px 12px;border-radius:6px;display:inline-block">⏳ Ergebnis wird gespeichert...</div>
-    <br>
     <button class="retry-btn" onclick="location.reload()">&#8635; Test wiederholen</button>
+    <div id="sendStatus" style="display:block;margin-top:10px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:6px;">⏳ Ergebnis wird in Google Sheets gespeichert...</div>
     <button class="pdf-btn" onclick="pdfHerunterladen()">&#8595; Auswertung als PDF</button>
   </div>
 
@@ -1003,7 +1002,7 @@ function evaluateTest() {
   tbl += '</tbody></table>';
   document.getElementById('resultTable').innerHTML = tbl;
 
-  // ── Ergebnisse an Google Sheets senden ──────────────────────────────────
+  // ── Ergebnisse an Google Sheets senden via JSONP ────────────────────────
   var aufgaben = {};
   alleErgebnisse.forEach(function(r){ aufgaben['A'+r.q] = r.ok; });
 
@@ -1016,23 +1015,18 @@ function evaluateTest() {
     aufgaben: aufgaben
   };
 
-  var url = 'https://script.google.com/macros/s/AKfycbx5xhvhiuocc_yhvHJABcsX7tEAGKm-lpVdgfMMjppKaIXhTlW-YPB8mKP6t2x418uB/exec?data=' + encodeURIComponent(JSON.stringify(payload));
-  
-  // Sende Daten direkt und zeige Status
-  var sendBtn = document.getElementById('sendStatus');
-  if (sendBtn) sendBtn.textContent = '⏳ Wird gesendet...';
-  
-  fetch(url, {method: 'GET', mode: 'no-cors'})
-    .then(function() {
-      if (sendBtn) sendBtn.textContent = '✓ Ergebnis wurde gespeichert!';
-    })
-    .catch(function(err) {
-      // Fallback: direkt per Script-Tag laden (umgeht CORS komplett)
-      var script = document.createElement('script');
-      script.src = url + '&callback=_cb';
-      document.head.appendChild(script);
-      if (sendBtn) sendBtn.textContent = '✓ Ergebnis wurde gespeichert!';
-    });
+  // JSONP: zuverlässigste Methode ohne CORS
+  window._sheetsCallback = function(response) {
+    var el = document.getElementById('sendStatus');
+    if (el) {
+      el.textContent = '✓ Ergebnis in Google Sheets gespeichert!';
+      el.style.background = 'rgba(255,255,255,0.3)';
+    }
+  };
+  var url = 'https://script.google.com/macros/s/AKfycbx5xhvhiuocc_yhvHJABcsX7tEAGKm-lpVdgfMMjppKaIXhTlW-YPB8mKP6t2x418uB/exec?callback=_sheetsCallback&data=' + encodeURIComponent(JSON.stringify(payload));
+  var s = document.createElement('script');
+  s.src = url;
+  document.body.appendChild(s);
 
   panel.scrollIntoView({behavior: 'smooth', block: 'start'});
   document.getElementById('submitBtn').disabled = true;
