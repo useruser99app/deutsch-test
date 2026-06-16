@@ -1014,28 +1014,9 @@ function evaluateTest() {
     aufgaben: aufgaben
   };
 
-  // Google Sheets via form submission (umgeht CORS komplett)
-  var form = document.createElement('form');
-  form.method = 'POST';
-  form.action = 'https://script.google.com/macros/s/AKfycbx5xhvhiuocc_yhvHJABcsX7tEAGKm-lpVdgfMMjppKaIXhTlW-YPB8mKP6t2x418uB/exec';
-  form.target = '_sheetsFrame';
-  var input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'data';
-  input.value = JSON.stringify(payload);
-  form.appendChild(input);
-  
-  var iframe = document.getElementById('_sheetsFrame');
-  if (!iframe) {
-    iframe = document.createElement('iframe');
-    iframe.name = '_sheetsFrame';
-    iframe.id   = '_sheetsFrame';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-  }
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
+  var url = 'https://script.google.com/macros/s/AKfycbx5xhvhiuocc_yhvHJABcsX7tEAGKm-lpVdgfMMjppKaIXhTlW-YPB8mKP6t2x418uB/exec?data=' + encodeURIComponent(JSON.stringify(payload));
+  var img = new Image();
+  img.src = url;
 
   panel.scrollIntoView({behavior: 'smooth', block: 'start'});
   document.getElementById('submitBtn').disabled = true;
