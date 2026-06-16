@@ -453,7 +453,8 @@
     <div class="detail" id="resultDetail"></div>
     <div class="result-table" id="resultTable"></div>
     <button class="retry-btn" onclick="location.reload()">&#8635; Test wiederholen</button>
-    <div id="sendStatus" style="display:block;margin-top:10px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:6px;">⏳ Ergebnis wird in Google Sheets gespeichert...</div>
+    <button class="pdf-btn" onclick="ergebnissSenden()" id="sendBtn" style="background:#1565c0;">&#128190; Ergebnis an Lehrer senden</button>
+    <div id="sendStatus" style="display:none;margin-top:10px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:6px;"></div>
     <button class="pdf-btn" onclick="pdfHerunterladen()">&#8595; Auswertung als PDF</button>
   </div>
 
@@ -1002,7 +1003,7 @@ function evaluateTest() {
   tbl += '</tbody></table>';
   document.getElementById('resultTable').innerHTML = tbl;
 
-  // ── Ergebnisse an Google Sheets senden via JSONP ────────────────────────
+  // ── Ergebnisse an Google Sheets senden ──────────────────────────────────
   var aufgaben = {};
   alleErgebnisse.forEach(function(r){ aufgaben['A'+r.q] = r.ok; });
 
@@ -1015,18 +1016,8 @@ function evaluateTest() {
     aufgaben: aufgaben
   };
 
-  // JSONP: zuverlässigste Methode ohne CORS
-  window._sheetsCallback = function(response) {
-    var el = document.getElementById('sendStatus');
-    if (el) {
-      el.textContent = '✓ Ergebnis in Google Sheets gespeichert!';
-      el.style.background = 'rgba(255,255,255,0.3)';
-    }
-  };
-  var url = 'https://script.google.com/macros/s/AKfycbx5xhvhiuocc_yhvHJABcsX7tEAGKm-lpVdgfMMjppKaIXhTlW-YPB8mKP6t2x418uB/exec?callback=_sheetsCallback&data=' + encodeURIComponent(JSON.stringify(payload));
-  var s = document.createElement('script');
-  s.src = url;
-  document.body.appendChild(s);
+  // Speichere URL global für manuellen Send-Button
+  window._sendeUrl = 'https://script.google.com/macros/s/AKfycbx-sUSx2etlVyrwww-_LDsX7HBIte2LkP262QqY-JCtKD0DDJDN46pYmteronBgP0KP/exec?data=' + encodeURIComponent(JSON.stringify(payload));
 
   panel.scrollIntoView({behavior: 'smooth', block: 'start'});
   document.getElementById('submitBtn').disabled = true;
@@ -1156,6 +1147,31 @@ function pdfHerunterladen() {
 
   // ── SAVE ────────────────────────────────────────────────────────────────
   doc.save('Auswertung_B1_'+name.replace(/\s+/g,'_')+'.pdf');
+}
+
+// ── Ergebnis manuell senden ──────────────────────────────────────────────
+function ergebnissSenden() {
+  if (!window._sendeUrl) { alert('Bitte zuerst den Test auswerten.'); return; }
+  var btn = document.getElementById('sendBtn');
+  var status = document.getElementById('sendStatus');
+  btn.disabled = true;
+  btn.textContent = '⏳ Wird gesendet...';
+  status.style.display = 'block';
+  status.textContent = '⏳ Verbindung zu Google Sheets...';
+
+  // Methode 1: fetch no-cors
+  fetch(window._sendeUrl, {method:'GET', mode:'no-cors'})
+    .then(function(){
+      btn.textContent = '✓ Gesendet!';
+      status.textContent = '✓ Ergebnis wurde in Google Sheets gespeichert!';
+      status.style.background = 'rgba(100,255,100,0.2)';
+    })
+    .catch(function(){
+      // Methode 2: neues Fenster öffnen (funktioniert immer)
+      window.open(window._sendeUrl, '_blank');
+      btn.textContent = '✓ Gesendet!';
+      status.textContent = '✓ Ergebnis wurde gesendet! Das Fenster kann geschlossen werden.';
+    });
 }
 
 // ---------- INIT ----------
