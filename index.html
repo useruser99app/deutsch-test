@@ -404,10 +404,7 @@
     margin-top: 14px;
   }
 
-  .name-card {
-    background:#fff; border:2px solid #1d6e84; border-radius:10px;
-    padding:20px 24px; margin-bottom:22px;
-  }
+  .name-card { background:#fff; border:2px solid #1d6e84; border-radius:10px; padding:20px 24px; margin-bottom:22px; }
   .name-card h2 { color:#0c4a5c; font-size:15px; margin:0 0 12px; font-weight:600; }
   .name-row { display:flex; gap:16px; flex-wrap:wrap; }
   .name-row label { flex:1; min-width:180px; font-size:13px; color:#444; display:flex; flex-direction:column; gap:5px; }
@@ -416,7 +413,6 @@
   .name-warn { color:#c62828; font-size:13px; margin-top:8px; display:none; font-weight:600; }
   .pdf-btn { background:#e65100; color:#fff; border:none; padding:11px 26px; font-size:15px; font-weight:600; border-radius:8px; cursor:pointer; margin-top:12px; margin-left:8px; }
   .pdf-btn:hover { background:#bf360c; }
-  .retry-btn { margin-top:12px; }
   .full-tbl { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
   .full-tbl th { background:rgba(255,255,255,0.25); padding:6px 8px; text-align:left; font-weight:600; }
   .full-tbl td { padding:4px 8px; border-top:1px solid rgba(255,255,255,0.15); }
@@ -443,7 +439,6 @@
     </div>
     <div class="name-warn" id="nameWarn">&#9888; Bitte Vor- und Nachname eintragen!</div>
   </div>
-
   <div class="progress-status" id="progressStatus">0 / 40 Aufgaben bearbeitet</div>
 
   <!-- RESULT PANEL -->
@@ -934,16 +929,16 @@ function evaluateTest() {
   }
   document.getElementById('nameWarn').style.display = 'none';
   window._name = vn + ' ' + nn;
-  var correctCount = 0;
-  var results = [];
+  let correctCount = 0;
+  const results = [];
 
   // Dropzones (Teil 1, Teil 3) and gaps (Sprachbausteine Teil 2)
   document.querySelectorAll('.dropzone, .gap').forEach(zone => {
-    var qNum = parseInt(zone.dataset.question);
-    var correctVal = zone.dataset.correct;
-    var placed = zone.querySelector('.placed-chip');
-    var userVal = placed ? placed.dataset.val : null;
-    var isCorrect = userVal === correctVal;
+    const qNum = zone.dataset.question;
+    const correctVal = zone.dataset.correct;
+    const placed = zone.querySelector('.placed-chip');
+    const userVal = placed ? placed.dataset.val : null;
+    const isCorrect = userVal === correctVal;
     if (isCorrect) correctCount++;
     zone.classList.remove('correct-box','wrong-box');
     zone.classList.add(isCorrect ? 'correct-box' : 'wrong-box');
@@ -952,11 +947,11 @@ function evaluateTest() {
 
   // MC questions (Teil 2, Sprachbausteine Teil 1)
   document.querySelectorAll('.mc-question').forEach(q => {
-    var qNum = parseInt(q.dataset.question);
-    var correctVal = q.dataset.correct;
-    var checked = q.querySelector('input[type="radio"]:checked');
-    var userVal = checked ? checked.value : null;
-    var isCorrect = userVal === correctVal;
+    const qNum = q.dataset.question;
+    const correctVal = q.dataset.correct;
+    const checked = q.querySelector('input[type="radio"]:checked');
+    const userVal = checked ? checked.value : null;
+    const isCorrect = userVal === correctVal;
     if (isCorrect) correctCount++;
 
     q.querySelectorAll('.mc-option').forEach(opt => {
@@ -969,8 +964,8 @@ function evaluateTest() {
     results.push({q:qNum, correct:correctVal.toUpperCase(), given:userVal?userVal.toUpperCase():'–', ok:isCorrect});
   });
 
-  var percentage = (correctCount / TOTAL_QUESTIONS) * 100;
-  var passed = (correctCount / TOTAL_QUESTIONS) >= PASS_THRESHOLD;
+  const percentage = (correctCount / TOTAL_QUESTIONS) * 100;
+  const passed = (correctCount / TOTAL_QUESTIONS) >= PASS_THRESHOLD;
 
   const panel = document.getElementById('resultPanel');
   panel.className = 'result-panel show ' + (passed ? 'pass' : 'fail');
@@ -978,7 +973,7 @@ function evaluateTest() {
   document.getElementById('resultScore').textContent = correctCount + ' / ' + TOTAL_QUESTIONS + ' (' + percentage.toFixed(1) + ' %)';
   document.getElementById('resultDetail').textContent = 'Bestehensgrenze: 60 % richtige Antworten (' + Math.ceil(TOTAL_QUESTIONS * PASS_THRESHOLD) + ' von ' + TOTAL_QUESTIONS + ').';
 
-  results.sort((a,b) => Number(a.q) - Number(b.q));
+  results.sort(function(a,b){ return Number(a.q) - Number(b.q); });
   alleErgebnisse = results;
 
   document.getElementById('resultTitle').textContent =
@@ -990,185 +985,87 @@ function evaluateTest() {
   results.forEach(function(r) {
     var cls = r.ok ? 'ok' : 'err';
     var sek = r.q<=5?'LV Teil 1':r.q<=10?'LV Teil 2':r.q<=20?'LV Teil 3':r.q<=30?'SB Teil 1':'SB Teil 2';
-    tbl += '<tr class="' + cls + '">'
-      + '<td>' + r.q + '</td>'
-      + '<td>' + r.given + '</td>'
-      + '<td><strong>' + r.correct + '</strong></td>'
-      + '<td>' + (r.ok ? '&#10003; Richtig' : '&#10007; Falsch') + '</td>'
-      + '<td>' + sek + '</td>'
-      + '</tr>';
+    tbl += '<tr class="'+cls+'">'
+      +'<td>'+r.q+'</td><td>'+r.given+'</td><td><strong>'+r.correct+'</strong></td>'
+      +'<td>'+(r.ok?'&#10003; Richtig':'&#10007; Falsch')+'</td><td>'+sek+'</td></tr>';
   });
   tbl += '</tbody></table>';
   document.getElementById('resultTable').innerHTML = tbl;
 
-  // ── Ergebnisse an Google Sheets senden ──────────────────────────────────
-  var aufgaben = {};
-  alleErgebnisse.forEach(function(r){ aufgaben['A'+r.q] = r.ok; });
-
-  var payload = {
-    name:    window._name,
-    datum:   new Date().toLocaleDateString('de-DE'),
-    punkte:  richtig + '/40',
-    prozent: pct + ' %',
-    status:  passed ? 'Bestanden' : 'Nicht bestanden',
-    aufgaben: aufgaben
-  };
-
-  // Speichere URL global für manuellen Send-Button
-  window._sendeUrl = 'https://script.google.com/macros/s/AKfycbx-sUSx2etlVyrwww-_LDsX7HBIte2LkP262QqY-JCtKD0DDJDN46pYmteronBgP0KP/exec?data=' + encodeURIComponent(JSON.stringify(payload));
-
-  panel.scrollIntoView({behavior: 'smooth', block: 'start'});
+  panel.scrollIntoView({behavior:'smooth', block:'start'});
   document.getElementById('submitBtn').disabled = true;
 }
 
-// ---------- PDF HERUNTERLADEN (jsPDF direkt) ----------
+// ---------- PDF ----------
 function pdfHerunterladen() {
   if (!alleErgebnisse || alleErgebnisse.length === 0) {
     alert('Bitte zuerst den Test auswerten.');
     return;
   }
-
-  var name    = window._name || '—';
+  var name = window._name || '—';
   var richtig = alleErgebnisse.filter(function(r){ return r.ok; }).length;
-  var pct    = ((richtig/40)*100).toFixed(1);
+  var pct = ((richtig/40)*100).toFixed(1);
   var passed = richtig >= 24;
-  var datum  = new Date().toLocaleDateString('de-DE');
-  var pt     = passed ? 'BESTANDEN' : 'NICHT BESTANDEN';
+  var datum = new Date().toLocaleDateString('de-DE');
+  var pt = passed ? 'BESTANDEN' : 'NICHT BESTANDEN';
+  function sek(q){ return q<=5?'LV T1':q<=10?'LV T2':q<=20?'LV T3':q<=30?'SB T1':'SB T2'; }
 
-  function sek(q){
-    return q<=5?'LV Teil 1':q<=10?'LV Teil 2':q<=20?'LV Teil 3':q<=30?'SB Teil 1':'SB Teil 2';
-  }
+  var doc = new jspdf.jsPDF({unit:'mm',format:'a4'});
+  var W=210, pad=12, y=0;
 
-  var doc = new jspdf.jsPDF({ unit:'mm', format:'a4', orientation:'portrait' });
-  var W = 210, pad = 12, y = 0;
-
-  // ── HEADER ──────────────────────────────────────────────────────────────
-  doc.setFillColor(12,74,92);
-  doc.rect(0,0,W,22,'F');
+  doc.setFillColor(12,74,92); doc.rect(0,0,W,22,'F');
   doc.setTextColor(255,255,255);
   doc.setFont('helvetica','bold'); doc.setFontSize(13);
-  doc.text('telc Deutsch B1  -  Ubungstest 1  -  Auswertung', pad, 10);
+  doc.text('telc Deutsch B1 - Ubungstest 1 - Auswertung', pad, 10);
   doc.setFont('helvetica','normal'); doc.setFontSize(9);
-  doc.text('Leseverstehen & Sprachbausteine  |  Datum: '+datum, pad, 17);
-  y = 26;
+  doc.text('Datum: '+datum, pad, 18);
+  y=26;
 
-  // ── RESULT BOX ──────────────────────────────────────────────────────────
-  var passRGB = passed ? [46,125,50]  : [198,40,40];
-  var bgRGB   = passed ? [232,245,233]: [253,235,235];
-  doc.setFillColor(bgRGB[0],bgRGB[1],bgRGB[2]);
-  doc.setDrawColor(passRGB[0],passRGB[1],passRGB[2]);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(pad,y,W-2*pad,26,2,2,'FD');
-  doc.setTextColor(passRGB[0],passRGB[1],passRGB[2]);
+  var pRGB = passed?[46,125,50]:[198,40,40];
+  var pBG  = passed?[232,245,233]:[253,235,235];
+  doc.setFillColor(pBG[0],pBG[1],pBG[2]);
+  doc.setDrawColor(pRGB[0],pRGB[1],pRGB[2]); doc.setLineWidth(0.5);
+  doc.roundedRect(pad,y,W-2*pad,24,2,2,'FD');
+  doc.setTextColor(pRGB[0],pRGB[1],pRGB[2]);
   doc.setFont('helvetica','bold'); doc.setFontSize(13);
   doc.text(pt, pad+4, y+8);
-  doc.setTextColor(30,30,30);
-  doc.setFont('helvetica','bold'); doc.setFontSize(9);
-  doc.text('Teilnehmer/in:', pad+4, y+15);
-  doc.setFont('helvetica','normal');
-  doc.text(name, pad+32, y+15);
-  doc.setFont('helvetica','bold');
-  doc.text('Ergebnis:', pad+4, y+21);
-  doc.setFont('helvetica','normal');
-  doc.text(richtig+' von 40 Punkten ('+pct+' %)   |   Bestehensgrenze: 60% = mindestens 24 Punkte', pad+20, y+21);
-  y += 30;
+  doc.setTextColor(30,30,30); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  doc.text('Teilnehmer/in: '+name, pad+4, y+15);
+  doc.text('Ergebnis: '+richtig+'/40 ('+pct+'%)  |  Bestehensgrenze: 60% = mind. 24 Punkte', pad+4, y+21);
+  y+=28;
 
-  // ── SUMMARY BOXES ───────────────────────────────────────────────────────
-  var boxW = (W-2*pad-9)/4;
-  var boxes = [
-    {l:'Richtige Antworten', v:String(richtig),     c:[46,125,50]},
-    {l:'Falsche Antworten',  v:String(40-richtig),  c:[198,40,40]},
-    {l:'Gesamtergebnis',     v:pct+' %',            c:[12,74,92]},
-    {l:'Status',             v:pt,                  c:passRGB, small:true}
-  ];
-  var bx = pad;
-  boxes.forEach(function(b){
-    doc.setFillColor(240,247,250);
-    doc.setDrawColor(176,212,224);
-    doc.setLineWidth(0.3);
-    doc.roundedRect(bx,y,boxW,14,1,1,'FD');
-    doc.setTextColor(80,80,80); doc.setFont('helvetica','normal'); doc.setFontSize(7);
-    doc.text(b.l, bx+2, y+5);
-    doc.setTextColor(b.c[0],b.c[1],b.c[2]);
-    doc.setFont('helvetica','bold'); doc.setFontSize(b.small ? 8 : 11);
-    doc.text(b.v, bx+2, y+12);
-    bx += boxW+3;
-  });
-  y += 18;
+  doc.setFillColor(12,74,92); doc.rect(pad,y,W-2*pad,7,'F');
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.text('Nr.', pad+2, y+5);
+  doc.text('Ihre Antwort', pad+14, y+5);
+  doc.text('Richtige Antwort', pad+44, y+5);
+  doc.text('Ergebnis', pad+80, y+5);
+  doc.text('Abschnitt', pad+110, y+5);
+  y+=7;
 
-  // ── TABLE HEADER ────────────────────────────────────────────────────────
-  doc.setFillColor(12,74,92);
-  doc.rect(pad,y,W-2*pad,7,'F');
-  doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold'); doc.setFontSize(8);
-  var cols = [pad+2, pad+18, pad+46, pad+82, pad+116];
-  doc.text('Nr.',              cols[0], y+5);
-  doc.text('Ihre Antwort',    cols[1], y+5);
-  doc.text('Richtige Antwort',cols[2], y+5);
-  doc.text('Ergebnis',        cols[3], y+5);
-  doc.text('Abschnitt',       cols[4], y+5);
-  y += 7;
-
-  // ── TABLE ROWS ──────────────────────────────────────────────────────────
   doc.setFont('helvetica','normal'); doc.setFontSize(8);
   alleErgebnisse.forEach(function(r,i){
-    if(y > 272){ doc.addPage(); y = 14; }
-    var bg = i%2===0 ? [249,249,249] : [255,255,255];
-    doc.setFillColor(bg[0],bg[1],bg[2]);
-    doc.rect(pad,y,W-2*pad,6,'F');
-    doc.setDrawColor(220,220,220); doc.setLineWidth(0.2);
-    doc.line(pad,y+6,W-pad,y+6);
+    if(y>275){doc.addPage();y=14;}
+    var bg=i%2===0?[249,249,249]:[255,255,255];
+    doc.setFillColor(bg[0],bg[1],bg[2]); doc.rect(pad,y,W-2*pad,6,'F');
+    doc.setDrawColor(220,220,220); doc.setLineWidth(0.2); doc.line(pad,y+6,W-pad,y+6);
     doc.setTextColor(30,30,30);
-    doc.text(String(r.q),  cols[0], y+4.5);
-    doc.text(r.given,      cols[1], y+4.5);
-    doc.text(r.correct,    cols[2], y+4.5);
-    if(r.ok){
-      doc.setTextColor(46,125,50);
-      doc.text('Richtig',  cols[3], y+4.5);
-    } else {
-      doc.setTextColor(198,40,40);
-      doc.text('Falsch',   cols[3], y+4.5);
-    }
+    doc.text(String(r.q), pad+2, y+4.5);
+    doc.text(r.given, pad+14, y+4.5);
+    doc.text(r.correct, pad+44, y+4.5);
+    if(r.ok){doc.setTextColor(46,125,50); doc.text('Richtig', pad+80, y+4.5);}
+    else{doc.setTextColor(198,40,40); doc.text('Falsch', pad+80, y+4.5);}
     doc.setTextColor(100,100,100);
-    doc.text(sek(r.q),     cols[4], y+4.5);
-    y += 6;
+    doc.text(sek(r.q), pad+110, y+4.5);
+    y+=6;
   });
 
-  // ── FOOTER ──────────────────────────────────────────────────────────────
-  var np = doc.internal.getNumberOfPages();
+  var np=doc.internal.getNumberOfPages();
   for(var p=1;p<=np;p++){
-    doc.setPage(p);
-    doc.setTextColor(160,160,160); doc.setFontSize(7);
-    doc.text('telc Deutsch B1 Ubungstest 1  |  '+name+'  |  '+datum+'  |  Seite '+p+'/'+np, pad, 291);
+    doc.setPage(p); doc.setTextColor(150,150,150); doc.setFontSize(7);
+    doc.text('telc Deutsch B1 | '+name+' | '+datum+' | Seite '+p+'/'+np, pad, 291);
   }
-
-  // ── SAVE ────────────────────────────────────────────────────────────────
   doc.save('Auswertung_B1_'+name.replace(/\s+/g,'_')+'.pdf');
-}
-
-// ── Ergebnis manuell senden ──────────────────────────────────────────────
-function ergebnissSenden() {
-  if (!window._sendeUrl) { alert('Bitte zuerst den Test auswerten.'); return; }
-  var btn = document.getElementById('sendBtn');
-  var status = document.getElementById('sendStatus');
-  btn.disabled = true;
-  btn.textContent = '⏳ Wird gesendet...';
-  status.style.display = 'block';
-  status.textContent = '⏳ Verbindung zu Google Sheets...';
-
-  // Methode 1: fetch no-cors
-  fetch(window._sendeUrl, {method:'GET', mode:'no-cors'})
-    .then(function(){
-      btn.textContent = '✓ Gesendet!';
-      status.textContent = '✓ Ergebnis wurde in Google Sheets gespeichert!';
-      status.style.background = 'rgba(100,255,100,0.2)';
-    })
-    .catch(function(){
-      // Methode 2: neues Fenster öffnen (funktioniert immer)
-      window.open(window._sendeUrl, '_blank');
-      btn.textContent = '✓ Gesendet!';
-      status.textContent = '✓ Ergebnis wurde gesendet! Das Fenster kann geschlossen werden.';
-    });
 }
 
 // ---------- INIT ----------
