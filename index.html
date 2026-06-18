@@ -2,1032 +2,686 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>telc Deutsch B1 – Übungstest 1 (Leseverstehen & Sprachbausteine)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>telc Deutsch B1 – Übungstest 1</title>
 <style>
-  :root {
-    --primary: #1d6e84;
-    --primary-dark: #0c4a5c;
-    --bg: #f4f6f7;
-    --card: #ffffff;
-    --border: #d8dee1;
-    --correct: #2e7d32;
-    --correct-bg: #e8f5e9;
-    --wrong: #c62828;
-    --wrong-bg: #fdecea;
-    --selected: #e3f2fd;
-    --selected-border: #1d6e84;
-  }
-  * { box-sizing: border-box; }
-  body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: var(--bg);
-    margin: 0;
-    padding: 0;
-    color: #222;
-    line-height: 1.5;
-  }
-  header {
-    background: var(--primary-dark);
-    color: #fff;
-    padding: 18px 24px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  }
-  header h1 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
-  }
-  header .sub {
-    font-size: 13px;
-    opacity: 0.85;
-    margin-top: 4px;
-  }
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px 16px 80px;
-  }
-  .progress-bar {
-    background: #e0e0e0;
-    height: 6px;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 12px;
-  }
-  .progress-bar-fill {
-    background: #4fc3f7;
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s;
-  }
-  .section {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 24px;
-  }
-  .section h2 {
-    color: var(--primary-dark);
-    font-size: 18px;
-    border-bottom: 2px solid var(--primary);
-    padding-bottom: 8px;
-    margin-top: 0;
-  }
-  .section .instructions {
-    font-style: italic;
-    color: #555;
-    font-size: 14px;
-    margin-bottom: 16px;
-  }
-  .text-block {
-    background: #fafafa;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 14px;
-    font-size: 15px;
-  }
-  .text-block .num {
-    font-weight: 700;
-    color: var(--primary);
-    margin-right: 6px;
-  }
+:root {
+  --primary: #1d6e84;
+  --dark:    #0c4a5c;
+  --bg:      #f0f4f5;
+  --card:    #ffffff;
+  --border:  #d0d8db;
+  --correct: #2e7d32;
+  --wrong:   #c62828;
+  --orange:  #e65100;
+  --radius:  12px;
+  --shadow:  0 2px 12px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background: var(--bg); color: #222; }
 
-  /* Multiple choice (drag-free, click to select) */
-  .mc-question {
-    margin-bottom: 22px;
-    padding: 12px 14px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: #fdfdfd;
-  }
-  .mc-question .q-title {
-    font-weight: 600;
-    margin-bottom: 10px;
-    font-size: 15px;
-  }
-  .mc-options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .mc-option {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-    font-size: 14px;
-  }
-  .mc-option:hover {
-    background: #f0f7fa;
-  }
-  .mc-option.selected {
-    background: var(--selected);
-    border-color: var(--selected-border);
-  }
-  .mc-option input {
-    margin-top: 2px;
-    accent-color: var(--primary);
-  }
-  .mc-option .letter {
-    font-weight: 700;
-    color: var(--primary-dark);
-    min-width: 18px;
-  }
+/* ── HEADER ── */
+.hdr {
+  background: var(--dark);
+  color: #fff;
+  padding: 14px 16px 10px;
+  position: sticky; top: 0; z-index: 100;
+}
+.hdr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.hdr-title { font-size: 14px; font-weight: 600; opacity: .9; }
+.hdr-counter { font-size: 13px; background: rgba(255,255,255,.15); padding: 3px 10px; border-radius: 20px; }
+.progress-track { height: 4px; background: rgba(255,255,255,.2); border-radius: 2px; overflow: hidden; }
+.progress-fill  { height: 100%; background: #4fc3f7; border-radius: 2px; transition: width .3s; }
+.section-badge {
+  display: inline-block; font-size: 11px; background: rgba(255,255,255,.18);
+  padding: 2px 8px; border-radius: 10px; margin-top: 6px; letter-spacing: .3px;
+}
 
-  /* Headline matching (Teil 1) */
-  .headline-pool {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 18px;
-    padding: 12px;
-    background: #f0f7fa;
-    border: 1px dashed var(--primary);
-    border-radius: 8px;
-  }
-  .headline-chip {
-    background: #fff;
-    border: 1px solid var(--primary);
-    color: var(--primary-dark);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    cursor: grab;
-    user-select: none;
-    transition: opacity 0.15s;
-  }
-  .headline-chip.placed {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
-  .dropzone {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 220px;
-    min-height: 34px;
-    border: 2px dashed var(--border);
-    border-radius: 8px;
-    padding: 6px 10px;
-    margin-left: 10px;
-    font-size: 13px;
-    color: #888;
-    background: #fff;
-    vertical-align: middle;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .dropzone.dragover {
-    border-color: var(--primary);
-    background: var(--selected);
-  }
-  .dropzone .placed-chip {
-    background: var(--primary);
-    color: #fff;
-    border-radius: 20px;
-    padding: 6px 12px;
-    font-size: 13px;
-    cursor: grab;
-  }
+/* ── NAME SCREEN ── */
+.screen { display: none; min-height: calc(100vh - 64px); padding: 20px 16px 40px; }
+.screen.active { display: block; }
+.name-screen { display: flex; flex-direction: column; justify-content: center; min-height: calc(100vh - 64px); padding: 32px 20px; }
+.name-screen .logo { text-align: center; margin-bottom: 28px; }
+.name-screen .logo h1 { font-size: 22px; color: var(--dark); font-weight: 700; }
+.name-screen .logo p  { font-size: 13px; color: #666; margin-top: 4px; }
+.name-card { background: #fff; border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+.name-card h2 { font-size: 16px; color: var(--dark); margin-bottom: 18px; font-weight: 600; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 500; }
+.field input {
+  width: 100%; padding: 13px 14px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 16px; font-family: inherit; color: #222;
+  transition: border-color .2s; background: #fff;
+}
+.field input:focus { outline: none; border-color: var(--primary); }
+.name-warn { color: var(--wrong); font-size: 13px; margin-top: -8px; margin-bottom: 12px; display: none; }
+.btn-start {
+  width: 100%; padding: 15px; background: var(--primary); color: #fff;
+  border: none; border-radius: 10px; font-size: 16px; font-weight: 600;
+  cursor: pointer; margin-top: 8px; transition: background .2s;
+}
+.btn-start:active { background: var(--dark); }
 
-  /* Ads / Situations (Teil 3) */
-  .ad-pool {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 8px;
-    margin-bottom: 18px;
-    padding: 12px;
-    background: #f0f7fa;
-    border: 1px dashed var(--primary);
-    border-radius: 8px;
-  }
-  .ad-chip {
-    background: #fff;
-    border: 1px solid var(--primary);
-    color: var(--primary-dark);
-    padding: 8px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    text-align: center;
-    cursor: grab;
-    user-select: none;
-    transition: opacity 0.15s;
-  }
-  .ad-chip.placed {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
-  .situation {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: #fdfdfd;
-  }
-  .situation .num { font-weight: 700; color: var(--primary); min-width: 26px; }
-  .situation .text { flex: 1; font-size: 14px; }
-  .situation .dropzone { min-width: 70px; min-height: 40px; }
+/* ── QUESTION CARD ── */
+.q-screen { padding: 16px 14px 100px; }
+.instr-box {
+  background: #e8f4f7; border-left: 3px solid var(--primary);
+  border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #444; line-height: 1.5;
+}
+.context-box {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px; margin-bottom: 14px; font-size: 14px; line-height: 1.7;
+  box-shadow: var(--shadow);
+}
+.context-box h3 { font-size: 15px; color: var(--dark); margin-bottom: 8px; }
+.q-card {
+  background: #fff; border-radius: var(--radius); padding: 16px;
+  box-shadow: var(--shadow); margin-bottom: 16px;
+}
+.q-num { font-size: 11px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.q-text { font-size: 15px; line-height: 1.6; color: #222; margin-bottom: 14px; font-weight: 500; }
 
-  /* Gap-fill drag/drop (Sprachbausteine Teil 2) */
-  .gap-text {
-    font-size: 15px;
-    line-height: 2.2;
-  }
-  .gap {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 90px;
-    min-height: 30px;
-    border: 2px dashed var(--border);
-    border-radius: 6px;
-    padding: 2px 8px;
-    margin: 0 3px;
-    font-size: 13px;
-    color: #888;
-    background: #fff;
-    vertical-align: middle;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .gap.dragover {
-    border-color: var(--primary);
-    background: var(--selected);
-  }
-  .gap .placed-chip {
-    background: var(--primary);
-    color: #fff;
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 13px;
-    cursor: grab;
-    font-weight: 600;
-  }
-  .placed-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .placed-chip .remove-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  .placed-chip .remove-btn:hover {
-    background: rgba(255,255,255,0.55);
-  }
-  .dropzone .placed-chip, .gap .placed-chip {
-    cursor: default;
-  }
-  .word-pool {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 18px;
-    padding: 12px;
-    background: #f0f7fa;
-    border: 1px dashed var(--primary);
-    border-radius: 8px;
-  }
-  .word-chip {
-    background: #fff;
-    border: 1px solid var(--primary);
-    color: var(--primary-dark);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: grab;
-    user-select: none;
-    transition: opacity 0.15s;
-  }
-  .word-chip.placed {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
+/* MC Options */
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+  cursor: pointer; font-size: 15px; background: #fafafa; transition: all .15s; color: #222;
+  -webkit-appearance: none; text-align: left; width: 100%; font-family: inherit;
+}
+.opt:active { background: #e8f4f7; }
+.opt.selected { background: #e3f2fd; border-color: var(--primary); }
+.opt .letter { font-weight: 700; color: var(--primary); min-width: 22px; font-size: 15px; }
 
-  /* Result feedback */
-  .feedback {
-    margin-top: 6px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .feedback.correct { color: var(--correct); }
-  .feedback.wrong { color: var(--wrong); }
-  .correct-box { border-color: var(--correct) !important; background: var(--correct-bg) !important; }
-  .wrong-box { border-color: var(--wrong) !important; background: var(--wrong-bg) !important; }
-  .mc-option.correct-opt { background: var(--correct-bg); border-color: var(--correct); }
-  .mc-option.wrong-opt { background: var(--wrong-bg); border-color: var(--wrong); }
+/* Drag drop chips */
+.chip-pool {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px;
+  background: #e8f4f7; border-radius: 10px; margin-bottom: 14px; min-height: 50px;
+}
+.chip {
+  background: #fff; border: 1.5px solid var(--primary); color: var(--dark);
+  padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  cursor: pointer; user-select: none; transition: opacity .15s;
+}
+.chip.used { opacity: .3; pointer-events: none; }
+.chip.word { border-radius: 8px; }
+.drop-zone {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 100px; min-height: 36px; border: 2px dashed var(--border);
+  border-radius: 8px; padding: 4px 10px; margin: 2px 4px; font-size: 13px;
+  color: #aaa; background: #fafafa; vertical-align: middle; cursor: pointer;
+  transition: all .15s;
+}
+.drop-zone.filled { background: var(--primary); color: #fff; border: 2px solid var(--primary); font-weight: 600; }
+.drop-zone.filled:after { content: " ×"; font-size: 11px; opacity: .8; }
 
-  /* Submit button + result panel */
-  .submit-bar {
-    text-align: center;
-    margin: 30px 0;
-  }
-  .submit-btn {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    padding: 14px 36px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .submit-btn:hover { background: var(--primary-dark); }
-  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+/* Gap text */
+.gap-text { font-size: 15px; line-height: 2.4; }
 
-  .result-panel {
-    display: none;
-    text-align: center;
-    border-radius: 12px;
-    padding: 28px;
-    margin-bottom: 24px;
-    color: #fff;
-  }
-  .result-panel.show { display: block; }
-  .result-panel.pass { background: linear-gradient(135deg, #2e7d32, #43a047); }
-  .result-panel.fail { background: linear-gradient(135deg, #c62828, #e53935); }
-  .result-panel h2 { margin: 0 0 8px; font-size: 26px; border: none; color: #fff; padding: 0; }
-  .result-panel .score { font-size: 48px; font-weight: 800; margin: 10px 0; }
-  .result-panel .detail { font-size: 15px; opacity: 0.95; }
-  .result-table {
-    margin-top: 16px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 8px;
-    padding: 12px;
-    text-align: left;
-    font-size: 13px;
-  }
-  .result-table div { padding: 2px 0; }
+/* Situation rows */
+.sit-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 10px 12px; background: #fafafa; border: 1px solid var(--border); border-radius: 10px; }
+.sit-num { font-weight: 700; color: var(--primary); min-width: 28px; font-size: 15px; }
+.sit-text { flex: 1; font-size: 13px; line-height: 1.5; }
+.sit-drop { min-width: 56px; min-height: 36px; font-size: 14px; }
 
-  .progress-status {
-    text-align: center;
-    color: #777;
-    font-size: 13px;
-    margin-top: -10px;
-    margin-bottom: 16px;
-  }
+/* Nav buttons */
+.nav-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding: 12px 16px 20px; background: #fff; border-top: 1px solid var(--border);
+  display: flex; gap: 10px; z-index: 100;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.06);
+}
+.btn-next {
+  flex: 1; padding: 14px; background: var(--primary); color: #fff;
+  border: none; border-radius: 10px; font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: background .2s;
+}
+.btn-next:active { background: var(--dark); }
+.btn-next:disabled { background: #aaa; }
+.btn-back {
+  padding: 14px 18px; background: #fff; color: var(--primary);
+  border: 1.5px solid var(--primary); border-radius: 10px; font-size: 15px;
+  font-weight: 600; cursor: pointer;
+}
 
-  .retry-btn {
-    background: #fff;
-    color: var(--primary-dark);
-    border: none;
-    padding: 10px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 14px;
-  }
-
-  .name-card { background:#fff; border:2px solid #1d6e84; border-radius:10px; padding:20px 24px; margin-bottom:22px; }
-  .name-card h2 { color:#0c4a5c; font-size:15px; margin:0 0 12px; font-weight:600; }
-  .name-row { display:flex; gap:16px; flex-wrap:wrap; }
-  .name-row label { flex:1; min-width:180px; font-size:13px; color:#444; display:flex; flex-direction:column; gap:5px; }
-  .name-row input { padding:9px 12px; border:1px solid #d8dee1; border-radius:6px; font-size:15px; font-family:inherit; }
-  .name-row input:focus { outline:2px solid #1d6e84; border-color:#1d6e84; }
-  .name-warn { color:#c62828; font-size:13px; margin-top:8px; display:none; font-weight:600; }
-  .pdf-btn { background:#e65100; color:#fff; border:none; padding:11px 26px; font-size:15px; font-weight:600; border-radius:8px; cursor:pointer; margin-top:12px; margin-left:8px; }
-  .pdf-btn:hover { background:#bf360c; }
-  .full-tbl { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
-  .full-tbl th { background:rgba(255,255,255,0.25); padding:6px 8px; text-align:left; font-weight:600; }
-  .full-tbl td { padding:4px 8px; border-top:1px solid rgba(255,255,255,0.15); }
-  .full-tbl .ok  { color:#a5d6a7; }
-  .full-tbl .err { color:#ef9a9a; }
-
+/* Result screen */
+.result-screen { padding: 16px 14px 120px; }
+.result-hero {
+  border-radius: var(--radius); padding: 24px; text-align: center;
+  margin-bottom: 16px; color: #fff;
+}
+.result-hero.pass { background: linear-gradient(135deg, #2e7d32, #43a047); }
+.result-hero.fail { background: linear-gradient(135deg, #c62828, #e53935); }
+.result-hero h2 { font-size: 22px; margin-bottom: 6px; }
+.result-hero .score { font-size: 48px; font-weight: 800; margin: 8px 0; }
+.result-hero .sub { font-size: 13px; opacity: .9; }
+.tbl-wrap { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+.tbl-wrap table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl-wrap th { background: var(--dark); color: #fff; padding: 8px 10px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .4px; }
+.tbl-wrap td { padding: 7px 10px; border-top: 1px solid #f0f0f0; }
+.tbl-wrap tr:nth-child(even) td { background: #f9f9f9; }
+.ok-cell { color: var(--correct); font-weight: 700; }
+.err-cell { color: var(--wrong); font-weight: 700; }
+.result-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-retry { flex: 1; min-width: 140px; padding: 14px; background: #fff; color: var(--dark); border: 1.5px solid var(--dark); border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btn-pdf   { flex: 1; min-width: 140px; padding: 14px; background: var(--orange); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.section-score { background: #fff; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.section-score h3 { font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 500; }
+.section-score .bars { display: flex; gap: 8px; align-items: center; }
+.section-score .bar-bg { flex: 1; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+.section-score .bar-fill { height: 100%; background: var(--primary); border-radius: 4px; }
+.section-score .bar-pct { font-size: 12px; font-weight: 600; color: var(--dark); min-width: 36px; text-align: right; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>telc Deutsch B1 — Übungstest 1 (Modul B1.1)</h1>
-  <div class="sub">Leseverstehen Teil 1–3 &amp; Sprachbausteine Teil 1–2 · Bestehen ab 60 % richtiger Antworten</div>
-  <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
-</header>
+<!-- HEADER -->
+<div class="hdr" id="hdr" style="display:none">
+  <div class="hdr-top">
+    <span class="hdr-title">telc Deutsch B1</span>
+    <span class="hdr-counter" id="hdrCounter">1 / 40</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="section-badge" id="sectionBadge">Leseverstehen Teil 1</div>
+</div>
 
-<div class="container">
-
+<!-- NAME SCREEN -->
+<div class="name-screen active" id="screenName">
+  <div class="logo">
+    <h1>telc Deutsch B1</h1>
+    <p>Übungstest 1 · Leseverstehen &amp; Sprachbausteine</p>
+  </div>
   <div class="name-card">
-    <h2>&#128100; Bitte vor dem Test ausfüllen</h2>
-    <div class="name-row">
-      <label>Vorname<input type="text" id="fieldVorname" placeholder="z. B. Anna"></label>
-      <label>Nachname<input type="text" id="fieldNachname" placeholder="z. B. Müller"></label>
-    </div>
-    <div class="name-warn" id="nameWarn">&#9888; Bitte Vor- und Nachname eintragen!</div>
+    <h2>Bitte vor dem Test ausfüllen</h2>
+    <div class="field"><label>Vorname</label><input type="text" id="vorname" placeholder="z. B. Anna" autocomplete="given-name"></div>
+    <div class="field"><label>Nachname</label><input type="text" id="nachname" placeholder="z. B. Müller" autocomplete="family-name"></div>
+    <div class="name-warn" id="nameWarn">⚠ Bitte Vor- und Nachname eintragen!</div>
+    <button class="btn-start" onclick="startTest()">Test starten →</button>
   </div>
-  <div class="progress-status" id="progressStatus">0 / 40 Aufgaben bearbeitet</div>
+</div>
 
-  <!-- RESULT PANEL -->
-  <div class="result-panel" id="resultPanel">
-    <h2 id="resultTitle"></h2>
-    <div class="score" id="resultScore"></div>
-    <div class="detail" id="resultDetail"></div>
-    <div class="result-table" id="resultTable"></div>
-    <button class="retry-btn" onclick="location.reload()">&#8635; Test wiederholen</button>
-    <button class="pdf-btn" onclick="pdfHerunterladen()">&#8595; Auswertung als PDF</button>
-  </div>
+<!-- QUESTION SCREENS (generated by JS) -->
+<div id="qContainer"></div>
 
-  <!-- LESEVERSTEHEN TEIL 1 -->
-  <div class="section">
-    <h2>Leseverstehen – Teil 1 (Aufgaben 1–5)</h2>
-    <p class="instructions">Lesen Sie die Überschriften a–j und die Texte 1–5. Ziehen Sie für jeden Text die passende Überschrift in das Feld. Jede Überschrift kann nur einmal benutzt werden.</p>
-
-    <div class="headline-pool" id="headlinePool">
-      <div class="headline-chip" draggable="true" data-val="a">a — Immer mehr deutsche Familien reisen mit der Bahn</div>
-      <div class="headline-chip" draggable="true" data-val="b">b — Buchtipp: Hilfe bei Schlafproblemen</div>
-      <div class="headline-chip" draggable="true" data-val="c">c — Der Computer: Liebstes Hobby von Deutschlands Frauen</div>
-      <div class="headline-chip" draggable="true" data-val="d">d — Neu bei der Bahn: Spezielle Informationen und Angebote für Radfahrer</div>
-      <div class="headline-chip" draggable="true" data-val="e">e — Neu am Markt: Billige Schlaftabletten</div>
-      <div class="headline-chip" draggable="true" data-val="f">f — Familien reisen billiger</div>
-      <div class="headline-chip" draggable="true" data-val="g">g — Urlaub mit dem Fahrrad in Deutschland immer beliebter</div>
-      <div class="headline-chip" draggable="true" data-val="h">h — Kultur im Urlaub: Interessen je nach Alter unterschiedlich</div>
-      <div class="headline-chip" draggable="true" data-val="i">i — Umfrage: Wer verwendet den Computer am häufigsten?</div>
-      <div class="headline-chip" draggable="true" data-val="j">j — Deutschland: Immer mehr Touristen reisen in den Westen</div>
+<!-- RESULT SCREEN -->
+<div class="screen" id="screenResult">
+  <div class="result-screen">
+    <div class="result-hero" id="resultHero">
+      <h2 id="resultTitle"></h2>
+      <div class="score" id="resultScore"></div>
+      <div class="sub" id="resultSub"></div>
     </div>
-
-    <div class="text-block">
-      <span class="num">1</span> Wer ist der typische Computerfan? Das B.A.T. Freizeitforschungsinstitut Hamburg ermittelte einige Eigenschaften: Er ist männlich, jung und hat einen höheren Schulabschluss. Bei der Beschäftigung am heimischen Computer stehen Textverarbeitung und Spiele ganz oben, es folgen private Buchhaltung, Grafikprogramme und Tabellenkalkulation.
-      <div class="dropzone" data-question="1" data-correct="i">Überschrift hierher ziehen</div>
+    <div id="sectionScores"></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Nr.</th><th>Ihre Antwort</th><th>Richtige Antwort</th><th>Ergebnis</th><th>Abschnitt</th></tr></thead>
+        <tbody id="resultTbody"></tbody>
+      </table>
     </div>
-
-    <div class="text-block">
-      <span class="num">2</span> „Bahn&amp;Bike" heißt ein 222-seitiger Prospekt, den die Deutsche Bahn AG in Zusammenarbeit mit der Deutschen Zentrale für Tourismus herausgebracht hat und der wichtige Informationen für jene bereitstellt, die ihren Radurlaub mit Bahnfahren verbinden wollen. Das Motto lautet: Hin mit der Bahn – das Rad vor Ort mieten. Der Prospekt enthält Angaben zur Streckenlänge und Wegbeschaffenheit, Adressen von Verleihstationen, verweist auf Sehenswürdigkeiten sowie Unterkünfte und wird durch Karten ergänzt. Die Broschüre kostet 5 Euro und ist im Buchhandel beziehungsweise an Fahrkartenschaltern zu beziehen.
-      <div class="dropzone" data-question="2" data-correct="d">Überschrift hierher ziehen</div>
-    </div>
-
-    <div class="text-block">
-      <span class="num">3</span> Ausführliche Informationen zum Thema „Schlafstörungen" finden Sie im gleichnamigen Patientenratgeber von Dr. med. Fritz Hohagen. Sie erfahren, was den Schlaf stört und was Sie dagegen unternehmen können. Für 9,95 Euro erhalten Sie das Buch in Apotheken oder direkt beim Wort&amp;Bild Verlag, 82065 Baierbrunn.
-      <div class="dropzone" data-question="3" data-correct="b">Überschrift hierher ziehen</div>
-    </div>
-
-    <div class="text-block">
-      <span class="num">4</span> Jetzt wird für Familien Reisen mit der Bahn zwischen Österreich und Deutschland noch ein gutes Stück günstiger. Denn ab 6. Oktober gibt es den Familien-Super-Sparpreis. Ein echter Traumpreis für die ganze Familie – vom Baby bis zum Großpapa – da kann man wirklich sparen. Der Familien-Super-Sparpreis gilt für Familien, bestehend aus ein oder zwei Erwachsenen (Eltern, auch Großeltern) und deren Kindern/Enkelkindern bis zum vollendeten 17. Lebensjahr, wobei mindestens ein Kind/Enkelkind an der Reise teilnehmen muss.
-      <div class="dropzone" data-question="4" data-correct="f">Überschrift hierher ziehen</div>
-    </div>
-
-    <div class="text-block">
-      <span class="num">5</span> Touristen zwischen 14 und 29 Jahren sowie zwischen 40 und 49 Jahren haben ein besonders großes Interesse an der Kultur des jeweiligen Reiselandes, während die Gruppe der 30- bis 39-jährigen im Urlaub „eine Kulturpause einlegt". Dies geht aus der neuesten Analyse der Forschungsgemeinschaft Urlaub und Reisen e.V. hervor. Urlauber aus Ostdeutschland, so die Studie, zeigen wiederum mehr Kulturinteresse als Reisende aus dem Westen. Grundsätzlich gelte: Je höher das Einkommen und die Schulbildung sind, umso mehr besteht im Urlaub der Wunsch, Land und Leute kennenzulernen.
-      <div class="dropzone" data-question="5" data-correct="h">Überschrift hierher ziehen</div>
+    <div class="result-btns">
+      <button class="btn-retry" onclick="location.reload()">↺ Wiederholen</button>
+      <button class="btn-pdf"   onclick="pdfHerunterladen()">↓ PDF</button>
     </div>
   </div>
-
-  <!-- LESEVERSTEHEN TEIL 2 -->
-  <div class="section">
-    <h2>Leseverstehen – Teil 2 (Aufgaben 6–10)</h2>
-    <p class="instructions">Lesen Sie den Text und die Aufgaben 6–10. Welche Lösung (a, b oder c) ist jeweils richtig?</p>
-
-    <div class="text-block">
-      <strong>Büro-Werkstatt: Chance für behinderte Menschen</strong><br>
-      Computerarbeit im Auftrag privater Firmen – jeder Dritte findet nach einem fünfmonatigen Kurs einen Job. Interessierte Unternehmen werden noch gesucht.<br><br>
-      Margit, die junge Frau im Rollstuhl, erledigt die Lohnverrechnung für einen Verlag. Reinhard, seit der Geburt gehbehindert, tippt für die Direktion von Hewlett Packard Protokolle und Preislisten. Martin, seine Unterarme sind verkürzt, layoutet die Speisekarte eines Wiener Restaurants. Drei junge körperbehinderte Menschen am Computer – alle drei können auf eine abgeschlossene kaufmännische Ausbildung verweisen. Dennoch hat man sie auf dem Arbeitsamt als „schwer vermittelbar" eingestuft – was de facto nicht vermittelbar bedeutet. Zurzeit arbeiten Margit, Reinhard und Martin – gemeinsam mit sieben anderen behinderten Menschen – in der „Büro-Werkstatt" in Wien-Stadlau. Hier werden körperbehinderte Schulabgänger auf das Berufsleben vorbereitet. In einem fünfmonatigen Kurs lernen sie, das in der Schule Gelernte in die Praxis umzusetzen. Ihre Dienste werden von Privatfirmen (darunter auch die OMV und zwei Banken) zugekauft.<br><br>
-      Gleichzeitig wird ihnen bei der Jobsuche geholfen. „Leicht ist das nicht", sagt Betreuer Günther Hos. „Es gibt so viele Arbeitslose, die nicht behindert sind. Wer nimmt schon einen Mitarbeiter mit Handicap?" Zwar wären die Firmen gesetzlich verpflichtet, pro 25 Beschäftigte einen Behinderten einzustellen. Die meisten Firmen nützen jedoch die Möglichkeit, sich „freizukaufen" (die sogenannte „Ausgleichstaxe" beträgt rund 150 Euro monatlich).<br><br>
-      Trotz der Rahmenbedingungen kann Hos mit einer durchaus positiven Bilanz aufwarten: „Immerhin haben wir seit der Vereinsgründung vor drei Jahren ein Drittel unserer Leute untergebracht." Auch ein Dienst an der Allgemeinheit, denn jede Vermittlung bedeutet: ein Arbeitsloser weniger, ein Steuerzahler mehr.<br><br>
-      Gegründet wurde die Büro-Werkstatt von einer Lehrerin: Heide Hanisch, die in einer Wiener berufsbildenden Schule Geografie und Geschichte unterrichtet, wollte nicht länger hinnehmen, dass ihre behinderten Schüler erst ausgebildet werden, um dann als Arbeitnehmer nicht gebraucht zu werden.<br><br>
-      Nähere Informationen, auch für interessierte Firmen: „Büro-Werkstatt" in Wien-Stadlau, Telefon: 0222/283 85 75.
-    </div>
-
-    <div class="mc-question" data-question="6" data-correct="c">
-      <div class="q-title">6. In einem fünfmonatigen Kurs können die Teilnehmer</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q6" value="a"><span class="letter">a</span> eine berufliche Ausbildung abschließen.</label>
-        <label class="mc-option"><input type="radio" name="q6" value="b"><span class="letter">b</span> lernen, was sie in der Schule verpasst haben.</label>
-        <label class="mc-option"><input type="radio" name="q6" value="c"><span class="letter">c</span> praktische Erfahrungen mit der Büroarbeit sammeln.</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="7" data-correct="c">
-      <div class="q-title">7. Die Büro-Werkstatt versucht außerdem,</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q7" value="a"><span class="letter">a</span> auch jenen Arbeitslosen zu helfen, die nicht behindert sind.</label>
-        <label class="mc-option"><input type="radio" name="q7" value="b"><span class="letter">b</span> Behinderte auf die Abschlussprüfungen vorzubereiten.</label>
-        <label class="mc-option"><input type="radio" name="q7" value="c"><span class="letter">c</span> für die behinderten Menschen eine Arbeit zu finden.</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="8" data-correct="b">
-      <div class="q-title">8. Laut Gesetz müssen österreichische Firmen pro 25 Beschäftigte</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q8" value="a"><span class="letter">a</span> eine besondere Steuer zahlen.</label>
-        <label class="mc-option"><input type="radio" name="q8" value="b"><span class="letter">b</span> einen Behinderten einstellen oder eine monatliche Gebühr bezahlen.</label>
-        <label class="mc-option"><input type="radio" name="q8" value="c"><span class="letter">c</span> für jeden Behinderten monatlich 150 Euro bezahlen.</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="9" data-correct="a">
-      <div class="q-title">9. Seit der Vereinsgründung</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q9" value="a"><span class="letter">a</span> konnte für ein Drittel der behinderten Kursteilnehmer eine Arbeit gefunden werden.</label>
-        <label class="mc-option"><input type="radio" name="q9" value="b"><span class="letter">b</span> konnte Günther Hos für den Verein schon viel Geld sparen.</label>
-        <label class="mc-option"><input type="radio" name="q9" value="c"><span class="letter">c</span> zahlen Arbeitslose um ein Drittel weniger Steuern.</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="10" data-correct="a">
-      <div class="q-title">10. Die Lehrerin, die die Büro-Werkstatt gegründet hat,</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q10" value="a"><span class="letter">a</span> wollte etwas tun, damit Behinderte einen Arbeitsplatz erhalten.</label>
-        <label class="mc-option"><input type="radio" name="q10" value="b"><span class="letter">b</span> wollte nicht länger Geografie und Geschichte unterrichten.</label>
-        <label class="mc-option"><input type="radio" name="q10" value="c"><span class="letter">c</span> wird nach der Ausbildung der Behinderten nicht mehr gebraucht.</label>
-      </div>
-    </div>
-  </div>
-
-  <!-- LESEVERSTEHEN TEIL 3 -->
-  <div class="section">
-    <h2>Leseverstehen – Teil 3 (Aufgaben 11–20)</h2>
-    <p class="instructions">Lesen Sie die Situationen 11–20 und die Anzeigen a–l. Ziehen Sie für jede Situation den passenden Buchstaben in das Feld. Jede Anzeige kann nur einmal benutzt werden. Wenn Sie zu einer Situation keine Anzeige finden, ziehen Sie "x" in das Feld.</p>
-
-    <div class="ad-pool" id="adPool">
-      <div class="ad-chip" draggable="true" data-val="a">a</div>
-      <div class="ad-chip" draggable="true" data-val="b">b</div>
-      <div class="ad-chip" draggable="true" data-val="c">c</div>
-      <div class="ad-chip" draggable="true" data-val="d">d</div>
-      <div class="ad-chip" draggable="true" data-val="e">e</div>
-      <div class="ad-chip" draggable="true" data-val="f">f</div>
-      <div class="ad-chip" draggable="true" data-val="g">g</div>
-      <div class="ad-chip" draggable="true" data-val="h">h</div>
-      <div class="ad-chip" draggable="true" data-val="i">i</div>
-      <div class="ad-chip" draggable="true" data-val="j">j</div>
-      <div class="ad-chip" draggable="true" data-val="k">k</div>
-      <div class="ad-chip" draggable="true" data-val="l">l</div>
-      <div class="ad-chip" draggable="true" data-val="x">x</div>
-      <div class="ad-chip" draggable="true" data-val="x">x</div>
-      <div class="ad-chip" draggable="true" data-val="x">x</div>
-    </div>
-
-    <details style="margin-bottom:16px;">
-      <summary style="cursor:pointer; font-weight:600; color:var(--primary-dark);">Anzeigen a–l anzeigen (zum Nachlesen)</summary>
-      <div style="margin-top:10px; font-size:13px; color:#444; line-height:1.8;">
-        <strong>a</strong> Bong-Hong: Asiatisches Spezialitäten-Restaurant (Thai-China-Vietnam), täglich geöffnet, alle Gerichte auch zum Mitnehmen und Heimservice.<br>
-        <strong>b</strong> Ristorante OLINDO: Italienisches Restaurant, hausgemachte Nudeln, Fischspezialitäten, bei schönem Wetter Gartenbetrieb.<br>
-        <strong>c</strong> Helmut Schwabe, Versicherungsbüro: Urlaubsversicherung.<br>
-        <strong>d</strong> SEATOP Reisen: Flug- und Hotelspezialist, weltweit Reisen, Mietwagen, Sommertermine nach USA.<br>
-        <strong>e</strong> Council Travel: Spezialpreise für Studenten/Jugendliche – Flüge nach New York, Los Angeles, Amsterdam usw.<br>
-        <strong>f</strong> Kreittmayr: Kneipe mit Biergarten, Billard und Kegelbahnen, live Bundesliga.<br>
-        <strong>g</strong> Internationaler Stammtisch: Diskussion über deutsche und ausländische Jugendliche in München.<br>
-        <strong>h</strong> Nachprüfung: Lehrerin bereitet intensiv vor in Latein, Englisch, Französisch, Deutsch.<br>
-        <strong>i</strong> Unterricht: Nachhilfe in Mathe-Physik-Chemie für alle Klassen, Abi-Vorbereitung.<br>
-        <strong>j</strong> City-Reisebüro: Campmobile USA/Canada, früh buchen lohnt.<br>
-        <strong>k</strong> Kurse: Für Erwachsene und Kinder mit (Sprach-)Schwierigkeiten – Gisela Geiger.<br>
-        <strong>l</strong> Sprachbörse: Deutsch als Fremdsprache, Fremdsprachen, Kindersprachkurse, Minigruppen und Einzelunterricht, schon für Kinder ab 4 Jahren.
-      </div>
-    </details>
-
-    <div class="situation"><span class="num">11</span><span class="text">Sie möchten mit Freunden in einem Restaurant essen. Da das Wetter schön ist, möchten Sie gerne draußen sitzen.</span><div class="dropzone" data-question="11" data-correct="b">hierher ziehen</div></div>
-    <div class="situation"><span class="num">12</span><span class="text">Sie möchten heute nicht selbst kochen, sondern lieber ein warmes Essen kaufen und mit nach Hause nehmen.</span><div class="dropzone" data-question="12" data-correct="a">hierher ziehen</div></div>
-    <div class="situation"><span class="num">13</span><span class="text">In den Sommerferien möchten Sie gerne in die USA fliegen. Sie brauchen dort auch eine Unterkunft.</span><div class="dropzone" data-question="13" data-correct="d">hierher ziehen</div></div>
-    <div class="situation"><span class="num">14</span><span class="text">Reisebüros bieten billigere Flüge an, wenn man in letzter Minute bucht. Sie suchen so einen Flug.</span><div class="dropzone" data-question="14" data-correct="x">hierher ziehen</div></div>
-    <div class="situation"><span class="num">15</span><span class="text">Ihre Tochter, die studiert, möchte in die USA fliegen. Sie suchen einen billigen Flug für sie.</span><div class="dropzone" data-question="15" data-correct="e">hierher ziehen</div></div>
-    <div class="situation"><span class="num">16</span><span class="text">Ihr Sohn ist schlecht in Mathematik und braucht deshalb noch Unterricht außerhalb der Schule.</span><div class="dropzone" data-question="16" data-correct="i">hierher ziehen</div></div>
-    <div class="situation"><span class="num">17</span><span class="text">Das Kind Ihrer Freunde hat Probleme beim Sprechen und braucht deshalb Hilfe.</span><div class="dropzone" data-question="17" data-correct="k">hierher ziehen</div></div>
-    <div class="situation"><span class="num">18</span><span class="text">Sie haben einen jungen Franzosen zu Besuch. Sie möchten, dass er in einen Deutschkurs geht.</span><div class="dropzone" data-question="18" data-correct="l">hierher ziehen</div></div>
-    <div class="situation"><span class="num">19</span><span class="text">Sie möchten, dass Ihr Sohn in einen Jugendclub geht.</span><div class="dropzone" data-question="19" data-correct="x">hierher ziehen</div></div>
-    <div class="situation"><span class="num">20</span><span class="text">Sie interessieren sich für die Probleme ausländischer Jugendlicher in Deutschland.</span><div class="dropzone" data-question="20" data-correct="g">hierher ziehen</div></div>
-  </div>
-
-  <!-- SPRACHBAUSTEINE TEIL 1 -->
-  <div class="section">
-    <h2>Sprachbausteine – Teil 1 (Aufgaben 21–30)</h2>
-    <p class="instructions">Lesen Sie den Text und schließen Sie die Lücken 21–30. Welche Lösung (a, b oder c) ist jeweils richtig?</p>
-
-    <div class="text-block">
-      Liebe Karin,<br><br>
-      nach meinem Praktikum in Frankreich bin ich jetzt wieder zu Hause. Wie du ja weißt, wollte ich eigentlich nach Paris, <strong>(21)</strong> das hat dann leider nicht geklappt. Doch dann habe ich eine Stelle als Praktikant bei <strong>(22)</strong> Firma in Straßburg gefunden.<br><br>
-      Dort <strong>(23)</strong> ich drei Monate geblieben. Die Arbeit war sehr <strong>(24)</strong> – ich musste schon um 8.00 Uhr im Büro sein –, hat mir aber <strong>(25)</strong> sehr gut gefallen.<br><br>
-      Ich habe <strong>(26)</strong> dieser Zeit in verschiedenen Abteilungen gearbeitet und so nicht nur etwas über die Herstellung von Fernsehgeräten <strong>(27)</strong>, sondern auch über den Verkauf. Und die Kollegen, mit <strong>(28)</strong> ich am meisten zu tun hatte, waren wirklich sehr nett.<br><br>
-      Nach dem Praktikum habe ich noch zwei Wochen Urlaub bei <strong>(29)</strong> Freunden gemacht. Darüber erzähle ich <strong>(30)</strong> bald mehr – für heute muss ich Schluss machen.<br><br>
-      Liebe Grüße<br>Fritz
-    </div>
-
-    <div class="mc-question" data-question="21" data-correct="a">
-      <div class="q-title">21.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q21" value="a"><span class="letter">a</span> aber</label>
-        <label class="mc-option"><input type="radio" name="q21" value="b"><span class="letter">b</span> denn</label>
-        <label class="mc-option"><input type="radio" name="q21" value="c"><span class="letter">c</span> sondern</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="22" data-correct="c">
-      <div class="q-title">22.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q22" value="a"><span class="letter">a</span> eine</label>
-        <label class="mc-option"><input type="radio" name="q22" value="b"><span class="letter">b</span> einen</label>
-        <label class="mc-option"><input type="radio" name="q22" value="c"><span class="letter">c</span> einer</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="23" data-correct="a">
-      <div class="q-title">23.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q23" value="a"><span class="letter">a</span> bin</label>
-        <label class="mc-option"><input type="radio" name="q23" value="b"><span class="letter">b</span> habe</label>
-        <label class="mc-option"><input type="radio" name="q23" value="c"><span class="letter">c</span> wurde</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="24" data-correct="a">
-      <div class="q-title">24.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q24" value="a"><span class="letter">a</span> anstrengend</label>
-        <label class="mc-option"><input type="radio" name="q24" value="b"><span class="letter">b</span> anstrengende</label>
-        <label class="mc-option"><input type="radio" name="q24" value="c"><span class="letter">c</span> anstrengendes</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="25" data-correct="a">
-      <div class="q-title">25.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q25" value="a"><span class="letter">a</span> trotzdem</label>
-        <label class="mc-option"><input type="radio" name="q25" value="b"><span class="letter">b</span> wegen</label>
-        <label class="mc-option"><input type="radio" name="q25" value="c"><span class="letter">c</span> weshalb</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="26" data-correct="b">
-      <div class="q-title">26.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q26" value="a"><span class="letter">a</span> bis</label>
-        <label class="mc-option"><input type="radio" name="q26" value="b"><span class="letter">b</span> in</label>
-        <label class="mc-option"><input type="radio" name="q26" value="c"><span class="letter">c</span> nach</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="27" data-correct="a">
-      <div class="q-title">27.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q27" value="a"><span class="letter">a</span> gelernt</label>
-        <label class="mc-option"><input type="radio" name="q27" value="b"><span class="letter">b</span> lernen</label>
-        <label class="mc-option"><input type="radio" name="q27" value="c"><span class="letter">c</span> lernte</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="28" data-correct="b">
-      <div class="q-title">28.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q28" value="a"><span class="letter">a</span> dem</label>
-        <label class="mc-option"><input type="radio" name="q28" value="b"><span class="letter">b</span> denen</label>
-        <label class="mc-option"><input type="radio" name="q28" value="c"><span class="letter">c</span> die</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="29" data-correct="b">
-      <div class="q-title">29.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q29" value="a"><span class="letter">a</span> meine</label>
-        <label class="mc-option"><input type="radio" name="q29" value="b"><span class="letter">b</span> meinen</label>
-        <label class="mc-option"><input type="radio" name="q29" value="c"><span class="letter">c</span> meiner</label>
-      </div>
-    </div>
-
-    <div class="mc-question" data-question="30" data-correct="a">
-      <div class="q-title">30.</div>
-      <div class="mc-options">
-        <label class="mc-option"><input type="radio" name="q30" value="a"><span class="letter">a</span> dir</label>
-        <label class="mc-option"><input type="radio" name="q30" value="b"><span class="letter">b</span> Ihnen</label>
-        <label class="mc-option"><input type="radio" name="q30" value="c"><span class="letter">c</span> uns</label>
-      </div>
-    </div>
-  </div>
-
-  <!-- SPRACHBAUSTEINE TEIL 2 -->
-  <div class="section">
-    <h2>Sprachbausteine – Teil 2 (Aufgaben 31–40)</h2>
-    <p class="instructions">Lesen Sie den Text und ziehen Sie die passenden Wörter aus dem Wortpool in die Lücken 31–40. Jedes Wort passt nur einmal.</p>
-
-    <div class="text-block">
-      <strong>Hotel-Pension Janosch</strong> — ruhige Lage, Wanderwege, Bademöglichkeiten, Tennis, Freizeitprogramm für Kinder, Familienappartements: 1 Woche pro Person nur € 99,– inkl. Frühstück, spezielle Kinderermäßigung.
-    </div>
-
-    <div class="text-block gap-text">
-      Sehr geehrter Herr Janosch,<br><br>
-      ich habe Ihre Anzeige gelesen und interessiere mich sehr <span class="gap" data-question="31" data-correct="h">Lücke 31</span> Ihr Angebot. Ich möchte mit meiner Familie vom 10.–24. August in Österreich Urlaub machen und hätte deshalb <span class="gap" data-question="32" data-correct="i">Lücke 32</span> noch nähere Informationen.<br><br>
-      Meine Frau und mich interessiert ganz <span class="gap" data-question="33" data-correct="a">Lücke 33</span> das Freizeitprogramm für Kinder, <span class="gap" data-question="34" data-correct="b">Lücke 34</span> wir zwei Kinder (3 und 8 Jahre) haben. Gibt es Schwimm- und Tenniskurse für Kinder und <span class="gap" data-question="35" data-correct="o">Lücke 35</span> ja, was kosten sie? In Ihrer Anzeige steht auch, dass Sie für die Unterkunft günstige Angebote für Kinder haben. Wie viel <span class="gap" data-question="36" data-correct="j">Lücke 36</span> wir pro Woche für unsere Kinder bezahlen?<br><br>
-      Und <span class="gap" data-question="37" data-correct="m">Lücke 37</span> noch eine letzte Frage: Wir haben einen kleinen Hund, von dem sich meine Kinder nicht trennen können und den wir <span class="gap" data-question="38" data-correct="g">Lücke 38</span> auch mitnehmen müssten. Wäre das möglich?<br><br>
-      Bitte schreiben Sie uns so bald wie möglich, <span class="gap" data-question="39" data-correct="e">Lücke 39</span> wir uns bald entscheiden können. Außerdem wären wir Ihnen sehr <span class="gap" data-question="40" data-correct="f">Lücke 40</span>, wenn Sie uns einige Prospekte oder Bilder Ihrer Pension sowie der Umgebung zusenden würden.<br><br>
-      Mit freundlichen Grüßen<br>Ihr Anton Müller
-    </div>
-
-    <div class="word-pool" id="wordPool">
-      <div class="word-chip" draggable="true" data-val="a">BESONDERS</div>
-      <div class="word-chip" draggable="true" data-val="b">DA</div>
-      <div class="word-chip" draggable="true" data-val="c">DAFÜR</div>
-      <div class="word-chip" draggable="true" data-val="d">DAMALS</div>
-      <div class="word-chip" draggable="true" data-val="e">DAMIT</div>
-      <div class="word-chip" draggable="true" data-val="f">DANKBAR</div>
-      <div class="word-chip" draggable="true" data-val="g">DESHALB</div>
-      <div class="word-chip" draggable="true" data-val="h">FÜR</div>
-      <div class="word-chip" draggable="true" data-val="i">GERNE</div>
-      <div class="word-chip" draggable="true" data-val="j">KÖNNTEN</div>
-      <div class="word-chip" draggable="true" data-val="k">MIT</div>
-      <div class="word-chip" draggable="true" data-val="l">MÜSSTEN</div>
-      <div class="word-chip" draggable="true" data-val="m">SCHLIESSLICH</div>
-      <div class="word-chip" draggable="true" data-val="n">WANN</div>
-      <div class="word-chip" draggable="true" data-val="o">WENN</div>
-    </div>
-  </div>
-
-  <div class="submit-bar">
-    <button class="submit-btn" id="submitBtn" onclick="evaluateTest()">Test auswerten</button>
-  </div>
-
 </div>
 
 <script>
-const TOTAL_QUESTIONS = 40;
-const PASS_THRESHOLD = 0.6;
+var _name = '';
+var answers = {}; // {qNum: value}
+var currentQ = 0;
+var TOTAL = 40;
 
-// ---------- DRAG & DROP SETUP ----------
-let draggedEl = null;
+// ── QUESTION DATA ─────────────────────────────────────────────────────────────
+var questions = [
+  // LV TEIL 1 — Überschriften zuordnen (drag/click chips)
+  {id:1, section:'Leseverstehen Teil 1', type:'chip',
+   instr:'Lesen Sie die Überschriften a–j. Wählen Sie die passende Überschrift für jeden Text. Jede Überschrift nur einmal.',
+   context:'<strong>Text 1:</strong> Wer ist der typische Computerfan? Das B.A.T. Freizeitforschungsinstitut Hamburg ermittelte einige Eigenschaften: Er ist männlich, jung und hat einen höheren Schulabschluss. Bei der Beschäftigung am heimischen Computer stehen Textverarbeitung und Spiele ganz oben, es folgen private Buchhaltung, Grafikprogramme und Tabellenkalkulation.',
+   prompt:'Welche Überschrift passt zu Text 1?',
+   pool:['a','b','c','d','e','f','g','h','i','j'],
+   poolLabels:{a:'a – Immer mehr deutsche Familien reisen mit der Bahn',b:'b – Buchtipp: Hilfe bei Schlafproblemen',c:'c – Der Computer: Liebstes Hobby von Deutschlands Frauen',d:'d – Neu bei der Bahn: Angebote für Radfahrer',e:'e – Neu am Markt: Billige Schlaftabletten',f:'f – Familien reisen billiger',g:'g – Urlaub mit dem Fahrrad immer beliebter',h:'h – Kultur im Urlaub: Interessen je nach Alter',i:'i – Umfrage: Wer verwendet den Computer am häufigsten?',j:'j – Deutschland: Immer mehr Touristen reisen in den Westen'},
+   correct:'i'},
+  {id:2, section:'Leseverstehen Teil 1', type:'chip',
+   instr:'Wählen Sie die passende Überschrift für Text 2.',
+   context:'<strong>Text 2:</strong> „Bahn&amp;Bike" heißt ein 222-seitiger Prospekt, den die Deutsche Bahn AG in Zusammenarbeit mit der Deutschen Zentrale für Tourismus herausgebracht hat und der wichtige Informationen für jene bereitstellt, die ihren Radurlaub mit Bahnfahren verbinden wollen. Das Motto lautet: Hin mit der Bahn – das Rad vor Ort mieten. Der Prospekt enthält Angaben zur Streckenlänge und Wegbeschaffenheit, Adressen von Verleihstationen, verweist auf Sehenswürdigkeiten sowie Unterkünfte.',
+   prompt:'Welche Überschrift passt zu Text 2?',
+   pool:['a','b','c','d','e','f','g','h','i','j'],
+   poolLabels:{a:'a – Immer mehr deutsche Familien reisen mit der Bahn',b:'b – Buchtipp: Hilfe bei Schlafproblemen',c:'c – Der Computer: Liebstes Hobby von Deutschlands Frauen',d:'d – Neu bei der Bahn: Angebote für Radfahrer',e:'e – Neu am Markt: Billige Schlaftabletten',f:'f – Familien reisen billiger',g:'g – Urlaub mit dem Fahrrad immer beliebter',h:'h – Kultur im Urlaub: Interessen je nach Alter',i:'i – Umfrage: Wer verwendet den Computer am häufigsten?',j:'j – Deutschland: Immer mehr Touristen reisen in den Westen'},
+   correct:'d'},
+  {id:3, section:'Leseverstehen Teil 1', type:'chip',
+   instr:'Wählen Sie die passende Überschrift für Text 3.',
+   context:'<strong>Text 3:</strong> Ausführliche Informationen zum Thema „Schlafstörungen" finden Sie im gleichnamigen Patientenratgeber von Dr. med. Fritz Hohagen. Sie erfahren, was den Schlaf stört und was Sie dagegen unternehmen können. Für 9,95 Euro erhalten Sie das Buch in Apotheken oder direkt beim Wort&amp;Bild Verlag, 82065 Baierbrunn.',
+   prompt:'Welche Überschrift passt zu Text 3?',
+   pool:['a','b','c','d','e','f','g','h','i','j'],
+   poolLabels:{a:'a – Immer mehr deutsche Familien reisen mit der Bahn',b:'b – Buchtipp: Hilfe bei Schlafproblemen',c:'c – Der Computer: Liebstes Hobby von Deutschlands Frauen',d:'d – Neu bei der Bahn: Angebote für Radfahrer',e:'e – Neu am Markt: Billige Schlaftabletten',f:'f – Familien reisen billiger',g:'g – Urlaub mit dem Fahrrad immer beliebter',h:'h – Kultur im Urlaub: Interessen je nach Alter',i:'i – Umfrage: Wer verwendet den Computer am häufigsten?',j:'j – Deutschland: Immer mehr Touristen reisen in den Westen'},
+   correct:'b'},
+  {id:4, section:'Leseverstehen Teil 1', type:'chip',
+   instr:'Wählen Sie die passende Überschrift für Text 4.',
+   context:'<strong>Text 4:</strong> Jetzt wird für Familien Reisen mit der Bahn zwischen Österreich und Deutschland noch ein gutes Stück günstiger. Denn ab 6. Oktober gibt es den Familien-Super-Sparpreis. Ein echter Traumpreis für die ganze Familie – vom Baby bis zum Großpapa. Der Familien-Super-Sparpreis gilt für Familien bestehend aus ein oder zwei Erwachsenen und deren Kindern bis zum vollendeten 17. Lebensjahr.',
+   prompt:'Welche Überschrift passt zu Text 4?',
+   pool:['a','b','c','d','e','f','g','h','i','j'],
+   poolLabels:{a:'a – Immer mehr deutsche Familien reisen mit der Bahn',b:'b – Buchtipp: Hilfe bei Schlafproblemen',c:'c – Der Computer: Liebstes Hobby von Deutschlands Frauen',d:'d – Neu bei der Bahn: Angebote für Radfahrer',e:'e – Neu am Markt: Billige Schlaftabletten',f:'f – Familien reisen billiger',g:'g – Urlaub mit dem Fahrrad immer beliebter',h:'h – Kultur im Urlaub: Interessen je nach Alter',i:'i – Umfrage: Wer verwendet den Computer am häufigsten?',j:'j – Deutschland: Immer mehr Touristen reisen in den Westen'},
+   correct:'f'},
+  {id:5, section:'Leseverstehen Teil 1', type:'chip',
+   instr:'Wählen Sie die passende Überschrift für Text 5.',
+   context:'<strong>Text 5:</strong> Touristen zwischen 14 und 29 Jahren sowie zwischen 40 und 49 Jahren haben ein besonders großes Interesse an der Kultur des jeweiligen Reiselandes, während die Gruppe der 30- bis 39-jährigen im Urlaub „eine Kulturpause einlegt". Grundsätzlich gelte: Je höher das Einkommen und die Schulbildung sind, umso mehr besteht im Urlaub der Wunsch, Land und Leute kennenzulernen.',
+   prompt:'Welche Überschrift passt zu Text 5?',
+   pool:['a','b','c','d','e','f','g','h','i','j'],
+   poolLabels:{a:'a – Immer mehr deutsche Familien reisen mit der Bahn',b:'b – Buchtipp: Hilfe bei Schlafproblemen',c:'c – Der Computer: Liebstes Hobby von Deutschlands Frauen',d:'d – Neu bei der Bahn: Angebote für Radfahrer',e:'e – Neu am Markt: Billige Schlaftabletten',f:'f – Familien reisen billiger',g:'g – Urlaub mit dem Fahrrad immer beliebter',h:'h – Kultur im Urlaub: Interessen je nach Alter',i:'i – Umfrage: Wer verwendet den Computer am häufigsten?',j:'j – Deutschland: Immer mehr Touristen reisen in den Westen'},
+   correct:'h'},
 
-function setupDragDrop() {
-  document.querySelectorAll('[draggable="true"]').forEach(chip => {
-    chip.addEventListener('dragstart', e => {
-      if (chip.classList.contains('placed')) { e.preventDefault(); return; }
-      draggedEl = chip;
-      e.dataTransfer.setData('text/plain', chip.dataset.val);
-      e.dataTransfer.effectAllowed = 'move';
-    });
-  });
+  // LV TEIL 2 — Multiple Choice
+  {id:6, section:'Leseverstehen Teil 2', type:'mc',
+   instr:'Lesen Sie den Text über die Büro-Werkstatt. Welche Lösung (a, b oder c) ist richtig?',
+   context:'<strong>Büro-Werkstatt: Chance für behinderte Menschen</strong><br><br>Margit, die junge Frau im Rollstuhl, erledigt die Lohnverrechnung für einen Verlag. Reinhard, seit der Geburt gehbehindert, tippt für die Direktion von Hewlett Packard Protokolle und Preislisten. Martin, seine Unterarme sind verkürzt, layoutet die Speisekarte eines Wiener Restaurants.<br><br>Drei junge körperbehinderte Menschen am Computer – alle drei können auf eine abgeschlossene kaufmännische Ausbildung verweisen. Dennoch hat man sie auf dem Arbeitsamt als „schwer vermittelbar" eingestuft. Zurzeit arbeiten sie in der „Büro-Werkstatt" in Wien-Stadlau. Hier werden körperbehinderte Schulabgänger auf das Berufsleben vorbereitet. In einem fünfmonatigen Kurs lernen sie, das in der Schule Gelernte in die Praxis umzusetzen. Ihre Dienste werden von Privatfirmen zugekauft.<br><br>Gleichzeitig wird ihnen bei der Jobsuche geholfen. „Leicht ist das nicht", sagt Betreuer Günther Hos. Zwar wären die Firmen gesetzlich verpflichtet, pro 25 Beschäftigte einen Behinderten einzustellen. Die meisten Firmen nützen jedoch die Möglichkeit, sich „freizukaufen" (Ausgleichstaxe: rund 150 Euro monatlich).<br><br>Trotz der Rahmenbedingungen kann Hos mit positiver Bilanz aufwarten: „Immerhin haben wir seit der Vereinsgründung vor drei Jahren ein Drittel unserer Leute untergebracht." Gegründet wurde die Büro-Werkstatt von einer Lehrerin: Heide Hanisch wollte nicht länger hinnehmen, dass ihre behinderten Schüler erst ausgebildet werden, um dann nicht gebraucht zu werden.',
+   prompt:'In einem fünfmonatigen Kurs können die Teilnehmer',
+   options:{a:'eine berufliche Ausbildung abschließen.',b:'lernen, was sie in der Schule verpasst haben.',c:'praktische Erfahrungen mit der Büroarbeit sammeln.'},
+   correct:'c'},
+  {id:7, section:'Leseverstehen Teil 2', type:'mc', context:'same', sameContext:true,
+   prompt:'Die Büro-Werkstatt versucht außerdem,',
+   options:{a:'auch jenen Arbeitslosen zu helfen, die nicht behindert sind.',b:'Behinderte auf die Abschlussprüfungen vorzubereiten.',c:'für die behinderten Menschen eine Arbeit zu finden.'},
+   correct:'c'},
+  {id:8, section:'Leseverstehen Teil 2', type:'mc', context:'same', sameContext:true,
+   prompt:'Laut Gesetz müssen österreichische Firmen pro 25 Beschäftigte',
+   options:{a:'eine besondere Steuer zahlen.',b:'einen Behinderten einstellen oder eine monatliche Gebühr bezahlen.',c:'für jeden Behinderten monatlich 150 Euro bezahlen.'},
+   correct:'b'},
+  {id:9, section:'Leseverstehen Teil 2', type:'mc', context:'same', sameContext:true,
+   prompt:'Seit der Vereinsgründung',
+   options:{a:'konnte für ein Drittel der behinderten Kursteilnehmer eine Arbeit gefunden werden.',b:'konnte Günther Hos für den Verein schon viel Geld sparen.',c:'zahlen Arbeitslose um ein Drittel weniger Steuern.'},
+   correct:'a'},
+  {id:10, section:'Leseverstehen Teil 2', type:'mc', context:'same', sameContext:true,
+   prompt:'Die Lehrerin, die die Büro-Werkstatt gegründet hat,',
+   options:{a:'wollte etwas tun, damit Behinderte einen Arbeitsplatz erhalten.',b:'wollte nicht länger Geografie und Geschichte unterrichten.',c:'wird nach der Ausbildung der Behinderten nicht mehr gebraucht.'},
+   correct:'a'},
 
-  document.querySelectorAll('.dropzone, .gap').forEach(zone => {
-    zone.addEventListener('dragover', e => {
-      e.preventDefault();
-      zone.classList.add('dragover');
-    });
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => {
-      e.preventDefault();
-      zone.classList.remove('dragover');
-      if (!draggedEl) return;
+  // LV TEIL 3 — Situationen → Anzeigen
+  {id:11, section:'Leseverstehen Teil 3', type:'chip',
+   instr:'Lesen Sie die Situation. Welche Anzeige (a–l) passt? Wenn keine Anzeige passt, wählen Sie x.',
+   context:'<strong>Anzeigen:</strong><br><br><b>a</b> – Bong-Hong: Asiatisches Restaurant, täglich geöffnet, alle Gerichte zum Mitnehmen und Heimservice.<br><b>b</b> – Ristorante Olindo: Italienisches Restaurant, hausgemachte Nudeln, bei schönem Wetter Gartenbetrieb.<br><b>c</b> – Helmut Schwabe: Urlaubsversicherung.<br><b>d</b> – SEATOP Reisen: Flug- und Hotelspezialist, USA Sommertermine.<br><b>e</b> – Council Travel: Spezialpreise für Studenten/Jugendliche, New York ab 329€.<br><b>f</b> – Kreittmayr: Kneipe mit Biergarten, Billard, live Bundesliga.<br><b>g</b> – Internationaler Stammtisch: Deutsche und ausländische Jugendliche in München.<br><b>h</b> – Nachprüfung: Lehrerin bereitet vor in Latein, Englisch, Französisch, Deutsch.<br><b>i</b> – Unterricht: Nachhilfe Mathe-Physik-Chemie, alle Klassen, Abi-Vorbereitung.<br><b>j</b> – City-Reisebüro: Campmobile USA/Canada, früh buchen lohnt.<br><b>k</b> – Kurse: Für Erwachsene und Kinder mit Sprachschwierigkeiten.<br><b>l</b> – Sprachbörse: Deutsch als Fremdsprache, Kindersprachkurse, ab 4 Jahren.',
+   prompt:'Situation 11: Sie möchten mit Freunden in einem Restaurant essen. Da das Wetter schön ist, möchten Sie gerne draußen sitzen.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'b'},
+  {id:12, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 12: Sie möchten heute nicht selbst kochen, sondern lieber ein warmes Essen kaufen und mit nach Hause nehmen.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'a'},
+  {id:13, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 13: In den Sommerferien möchten Sie gerne in die USA fliegen. Sie brauchen dort auch eine Unterkunft.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'d'},
+  {id:14, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 14: Reisebüros bieten billigere Flüge an, wenn man in letzter Minute bucht. Sie suchen so einen Flug.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'x'},
+  {id:15, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 15: Ihre Tochter, die studiert, möchte in die USA fliegen. Sie suchen einen billigen Flug für sie.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'e'},
+  {id:16, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 16: Ihr Sohn ist schlecht in Mathematik und braucht noch Unterricht außerhalb der Schule.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'i'},
+  {id:17, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 17: Das Kind Ihrer Freunde hat Probleme beim Sprechen und braucht deshalb Hilfe.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'k'},
+  {id:18, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 18: Sie haben einen jungen Franzosen zu Besuch. Sie möchten, dass er in einen Deutschkurs geht.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'l'},
+  {id:19, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 19: Sie möchten, dass Ihr Sohn in einen Jugendclub geht.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'x'},
+  {id:20, section:'Leseverstehen Teil 3', type:'chip', context:'same', sameContext:true,
+   prompt:'Situation 20: Sie interessieren sich für die Probleme ausländischer Jugendlicher in Deutschland.',
+   pool:['a','b','c','d','e','f','g','h','i','j','k','l','x'],
+   correct:'g'},
 
-      // If zone already has a placed chip, return it to pool
-      const existingChip = zone.querySelector('.placed-chip');
-      if (existingChip) {
-        returnChipToPool(existingChip);
-      }
+  // SB TEIL 1 — MC
+  {id:21, section:'Sprachbausteine Teil 1', type:'mc',
+   instr:'Lesen Sie den Brief. Welche Lösung (a, b oder c) ist richtig?',
+   context:'<strong>Brief von Fritz an Karin:</strong><br><br>Liebe Karin,<br><br>nach meinem Praktikum in Frankreich bin ich jetzt wieder zu Hause. Wie du ja weißt, wollte ich eigentlich nach Paris, <b>(21)</b> das hat dann leider nicht geklappt. Doch dann habe ich eine Stelle als Praktikant bei <b>(22)</b> Firma in Straßburg gefunden.<br><br>Dort <b>(23)</b> ich drei Monate geblieben. Die Arbeit war sehr <b>(24)</b> – ich musste schon um 8.00 Uhr im Büro sein –, hat mir aber <b>(25)</b> sehr gut gefallen. Ich habe <b>(26)</b> dieser Zeit in verschiedenen Abteilungen gearbeitet und so nicht nur etwas über die Herstellung von Fernsehgeräten <b>(27)</b>, sondern auch über den Verkauf. Und die Kollegen, mit <b>(28)</b> ich am meisten zu tun hatte, waren wirklich sehr nett.<br><br>Nach dem Praktikum habe ich noch zwei Wochen Urlaub bei <b>(29)</b> Freunden gemacht. Darüber erzähle ich <b>(30)</b> bald mehr – für heute muss ich Schluss machen.<br><br>Liebe Grüße, Fritz',
+   prompt:'Lücke 21: „wollte ich eigentlich nach Paris, ___ das hat dann leider nicht geklappt."',
+   options:{a:'aber',b:'denn',c:'sondern'},
+   correct:'a'},
+  {id:22, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 22: „Stelle als Praktikant bei ___ Firma in Straßburg"',
+   options:{a:'eine',b:'einen',c:'einer'},
+   correct:'c'},
+  {id:23, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 23: „Dort ___ ich drei Monate geblieben."',
+   options:{a:'bin',b:'habe',c:'wurde'},
+   correct:'a'},
+  {id:24, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 24: „Die Arbeit war sehr ___"',
+   options:{a:'anstrengend',b:'anstrengende',c:'anstrengendes'},
+   correct:'a'},
+  {id:25, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 25: „hat mir aber ___ sehr gut gefallen"',
+   options:{a:'trotzdem',b:'wegen',c:'weshalb'},
+   correct:'a'},
+  {id:26, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 26: „Ich habe ___ dieser Zeit in verschiedenen Abteilungen gearbeitet"',
+   options:{a:'bis',b:'in',c:'nach'},
+   correct:'b'},
+  {id:27, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 27: „etwas über die Herstellung von Fernsehgeräten ___"',
+   options:{a:'gelernt',b:'lernen',c:'lernte'},
+   correct:'a'},
+  {id:28, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 28: „die Kollegen, mit ___ ich am meisten zu tun hatte"',
+   options:{a:'dem',b:'denen',c:'die'},
+   correct:'b'},
+  {id:29, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 29: „Urlaub bei ___ Freunden gemacht"',
+   options:{a:'meine',b:'meinen',c:'meiner'},
+   correct:'b'},
+  {id:30, section:'Sprachbausteine Teil 1', type:'mc', context:'same', sameContext:true,
+   prompt:'Lücke 30: „Darüber erzähle ich ___ bald mehr"',
+   options:{a:'dir',b:'Ihnen',c:'uns'},
+   correct:'a'},
 
-      // Mark source chip as placed (hide from pool)
-      draggedEl.classList.add('placed');
+  // SB TEIL 2 — Word chips into gaps
+  {id:31, section:'Sprachbausteine Teil 2', type:'wordchip',
+   instr:'Wählen Sie das passende Wort aus der Liste für jede Lücke.',
+   context:'<strong>Brief an Hotel-Pension Janosch</strong><br><small>Hotel-Pension Janosch: ruhige Lage, Wanderwege, Bademöglichkeiten, Tennis, Freizeitprogramm für Kinder, Familienappartements 1 Woche ab 99€ inkl. Frühstück.</small>',
+   prompt:'Lücke 31: „ich interessiere mich sehr ___ Ihr Angebot."',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'h', correctWord:'FÜR'},
+  {id:32, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 32: „hätte deshalb ___ noch nähere Informationen."',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'i', correctWord:'GERNE'},
+  {id:33, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 33: „Meine Frau und mich interessiert ganz ___ das Freizeitprogramm für Kinder"',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'a', correctWord:'BESONDERS'},
+  {id:34, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 34: „das Freizeitprogramm für Kinder, ___ wir zwei Kinder (3 und 8 Jahre) haben."',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'b', correctWord:'DA'},
+  {id:35, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 35: „Gibt es Schwimm- und Tenniskurse für Kinder und ___ ja, was kosten sie?"',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'o', correctWord:'WENN'},
+  {id:36, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 36: „Wie viel ___ wir pro Woche für unsere Kinder bezahlen?"',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'j', correctWord:'KÖNNTEN'},
+  {id:37, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 37: „Und ___ noch eine letzte Frage: Wir haben einen kleinen Hund..."',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'m', correctWord:'SCHLIESSLICH'},
+  {id:38, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 38: „den wir ___ auch mitnehmen müssten. Wäre das möglich?"',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'g', correctWord:'DESHALB'},
+  {id:39, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 39: „Bitte schreiben Sie uns so bald wie möglich, ___ wir uns bald entscheiden können."',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'e', correctWord:'DAMIT'},
+  {id:40, section:'Sprachbausteine Teil 2', type:'wordchip', context:'same', sameContext:true,
+   prompt:'Lücke 40: „Außerdem wären wir Ihnen sehr ___, wenn Sie uns einige Prospekte zusenden würden."',
+   pool:['BESONDERS','DA','DAFÜR','DAMALS','DAMIT','DANKBAR','DESHALB','FÜR','GERNE','KÖNNTEN','MIT','MÜSSTEN','SCHLIESSLICH','WANN','WENN'],
+   correct:'f', correctWord:'DANKBAR'},
+];
 
-      // Create placed chip in dropzone
-      const placed = document.createElement('div');
-      placed.className = 'placed-chip';
-      placed.draggable = true;
-      placed.dataset.val = draggedEl.dataset.val;
+// Context cache for "same" context questions
+var contextCache = {};
 
-      const labelSpan = document.createElement('span');
-      labelSpan.className = 'chip-label';
-      if (draggedEl.classList.contains('headline-chip')) {
-        labelSpan.textContent = draggedEl.dataset.val;
-      } else if (draggedEl.classList.contains('ad-chip')) {
-        labelSpan.textContent = draggedEl.dataset.val;
-      } else if (draggedEl.classList.contains('word-chip')) {
-        labelSpan.textContent = draggedEl.textContent;
-      } else {
-        labelSpan.textContent = draggedEl.dataset.val;
-      }
-      placed.appendChild(labelSpan);
-
-      const removeBtn = document.createElement('span');
-      removeBtn.className = 'remove-btn';
-      removeBtn.textContent = '×';
-      removeBtn.title = 'Antwort entfernen';
-      removeBtn.addEventListener('click', ev => {
-        ev.stopPropagation();
-        const srcChip = findSourceChip(placed);
-        if (srcChip) srcChip.classList.remove('placed');
-        resetZone(zone);
-        updateProgress();
-      });
-      placed.appendChild(removeBtn);
-
-      placed.addEventListener('dragstart', e2 => {
-        draggedEl = placed;
-        e2.dataTransfer.setData('text/plain', placed.dataset.val);
-      });
-
-      zone.innerHTML = '';
-      zone.appendChild(placed);
-      updateProgress();
-    });
-
-    // allow dropping back into pool areas
-  });
-
-  // Pools accept drops to return chips
-  document.querySelectorAll('.headline-pool, .ad-pool, .word-pool').forEach(pool => {
-    pool.addEventListener('dragover', e => e.preventDefault());
-    pool.addEventListener('drop', e => {
-      e.preventDefault();
-      if (!draggedEl) return;
-      if (draggedEl.classList.contains('placed-chip')) {
-        const zone = draggedEl.parentElement;
-        const srcChip = findSourceChip(draggedEl);
-        if (srcChip) srcChip.classList.remove('placed');
-        resetZone(zone);
-        updateProgress();
-      }
-    });
-  });
-}
-
-// Reset a dropzone/gap back to its empty placeholder state
-function resetZone(zone) {
-  zone.innerHTML = '';
-  zone.classList.remove('correct-box','wrong-box');
-  if (zone.classList.contains('gap')) {
-    zone.textContent = 'Lücke ' + zone.dataset.question;
-  } else if (zone.classList.contains('dropzone')) {
-    zone.textContent = (Number(zone.dataset.question) <= 5) ? 'Überschrift hierher ziehen' : 'hierher ziehen';
-  }
-}
-
-// Helper: find original source chip by matching value (since clones may not retain exact id)
-function findSourceChip(placedEl) {
-  const pools = document.querySelectorAll('.headline-chip, .ad-chip, .word-chip');
-  for (const c of pools) {
-    if (c.classList.contains('placed') && c.dataset.val === placedEl.dataset.val) {
-      // For ad-chip with multiple "x" entries or duplicate values, just return first placed match
-      return c;
+// ── BUILD QUESTION SCREENS ────────────────────────────────────────────────────
+function buildScreens() {
+  var container = document.getElementById('qContainer');
+  questions.forEach(function(q, idx) {
+    // Cache context
+    if (!q.sameContext && q.context && q.context !== 'same') {
+      contextCache[q.section] = q.context;
     }
-  }
-  return null;
-}
+    var ctx = q.sameContext ? contextCache[q.section] : q.context;
 
-function returnChipToPool(placedChip) {
-  const srcChip = findSourceChip(placedChip);
-  if (srcChip) srcChip.classList.remove('placed');
-}
+    var div = document.createElement('div');
+    div.className = 'screen';
+    div.id = 'screen_' + idx;
 
-// ---------- MULTIPLE CHOICE SELECTION HIGHLIGHT ----------
-function setupMCHighlight() {
-  document.querySelectorAll('.mc-question').forEach(q => {
-    q.querySelectorAll('.mc-option').forEach(opt => {
-      opt.addEventListener('click', () => {
-        q.querySelectorAll('.mc-option').forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        updateProgress();
+    var html = '<div class="q-screen">';
+    if (q.instr) html += '<div class="instr-box">' + q.instr + '</div>';
+    if (ctx) html += '<div class="context-box">' + ctx + '</div>';
+    html += '<div class="q-card">';
+    html += '<div class="q-num">Aufgabe ' + q.id + '</div>';
+    html += '<div class="q-text">' + q.prompt + '</div>';
+
+    if (q.type === 'mc') {
+      html += '<div class="options">';
+      ['a','b','c'].forEach(function(l) {
+        html += '<button class="opt" onclick="selectMC('+idx+',\''+l+'\')" id="opt_'+idx+'_'+l+'">'
+          + '<span class="letter">'+l+'</span>' + q.options[l] + '</button>';
       });
-    });
+      html += '</div>';
+    } else if (q.type === 'chip') {
+      html += '<div class="chip-pool" id="pool_'+idx+'">';
+      q.pool.forEach(function(v) {
+        html += '<div class="chip" id="chip_'+idx+'_'+v+'" onclick="selectChip('+idx+',\''+v+'\')">'
+          + (q.poolLabels ? q.poolLabels[v] : v) + '</div>';
+      });
+      html += '</div>';
+    } else if (q.type === 'wordchip') {
+      html += '<div class="chip-pool" id="pool_'+idx+'">';
+      q.pool.forEach(function(w) {
+        var val = wordToVal(w);
+        html += '<div class="chip word" id="chip_'+idx+'_'+val+'" onclick="selectWordChip('+idx+',\''+val+'\',\''+w+'\')">'
+          + w + '</div>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+    div.innerHTML = html;
+    container.appendChild(div);
   });
 }
 
-// ---------- PROGRESS TRACKING ----------
-function updateProgress() {
-  let answered = 0;
-
-  // dropzones and gaps
-  document.querySelectorAll('.dropzone, .gap').forEach(zone => {
-    if (zone.querySelector('.placed-chip')) answered++;
-  });
-
-  // mc questions
-  document.querySelectorAll('.mc-question').forEach(q => {
-    if (q.querySelector('input[type="radio"]:checked')) answered++;
-  });
-
-  const pct = Math.round((answered / TOTAL_QUESTIONS) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressStatus').textContent = answered + ' / ' + TOTAL_QUESTIONS + ' Aufgaben bearbeitet';
+function wordToVal(w) {
+  var map = {BESONDERS:'a',DA:'b',DAFÜR:'c',DAMALS:'d',DAMIT:'e',DANKBAR:'f',DESHALB:'g',FÜR:'h',GERNE:'i',KÖNNTEN:'j',MIT:'k',MÜSSTEN:'l',SCHLIESSLICH:'m',WANN:'n',WENN:'o'};
+  return map[w] || w.toLowerCase();
 }
 
-// ---------- EVALUATION ----------
-var alleErgebnisse = [];
+// ── SELECTION HANDLERS ───────────────────────────────────────────────────────
+function selectMC(idx, letter) {
+  var q = questions[idx];
+  ['a','b','c'].forEach(function(l) {
+    document.getElementById('opt_'+idx+'_'+l).classList.remove('selected');
+  });
+  document.getElementById('opt_'+idx+'_'+letter).classList.add('selected');
+  answers[q.id] = letter;
+}
 
-function evaluateTest() {
-  var vn = document.getElementById('fieldVorname').value.trim();
-  var nn = document.getElementById('fieldNachname').value.trim();
-  if (!vn || !nn) {
-    document.getElementById('nameWarn').style.display = 'block';
-    document.querySelector('.name-card').scrollIntoView({behavior:'smooth'});
+function selectChip(idx, val) {
+  var q = questions[idx];
+  // Deselect previous
+  if (answers[q.id]) {
+    var prev = document.getElementById('chip_'+idx+'_'+answers[q.id]);
+    if (prev) prev.classList.remove('used');
+    prev && prev.classList.remove('selected-chip');
+  }
+  // Select new (toggle if same)
+  if (answers[q.id] === val) {
+    delete answers[q.id];
     return;
   }
-  document.getElementById('nameWarn').style.display = 'none';
-  window._name = vn + ' ' + nn;
-  let correctCount = 0;
-  const results = [];
-
-  // Dropzones (Teil 1, Teil 3) and gaps (Sprachbausteine Teil 2)
-  document.querySelectorAll('.dropzone, .gap').forEach(zone => {
-    const qNum = zone.dataset.question;
-    const correctVal = zone.dataset.correct;
-    const placed = zone.querySelector('.placed-chip');
-    const userVal = placed ? placed.dataset.val : null;
-    const isCorrect = userVal === correctVal;
-    if (isCorrect) correctCount++;
-    zone.classList.remove('correct-box','wrong-box');
-    zone.classList.add(isCorrect ? 'correct-box' : 'wrong-box');
-    results.push({q:qNum, correct:correctVal.toUpperCase(), given:userVal?userVal.toUpperCase():'–', ok:isCorrect});
+  answers[q.id] = val;
+  q.pool.forEach(function(v) {
+    var c = document.getElementById('chip_'+idx+'_'+v);
+    if (c) c.classList.remove('used');
   });
-
-  // MC questions (Teil 2, Sprachbausteine Teil 1)
-  document.querySelectorAll('.mc-question').forEach(q => {
-    const qNum = q.dataset.question;
-    const correctVal = q.dataset.correct;
-    const checked = q.querySelector('input[type="radio"]:checked');
-    const userVal = checked ? checked.value : null;
-    const isCorrect = userVal === correctVal;
-    if (isCorrect) correctCount++;
-
-    q.querySelectorAll('.mc-option').forEach(opt => {
-      opt.classList.remove('correct-opt','wrong-opt');
-      const val = opt.querySelector('input').value;
-      if (val === correctVal) opt.classList.add('correct-opt');
-      else if (val === userVal && !isCorrect) opt.classList.add('wrong-opt');
-    });
-
-    results.push({q:qNum, correct:correctVal.toUpperCase(), given:userVal?userVal.toUpperCase():'–', ok:isCorrect});
-  });
-
-  const percentage = (correctCount / TOTAL_QUESTIONS) * 100;
-  const passed = (correctCount / TOTAL_QUESTIONS) >= PASS_THRESHOLD;
-
-  const panel = document.getElementById('resultPanel');
-  panel.className = 'result-panel show ' + (passed ? 'pass' : 'fail');
-  document.getElementById('resultTitle').textContent = passed ? 'Bestanden!' : 'Nicht bestanden';
-  document.getElementById('resultScore').textContent = correctCount + ' / ' + TOTAL_QUESTIONS + ' (' + percentage.toFixed(1) + ' %)';
-  document.getElementById('resultDetail').textContent = 'Bestehensgrenze: 60 % richtige Antworten (' + Math.ceil(TOTAL_QUESTIONS * PASS_THRESHOLD) + ' von ' + TOTAL_QUESTIONS + ').';
-
-  results.sort(function(a,b){ return Number(a.q) - Number(b.q); });
-  alleErgebnisse = results;
-
-  document.getElementById('resultTitle').textContent =
-    (passed ? 'Bestanden!' : 'Nicht bestanden') + '  —  ' + window._name;
-
-  var tbl = '<table class="full-tbl"><thead><tr>'
-    + '<th>Nr.</th><th>Ihre Antwort</th><th>Richtige Antwort</th><th>Ergebnis</th><th>Abschnitt</th>'
-    + '</tr></thead><tbody>';
-  results.forEach(function(r) {
-    var cls = r.ok ? 'ok' : 'err';
-    var sek = r.q<=5?'LV Teil 1':r.q<=10?'LV Teil 2':r.q<=20?'LV Teil 3':r.q<=30?'SB Teil 1':'SB Teil 2';
-    tbl += '<tr class="'+cls+'">'
-      +'<td>'+r.q+'</td><td>'+r.given+'</td><td><strong>'+r.correct+'</strong></td>'
-      +'<td>'+(r.ok?'&#10003; Richtig':'&#10007; Falsch')+'</td><td>'+sek+'</td></tr>';
-  });
-  tbl += '</tbody></table>';
-  document.getElementById('resultTable').innerHTML = tbl;
-
-  panel.scrollIntoView({behavior:'smooth', block:'start'});
-  document.getElementById('submitBtn').disabled = true;
+  var el = document.getElementById('chip_'+idx+'_'+val);
+  if (el) el.classList.add('used');
 }
 
-// ---------- PDF ----------
+function selectWordChip(idx, val, word) {
+  var q = questions[idx];
+  if (answers[q.id] === val) {
+    // Deselect
+    var prev = document.getElementById('chip_'+idx+'_'+val);
+    if (prev) prev.classList.remove('used');
+    delete answers[q.id];
+    return;
+  }
+  if (answers[q.id]) {
+    var old = document.getElementById('chip_'+idx+'_'+answers[q.id]);
+    if (old) old.classList.remove('used');
+  }
+  answers[q.id] = val;
+  q.pool.forEach(function(w) {
+    var c = document.getElementById('chip_'+idx+'_'+wordToVal(w));
+    if (c) c.classList.remove('used');
+  });
+  var el = document.getElementById('chip_'+idx+'_'+val);
+  if (el) el.classList.add('used');
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function startTest() {
+  var vn = document.getElementById('vorname').value.trim();
+  var nn = document.getElementById('nachname').value.trim();
+  if (!vn || !nn) { document.getElementById('nameWarn').style.display='block'; return; }
+  _name = vn + ' ' + nn;
+  document.getElementById('nameWarn').style.display='none';
+  document.getElementById('screenName').classList.remove('active');
+  document.getElementById('hdr').style.display='block';
+  showQ(0);
+}
+
+function showQ(idx) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('screen_'+idx).classList.add('active');
+  currentQ = idx;
+  updateHeader();
+  // Nav bar
+  var old = document.getElementById('navBar');
+  if (old) old.remove();
+  var bar = document.createElement('div');
+  bar.className='nav-bar'; bar.id='navBar';
+  if (idx > 0) bar.innerHTML += '<button class="btn-back" onclick="showQ('+(idx-1)+')">← Zurück</button>';
+  if (idx < TOTAL-1) {
+    bar.innerHTML += '<button class="btn-next" onclick="goNext('+idx+')">Weiter →</button>';
+  } else {
+    bar.innerHTML += '<button class="btn-next" onclick="finishTest()">Auswerten ✓</button>';
+  }
+  document.body.appendChild(bar);
+  window.scrollTo(0,0);
+}
+
+function goNext(idx) { showQ(idx+1); }
+
+function updateHeader() {
+  var q = questions[currentQ];
+  document.getElementById('hdrCounter').textContent = (currentQ+1) + ' / ' + TOTAL;
+  document.getElementById('sectionBadge').textContent = q ? q.section : '';
+  document.getElementById('progressFill').style.width = ((currentQ+1)/TOTAL*100)+'%';
+}
+
+// ── FINISH & EVALUATE ────────────────────────────────────────────────────────
+function finishTest() {
+  var unanswered = 0;
+  questions.forEach(function(q){ if (!answers[q.id]) unanswered++; });
+  if (unanswered > 0) {
+    if (!confirm('Sie haben noch ' + unanswered + ' Aufgabe(n) nicht beantwortet. Trotzdem auswerten?')) return;
+  }
+
+  var results = [];
+  var correct = 0;
+  questions.forEach(function(q) {
+    var given = answers[q.id] || null;
+    var ok = given === q.correct;
+    if (ok) correct++;
+    results.push({q:q.id, given: given ? given.toUpperCase() : '–', correct: q.correct.toUpperCase(), ok:ok, section:q.section});
+  });
+
+  var pct = ((correct/TOTAL)*100).toFixed(1);
+  var passed = correct >= 24;
+
+  // Hero
+  var hero = document.getElementById('resultHero');
+  hero.className = 'result-hero ' + (passed ? 'pass' : 'fail');
+  document.getElementById('resultTitle').textContent = (passed?'Bestanden!':'Nicht bestanden') + '  —  ' + _name;
+  document.getElementById('resultScore').textContent = correct + ' / ' + TOTAL + ' (' + pct + ' %)';
+  document.getElementById('resultSub').textContent = 'Bestehensgrenze: 60 % = mindestens 24 richtige Antworten';
+
+  // Section scores
+  var sections = ['Leseverstehen Teil 1','Leseverstehen Teil 2','Leseverstehen Teil 3','Sprachbausteine Teil 1','Sprachbausteine Teil 2'];
+  var secMax = {LV1:5, LV2:5, LV3:10, SB1:10, SB2:10};
+  var secKey = function(s){ return s.replace('Leseverstehen','LV').replace('Sprachbausteine','SB').replace(' Teil ','').replace(' ',''); };
+  var secScores = {};
+  sections.forEach(function(s){ secScores[s]={ok:0,total:0}; });
+  results.forEach(function(r){ if(secScores[r.section]){ secScores[r.section].total++; if(r.ok) secScores[r.section].ok++; } });
+  var secHtml = '';
+  sections.forEach(function(s){
+    var sc = secScores[s];
+    var p = sc.total ? Math.round(sc.ok/sc.total*100) : 0;
+    secHtml += '<div class="section-score"><h3>'+s+' — '+sc.ok+'/'+sc.total+'</h3>'
+      +'<div class="bars"><div class="bar-bg"><div class="bar-fill" style="width:'+p+'%"></div></div>'
+      +'<div class="bar-pct">'+p+'%</div></div></div>';
+  });
+  document.getElementById('sectionScores').innerHTML = secHtml;
+
+  // Table
+  var tbody = '';
+  results.forEach(function(r,i){
+    tbody += '<tr>'
+      +'<td>'+r.q+'</td>'
+      +'<td>'+r.given+'</td>'
+      +'<td><strong>'+r.correct+'</strong></td>'
+      +'<td class="'+(r.ok?'ok-cell':'err-cell')+'">'+(r.ok?'✓':'✗')+'</td>'
+      +'<td>'+r.section.replace('Leseverstehen','LV').replace('Sprachbausteine','SB')+'</td>'
+      +'</tr>';
+  });
+  document.getElementById('resultTbody').innerHTML = tbody;
+
+  // Store for PDF
+  window._results = results;
+  window._correct = correct;
+  window._pct = pct;
+  window._passed = passed;
+
+  // Show result
+  var old = document.getElementById('navBar');
+  if (old) old.remove();
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('screenResult').classList.add('active');
+  document.getElementById('hdrCounter').textContent = 'Ergebnis';
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('sectionBadge').textContent = _name;
+  window.scrollTo(0,0);
+}
+
+// ── PDF ───────────────────────────────────────────────────────────────────────
 function pdfHerunterladen() {
-  if (!alleErgebnisse || alleErgebnisse.length === 0) {
-    alert('Bitte zuerst den Test auswerten.');
-    return;
-  }
-  var name = window._name || '—';
-  var richtig = alleErgebnisse.filter(function(r){ return r.ok; }).length;
-  var pct = ((richtig/40)*100).toFixed(1);
-  var passed = richtig >= 24;
-  var datum = new Date().toLocaleDateString('de-DE');
-  var pt = passed ? 'BESTANDEN' : 'NICHT BESTANDEN';
+  if (!window._results) { alert('Bitte zuerst den Test auswerten.'); return; }
+  var name   = _name;
+  var richtig= window._correct;
+  var pct    = window._pct;
+  var passed = window._passed;
+  var datum  = new Date().toLocaleDateString('de-DE');
+  var pt     = passed ? 'BESTANDEN' : 'NICHT BESTANDEN';
   function sek(q){ return q<=5?'LV T1':q<=10?'LV T2':q<=20?'LV T3':q<=30?'SB T1':'SB T2'; }
 
   var doc = new jspdf.jsPDF({unit:'mm',format:'a4'});
   var W=210, pad=12, y=0;
 
   doc.setFillColor(12,74,92); doc.rect(0,0,W,22,'F');
-  doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold'); doc.setFontSize(13);
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(13);
   doc.text('telc Deutsch B1 - Ubungstest 1 - Auswertung', pad, 10);
   doc.setFont('helvetica','normal'); doc.setFontSize(9);
   doc.text('Datum: '+datum, pad, 18);
   y=26;
 
-  var pRGB = passed?[46,125,50]:[198,40,40];
-  var pBG  = passed?[232,245,233]:[253,235,235];
+  var pRGB=passed?[46,125,50]:[198,40,40];
+  var pBG =passed?[232,245,233]:[253,235,235];
   doc.setFillColor(pBG[0],pBG[1],pBG[2]);
   doc.setDrawColor(pRGB[0],pRGB[1],pRGB[2]); doc.setLineWidth(0.5);
   doc.roundedRect(pad,y,W-2*pad,24,2,2,'FD');
-  doc.setTextColor(pRGB[0],pRGB[1],pRGB[2]);
-  doc.setFont('helvetica','bold'); doc.setFontSize(13);
+  doc.setTextColor(pRGB[0],pRGB[1],pRGB[2]); doc.setFont('helvetica','bold'); doc.setFontSize(13);
   doc.text(pt, pad+4, y+8);
   doc.setTextColor(30,30,30); doc.setFont('helvetica','normal'); doc.setFontSize(10);
   doc.text('Teilnehmer/in: '+name, pad+4, y+15);
@@ -1044,7 +698,7 @@ function pdfHerunterladen() {
   y+=7;
 
   doc.setFont('helvetica','normal'); doc.setFontSize(8);
-  alleErgebnisse.forEach(function(r,i){
+  window._results.forEach(function(r,i){
     if(y>275){doc.addPage();y=14;}
     var bg=i%2===0?[249,249,249]:[255,255,255];
     doc.setFillColor(bg[0],bg[1],bg[2]); doc.rect(pad,y,W-2*pad,6,'F');
@@ -1054,7 +708,7 @@ function pdfHerunterladen() {
     doc.text(r.given, pad+14, y+4.5);
     doc.text(r.correct, pad+44, y+4.5);
     if(r.ok){doc.setTextColor(46,125,50); doc.text('Richtig', pad+80, y+4.5);}
-    else{doc.setTextColor(198,40,40); doc.text('Falsch', pad+80, y+4.5);}
+    else    {doc.setTextColor(198,40,40); doc.text('Falsch',  pad+80, y+4.5);}
     doc.setTextColor(100,100,100);
     doc.text(sek(r.q), pad+110, y+4.5);
     y+=6;
@@ -1068,12 +722,9 @@ function pdfHerunterladen() {
   doc.save('Auswertung_B1_'+name.replace(/\s+/g,'_')+'.pdf');
 }
 
-// ---------- INIT ----------
-setupDragDrop();
-setupMCHighlight();
-updateProgress();
+// ── INIT ─────────────────────────────────────────────────────────────────────
+buildScreens();
 </script>
-
 <script>/** @license
  *
  * jsPDF - PDF Document creation from JavaScript
