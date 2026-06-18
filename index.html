@@ -569,7 +569,7 @@ function showQ(idx) {
     bar.innerHTML += '<button class="btn-next" onclick="finishTest()">Auswerten ✓</button>';
   }
   document.body.appendChild(bar);
-  window.scrollTo(0,0);
+  document.getElementById('screen_'+idx).scrollIntoView({behavior:'instant', block:'start'});
 }
 
 function goNext(idx) { showQ(idx+1); }
@@ -652,7 +652,7 @@ function finishTest() {
   document.getElementById('hdrCounter').textContent = 'Ergebnis';
   document.getElementById('progressFill').style.width='100%';
   document.getElementById('sectionBadge').textContent = _name;
-  window.scrollTo(0,0);
+  document.getElementById('screenResult').scrollIntoView({behavior:'instant', block:'start'});
 }
 
 // ── PDF ───────────────────────────────────────────────────────────────────────
