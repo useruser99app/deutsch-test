@@ -1,0 +1,252 @@
+{
+  "common": {
+    "appName": "NORAV",
+    "logout": "Abmelden",
+    "language": "Sprache",
+    "submit": "Absenden",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "back": "Zurück",
+    "yes": "Ja",
+    "no": "Nein",
+    "none": "—",
+    "error": "Es ist ein Fehler aufgetreten."
+  },
+  "home": {
+    "title": "NORAV",
+    "subtitle": "Internationale Rekrutierung für Ausbildung und Fachkräfte in Deutschland",
+    "login": "Anmelden"
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "forgot": "Passwort vergessen?",
+      "invalid": "Anmeldung fehlgeschlagen. Bitte E-Mail und Passwort prüfen."
+    },
+    "forgot": {
+      "title": "Passwort zurücksetzen",
+      "description": "Wir senden dir einen Link zum Zurücksetzen deines Passworts.",
+      "submit": "Link senden",
+      "sent": "Wenn ein Konto mit dieser E-Mail existiert, wurde eine E-Mail versendet."
+    },
+    "reset": {
+      "title": "Neues Passwort festlegen",
+      "password": "Neues Passwort (mind. 8 Zeichen)",
+      "submit": "Passwort speichern",
+      "error": "Das Passwort konnte nicht gespeichert werden.",
+      "tooShort": "Das Passwort muss mindestens 8 Zeichen lang sein."
+    },
+    "setPassword": {
+      "title": "Konto aktivieren",
+      "description": "Bitte lege ein Passwort fest, um dein NORAV-Konto zu aktivieren."
+    },
+    "inactive": {
+      "title": "Konto nicht aktiv",
+      "description": "Dein Konto ist derzeit nicht aktiv. Bitte wende dich an das NORAV-Team."
+    }
+  },
+  "nav": {
+    "dashboard": "Übersicht",
+    "changes": "Änderungen vorschlagen",
+    "documents": "Dokumente",
+    "review": "Änderungs-Review",
+    "adminDocuments": "Dokumenten-Review",
+    "candidates": "Kandidaten",
+    "companies": "Unternehmen"
+  },
+  "status": {
+    "pending": "Ausstehend",
+    "approved": "Freigegeben",
+    "rejected": "Abgelehnt",
+    "pending_review": "Prüfung ausstehend",
+    "superseded": "Ersetzt",
+    "draft": "Entwurf",
+    "published": "Veröffentlicht",
+    "unpublished": "Zurückgezogen",
+    "invited": "Eingeladen",
+    "active": "Aktiv",
+    "suspended": "Gesperrt",
+    "pending_verification": "Verifizierung ausstehend",
+    "inactive": "Inaktiv",
+    "archived": "Archiviert"
+  },
+  "enums": {
+    "candidateType": {
+      "apprenticeship_candidate": "Ausbildungskandidat/in",
+      "skilled_worker": "Fachkraft"
+    },
+    "documentType": {
+      "cv": "Lebenslauf",
+      "school_certificate": "Schulzeugnis",
+      "diploma": "Abschluss / Diplom",
+      "work_certificate": "Arbeitszeugnis",
+      "internship_certificate": "Praktikumszeugnis",
+      "language_certificate": "Sprachzertifikat",
+      "passport": "Reisepass",
+      "other": "Sonstiges"
+    }
+  },
+  "fields": {
+    "first_name": "Vorname",
+    "last_name": "Nachname",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "date_of_birth": "Geburtsdatum",
+    "nationality": "Staatsangehörigkeit",
+    "country_of_residence": "Wohnsitzland",
+    "german_level": "Deutschniveau",
+    "availability_date": "Verfügbar ab",
+    "drivers_license": "Führerschein",
+    "relocation_ready": "Umzugsbereit",
+    "target_occupations": "Wunsch-Ausbildungsberufe",
+    "desired_training_start": "Gewünschter Ausbildungsbeginn",
+    "school_qualification": "Schulabschluss",
+    "school_specialization": "Fachrichtung",
+    "graduation_year": "Abschlussjahr",
+    "german_certificate_type": "Deutsch-Zertifikat (Typ)",
+    "german_certificate_status": "Deutsch-Zertifikat (Status)",
+    "internship_experience": "Praktikumserfahrung",
+    "relevant_experience": "Relevante Erfahrung",
+    "preferred_locations": "Bevorzugte Orte",
+    "motivation_summary": "Motivation",
+    "profession": "Beruf",
+    "years_experience": "Berufserfahrung (Jahre)",
+    "highest_qualification": "Höchste Qualifikation",
+    "specialization": "Spezialisierung",
+    "preferred_positions": "Bevorzugte Positionen",
+    "candidate_code": "Kandidaten-Code",
+    "candidate_type": "Kandidatentyp",
+    "status": "Status",
+    "profile_status": "Profilstatus"
+  },
+  "candidate": {
+    "dashboard": {
+      "title": "Meine Übersicht",
+      "approvedData": "Freigegebene Daten",
+      "pendingChanges": "Ausstehende Änderungen",
+      "noPendingChanges": "Keine ausstehenden Änderungen.",
+      "documents": "Dokumente",
+      "noDocuments": "Noch keine Dokumente hochgeladen.",
+      "proposeChanges": "Änderungen vorschlagen",
+      "uploadDocument": "Dokument hochladen",
+      "submitted": "Deine Änderungen wurden zur Prüfung eingereicht.",
+      "currentLabel": "Aktuell",
+      "proposedLabel": "Vorgeschlagen",
+      "reviewComment": "Kommentar",
+      "profileStatus": "Profilstatus",
+      "noProfile": "Noch kein Veröffentlichungsprofil angelegt.",
+      "approvalNote": "Änderungen werden erst nach Freigabe durch das NORAV-Team übernommen. Bis dahin bleiben die aktuellen Werte gültig."
+    },
+    "changes": {
+      "title": "Änderungen vorschlagen",
+      "description": "Deine Vorschläge werden vom NORAV-Team geprüft. Bis zur Freigabe bleiben die aktuellen Werte gültig und sichtbar.",
+      "sourceLanguage": "Eingabesprache",
+      "listHint": "Mehrere Werte mit Komma trennen.",
+      "submit": "Zur Prüfung einreichen",
+      "error": "Einreichen fehlgeschlagen. Bitte mindestens ein Feld ausfüllen.",
+      "noChange": "— keine Änderung —"
+    },
+    "documents": {
+      "title": "Meine Dokumente",
+      "upload": "Dokument hochladen",
+      "documentType": "Dokumenttyp",
+      "file": "Datei",
+      "submit": "Hochladen",
+      "success": "Dokument hochgeladen — die Prüfung ist ausstehend.",
+      "error": "Upload fehlgeschlagen.",
+      "uploadedAt": "Hochgeladen am",
+      "reviewNote": "Prüfkommentar",
+      "noDocuments": "Noch keine Dokumente."
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin-Übersicht",
+      "pendingChanges": "Ausstehende Änderungen",
+      "pendingDocuments": "Ausstehende Dokumente",
+      "candidates": "Kandidaten",
+      "companies": "Unternehmen",
+      "open": "Öffnen"
+    },
+    "review": {
+      "title": "Änderungs-Review",
+      "empty": "Keine ausstehenden Änderungen.",
+      "candidate": "Kandidat/in",
+      "field": "Feld",
+      "current": "Aktuell",
+      "proposed": "Vorgeschlagen",
+      "comment": "Kommentar (optional)",
+      "approve": "Freigeben",
+      "reject": "Ablehnen",
+      "submittedAt": "Eingereicht am",
+      "source": "Quelle",
+      "sourceLanguage": "Eingabesprache",
+      "done": "Entscheidung gespeichert.",
+      "error": "Aktion fehlgeschlagen."
+    },
+    "documents": {
+      "title": "Dokumenten-Review",
+      "empty": "Keine ausstehenden Dokumente.",
+      "view": "Dokument öffnen",
+      "approve": "Freigeben",
+      "reject": "Ablehnen",
+      "note": "Prüfkommentar (optional)",
+      "type": "Typ",
+      "filename": "Dateiname",
+      "uploadedAt": "Hochgeladen am",
+      "candidate": "Kandidat/in",
+      "done": "Entscheidung gespeichert.",
+      "error": "Aktion fehlgeschlagen."
+    },
+    "candidates": {
+      "title": "Kandidaten",
+      "create": "Kandidatenkonto anlegen",
+      "email": "E-Mail",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "candidateType": "Kandidatentyp",
+      "locale": "Bevorzugte Sprache",
+      "inviteMode": "Einladung",
+      "inviteEmail": "Einladung per E-Mail senden",
+      "inviteLink": "Einladungslink erzeugen (ohne E-Mail)",
+      "submit": "Konto anlegen",
+      "created": "Kandidatenkonto angelegt.",
+      "inviteLinkLabel": "Einladungslink (jetzt kopieren — wird nur einmal angezeigt)",
+      "error": "Anlegen fehlgeschlagen.",
+      "list": "Alle Kandidaten",
+      "code": "Code",
+      "name": "Name",
+      "type": "Typ",
+      "germanLevel": "Deutsch",
+      "accountStatus": "Kontostatus",
+      "noCandidates": "Noch keine Kandidaten."
+    },
+    "companies": {
+      "title": "Unternehmen",
+      "create": "Unternehmen anlegen",
+      "name": "Name",
+      "website": "Website",
+      "industry": "Branche",
+      "country": "Land",
+      "city": "Stadt",
+      "submit": "Anlegen",
+      "created": "Unternehmen angelegt.",
+      "noCompanies": "Noch keine Unternehmen.",
+      "createEmployer": "Arbeitgeberkonto anlegen",
+      "employerEmail": "E-Mail des Arbeitgebers",
+      "company": "Unternehmen",
+      "employerCreated": "Arbeitgeberkonto angelegt.",
+      "error": "Anlegen fehlgeschlagen."
+    }
+  },
+  "employer": {
+    "title": "Arbeitgeberbereich",
+    "welcome": "Willkommen bei NORAV.",
+    "company": "Ihr Unternehmen",
+    "noCompany": "Ihrem Konto ist noch kein Unternehmen zugeordnet.",
+    "comingSoon": "Der Kandidaten-Marktplatz folgt in einem späteren Meilenstein."
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "common": {
+    "appName": "NORAV",
+    "logout": "تسجيل الخروج",
+    "language": "اللغة",
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "back": "رجوع",
+    "yes": "نعم",
+    "no": "لا",
+    "none": "—",
+    "error": "حدث خطأ ما."
+  },
+  "home": {
+    "title": "NORAV",
+    "subtitle": "توظيف دولي للتدريب المهني (Ausbildung) والعمل المؤهَّل في ألمانيا",
+    "login": "تسجيل الدخول"
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل الدخول",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "forgot": "هل نسيت كلمة المرور؟",
+      "invalid": "فشل تسجيل الدخول. يرجى التحقق من البريد الإلكتروني وكلمة المرور."
+    },
+    "forgot": {
+      "title": "إعادة تعيين كلمة المرور",
+      "description": "سنرسل إليك رابطًا لإعادة تعيين كلمة المرور.",
+      "submit": "إرسال الرابط",
+      "sent": "إذا كان هناك حساب مرتبط بهذا البريد، فقد تم إرسال رسالة."
+    },
+    "reset": {
+      "title": "تعيين كلمة مرور جديدة",
+      "password": "كلمة مرور جديدة (8 أحرف على الأقل)",
+      "submit": "حفظ كلمة المرور",
+      "error": "تعذر حفظ كلمة المرور.",
+      "tooShort": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل."
+    },
+    "setPassword": {
+      "title": "تفعيل الحساب",
+      "description": "يرجى تعيين كلمة مرور لتفعيل حسابك في NORAV."
+    },
+    "inactive": {
+      "title": "الحساب غير مفعّل",
+      "description": "حسابك غير مفعّل حاليًا. يرجى التواصل مع فريق NORAV."
+    }
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "changes": "اقتراح تعديلات",
+    "documents": "المستندات",
+    "review": "مراجعة التعديلات",
+    "adminDocuments": "مراجعة المستندات",
+    "candidates": "المرشحون",
+    "companies": "الشركات"
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "approved": "معتمد",
+    "rejected": "مرفوض",
+    "pending_review": "بانتظار المراجعة",
+    "superseded": "مستبدَل",
+    "draft": "مسودة",
+    "published": "منشور",
+    "unpublished": "غير منشور",
+    "invited": "مدعو",
+    "active": "نشط",
+    "suspended": "موقوف",
+    "pending_verification": "بانتظار التحقق",
+    "inactive": "غير نشط",
+    "archived": "مؤرشف"
+  },
+  "enums": {
+    "candidateType": {
+      "apprenticeship_candidate": "مرشح للتدريب المهني (Ausbildung)",
+      "skilled_worker": "عامل مؤهَّل"
+    },
+    "documentType": {
+      "cv": "السيرة الذاتية",
+      "school_certificate": "شهادة مدرسية",
+      "diploma": "دبلوم / شهادة تخرج",
+      "work_certificate": "شهادة عمل",
+      "internship_certificate": "شهادة تدريب",
+      "language_certificate": "شهادة لغة",
+      "passport": "جواز السفر",
+      "other": "أخرى"
+    }
+  },
+  "fields": {
+    "first_name": "الاسم الأول",
+    "last_name": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "date_of_birth": "تاريخ الميلاد",
+    "nationality": "الجنسية",
+    "country_of_residence": "بلد الإقامة",
+    "german_level": "مستوى اللغة الألمانية",
+    "availability_date": "متاح اعتبارًا من",
+    "drivers_license": "رخصة القيادة",
+    "relocation_ready": "مستعد للانتقال",
+    "target_occupations": "مهن التدريب المهني المرغوبة",
+    "desired_training_start": "بداية التدريب المرغوبة",
+    "school_qualification": "المؤهل الدراسي",
+    "school_specialization": "التخصص الدراسي",
+    "graduation_year": "سنة التخرج",
+    "german_certificate_type": "شهادة الألمانية (النوع)",
+    "german_certificate_status": "شهادة الألمانية (الحالة)",
+    "internship_experience": "خبرة التدريب",
+    "relevant_experience": "الخبرة ذات الصلة",
+    "preferred_locations": "الأماكن المفضلة",
+    "motivation_summary": "الدافع",
+    "profession": "المهنة",
+    "years_experience": "سنوات الخبرة",
+    "highest_qualification": "أعلى مؤهل",
+    "specialization": "التخصص",
+    "preferred_positions": "الوظائف المفضلة",
+    "candidate_code": "رمز المرشح",
+    "candidate_type": "نوع المرشح",
+    "status": "الحالة",
+    "profile_status": "حالة الملف"
+  },
+  "candidate": {
+    "dashboard": {
+      "title": "لوحتي",
+      "approvedData": "البيانات المعتمدة",
+      "pendingChanges": "التعديلات قيد الانتظار",
+      "noPendingChanges": "لا توجد تعديلات قيد الانتظار.",
+      "documents": "المستندات",
+      "noDocuments": "لم يتم رفع أي مستندات بعد.",
+      "proposeChanges": "اقتراح تعديلات",
+      "uploadDocument": "رفع مستند",
+      "submitted": "تم إرسال تعديلاتك للمراجعة.",
+      "currentLabel": "الحالي",
+      "proposedLabel": "المقترح",
+      "reviewComment": "تعليق",
+      "profileStatus": "حالة الملف",
+      "noProfile": "لم يتم إنشاء ملف نشر بعد.",
+      "approvalNote": "لا تصبح التعديلات سارية إلا بعد اعتمادها من فريق NORAV. حتى ذلك الحين تبقى القيم الحالية سارية."
+    },
+    "changes": {
+      "title": "اقتراح تعديلات",
+      "description": "يراجع فريق NORAV اقتراحاتك. تبقى القيم الحالية سارية وظاهرة حتى الاعتماد.",
+      "sourceLanguage": "لغة الإدخال",
+      "listHint": "افصل بين القيم المتعددة بفواصل.",
+      "submit": "إرسال للمراجعة",
+      "error": "فشل الإرسال. يرجى تعبئة حقل واحد على الأقل.",
+      "noChange": "— لا تغيير —"
+    },
+    "documents": {
+      "title": "مستنداتي",
+      "upload": "رفع مستند",
+      "documentType": "نوع المستند",
+      "file": "الملف",
+      "submit": "رفع",
+      "success": "تم رفع المستند — المراجعة قيد الانتظار.",
+      "error": "فشل الرفع.",
+      "uploadedAt": "تاريخ الرفع",
+      "reviewNote": "ملاحظة المراجعة",
+      "noDocuments": "لا توجد مستندات بعد."
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "لوحة تحكم المشرف",
+      "pendingChanges": "التعديلات قيد الانتظار",
+      "pendingDocuments": "المستندات قيد الانتظار",
+      "candidates": "المرشحون",
+      "companies": "الشركات",
+      "open": "فتح"
+    },
+    "review": {
+      "title": "مراجعة التعديلات",
+      "empty": "لا توجد تعديلات قيد الانتظار.",
+      "candidate": "المرشح",
+      "field": "الحقل",
+      "current": "الحالي",
+      "proposed": "المقترح",
+      "comment": "تعليق (اختياري)",
+      "approve": "اعتماد",
+      "reject": "رفض",
+      "submittedAt": "تاريخ الإرسال",
+      "source": "المصدر",
+      "sourceLanguage": "لغة الإدخال",
+      "done": "تم حفظ القرار.",
+      "error": "فشل الإجراء."
+    },
+    "documents": {
+      "title": "مراجعة المستندات",
+      "empty": "لا توجد مستندات قيد الانتظار.",
+      "view": "فتح المستند",
+      "approve": "اعتماد",
+      "reject": "رفض",
+      "note": "ملاحظة المراجعة (اختياري)",
+      "type": "النوع",
+      "filename": "اسم الملف",
+      "uploadedAt": "تاريخ الرفع",
+      "candidate": "المرشح",
+      "done": "تم حفظ القرار.",
+      "error": "فشل الإجراء."
+    },
+    "candidates": {
+      "title": "المرشحون",
+      "create": "إنشاء حساب مرشح",
+      "email": "البريد الإلكتروني",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "candidateType": "نوع المرشح",
+      "locale": "اللغة المفضلة",
+      "inviteMode": "الدعوة",
+      "inviteEmail": "إرسال دعوة بالبريد الإلكتروني",
+      "inviteLink": "إنشاء رابط دعوة (بدون بريد إلكتروني)",
+      "submit": "إنشاء الحساب",
+      "created": "تم إنشاء حساب المرشح.",
+      "inviteLinkLabel": "رابط الدعوة (انسخه الآن — يظهر مرة واحدة فقط)",
+      "error": "فشل الإنشاء.",
+      "list": "جميع المرشحين",
+      "code": "الرمز",
+      "name": "الاسم",
+      "type": "النوع",
+      "germanLevel": "الألمانية",
+      "accountStatus": "حالة الحساب",
+      "noCandidates": "لا يوجد مرشحون بعد."
+    },
+    "companies": {
+      "title": "الشركات",
+      "create": "إنشاء شركة",
+      "name": "الاسم",
+      "website": "الموقع الإلكتروني",
+      "industry": "القطاع",
+      "country": "البلد",
+      "city": "المدينة",
+      "submit": "إنشاء",
+      "created": "تم إنشاء الشركة.",
+      "noCompanies": "لا توجد شركات بعد.",
+      "createEmployer": "إنشاء حساب صاحب عمل",
+      "employerEmail": "البريد الإلكتروني لصاحب العمل",
+      "company": "الشركة",
+      "employerCreated": "تم إنشاء حساب صاحب العمل.",
+      "error": "فشل الإنشاء."
+    }
+  },
+  "employer": {
+    "title": "منطقة صاحب العمل",
+    "welcome": "مرحبًا بكم في NORAV.",
+    "company": "شركتكم",
+    "noCompany": "لم يتم ربط أي شركة بحسابكم بعد.",
+    "comingSoon": "سيتوفر سوق المرشحين في مرحلة لاحقة."
+  }
+}

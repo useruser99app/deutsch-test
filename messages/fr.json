@@ -1,0 +1,252 @@
+{
+  "common": {
+    "appName": "NORAV",
+    "logout": "Se déconnecter",
+    "language": "Langue",
+    "submit": "Envoyer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "back": "Retour",
+    "yes": "Oui",
+    "no": "Non",
+    "none": "—",
+    "error": "Une erreur est survenue."
+  },
+  "home": {
+    "title": "NORAV",
+    "subtitle": "Recrutement international pour la formation professionnelle (Ausbildung) et l'emploi qualifié en Allemagne",
+    "login": "Se connecter"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "forgot": "Mot de passe oublié ?",
+      "invalid": "Échec de la connexion. Vérifiez votre e-mail et votre mot de passe."
+    },
+    "forgot": {
+      "title": "Réinitialiser le mot de passe",
+      "description": "Nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+      "submit": "Envoyer le lien",
+      "sent": "Si un compte existe pour cet e-mail, un message a été envoyé."
+    },
+    "reset": {
+      "title": "Définir un nouveau mot de passe",
+      "password": "Nouveau mot de passe (min. 8 caractères)",
+      "submit": "Enregistrer le mot de passe",
+      "error": "Le mot de passe n'a pas pu être enregistré.",
+      "tooShort": "Le mot de passe doit contenir au moins 8 caractères."
+    },
+    "setPassword": {
+      "title": "Activer votre compte",
+      "description": "Veuillez définir un mot de passe pour activer votre compte NORAV."
+    },
+    "inactive": {
+      "title": "Compte non actif",
+      "description": "Votre compte n'est pas actif actuellement. Veuillez contacter l'équipe NORAV."
+    }
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "changes": "Proposer des modifications",
+    "documents": "Documents",
+    "review": "Revue des modifications",
+    "adminDocuments": "Revue des documents",
+    "candidates": "Candidats",
+    "companies": "Entreprises"
+  },
+  "status": {
+    "pending": "En attente",
+    "approved": "Approuvé",
+    "rejected": "Refusé",
+    "pending_review": "En attente de vérification",
+    "superseded": "Remplacé",
+    "draft": "Brouillon",
+    "published": "Publié",
+    "unpublished": "Dépublié",
+    "invited": "Invité",
+    "active": "Actif",
+    "suspended": "Suspendu",
+    "pending_verification": "Vérification en attente",
+    "inactive": "Inactif",
+    "archived": "Archivé"
+  },
+  "enums": {
+    "candidateType": {
+      "apprenticeship_candidate": "Candidat(e) à l'Ausbildung",
+      "skilled_worker": "Travailleur qualifié"
+    },
+    "documentType": {
+      "cv": "CV",
+      "school_certificate": "Certificat scolaire",
+      "diploma": "Diplôme",
+      "work_certificate": "Certificat de travail",
+      "internship_certificate": "Certificat de stage",
+      "language_certificate": "Certificat de langue",
+      "passport": "Passeport",
+      "other": "Autre"
+    }
+  },
+  "fields": {
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "date_of_birth": "Date de naissance",
+    "nationality": "Nationalité",
+    "country_of_residence": "Pays de résidence",
+    "german_level": "Niveau d'allemand",
+    "availability_date": "Disponible à partir de",
+    "drivers_license": "Permis de conduire",
+    "relocation_ready": "Prêt(e) à déménager",
+    "target_occupations": "Métiers d'Ausbildung souhaités",
+    "desired_training_start": "Début de formation souhaité",
+    "school_qualification": "Diplôme scolaire",
+    "school_specialization": "Spécialisation scolaire",
+    "graduation_year": "Année d'obtention",
+    "german_certificate_type": "Certificat d'allemand (type)",
+    "german_certificate_status": "Certificat d'allemand (statut)",
+    "internship_experience": "Expérience de stage",
+    "relevant_experience": "Expérience pertinente",
+    "preferred_locations": "Lieux préférés",
+    "motivation_summary": "Motivation",
+    "profession": "Profession",
+    "years_experience": "Années d'expérience",
+    "highest_qualification": "Qualification la plus élevée",
+    "specialization": "Spécialisation",
+    "preferred_positions": "Postes préférés",
+    "candidate_code": "Code candidat",
+    "candidate_type": "Type de candidat",
+    "status": "Statut",
+    "profile_status": "Statut du profil"
+  },
+  "candidate": {
+    "dashboard": {
+      "title": "Mon tableau de bord",
+      "approvedData": "Données approuvées",
+      "pendingChanges": "Modifications en attente",
+      "noPendingChanges": "Aucune modification en attente.",
+      "documents": "Documents",
+      "noDocuments": "Aucun document téléversé pour le moment.",
+      "proposeChanges": "Proposer des modifications",
+      "uploadDocument": "Téléverser un document",
+      "submitted": "Vos modifications ont été soumises pour vérification.",
+      "currentLabel": "Actuel",
+      "proposedLabel": "Proposé",
+      "reviewComment": "Commentaire",
+      "profileStatus": "Statut du profil",
+      "noProfile": "Aucun profil de publication créé pour le moment.",
+      "approvalNote": "Les modifications ne prennent effet qu'après validation par l'équipe NORAV. Jusque-là, les valeurs actuelles restent valables."
+    },
+    "changes": {
+      "title": "Proposer des modifications",
+      "description": "Vos propositions sont vérifiées par l'équipe NORAV. Les valeurs actuelles restent valables et visibles jusqu'à leur validation.",
+      "sourceLanguage": "Langue de saisie",
+      "listHint": "Séparez plusieurs valeurs par des virgules.",
+      "submit": "Soumettre pour vérification",
+      "error": "Échec de l'envoi. Veuillez remplir au moins un champ.",
+      "noChange": "— aucune modification —"
+    },
+    "documents": {
+      "title": "Mes documents",
+      "upload": "Téléverser un document",
+      "documentType": "Type de document",
+      "file": "Fichier",
+      "submit": "Téléverser",
+      "success": "Document téléversé — vérification en attente.",
+      "error": "Échec du téléversement.",
+      "uploadedAt": "Téléversé le",
+      "reviewNote": "Note de vérification",
+      "noDocuments": "Aucun document pour le moment."
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Tableau de bord admin",
+      "pendingChanges": "Modifications en attente",
+      "pendingDocuments": "Documents en attente",
+      "candidates": "Candidats",
+      "companies": "Entreprises",
+      "open": "Ouvrir"
+    },
+    "review": {
+      "title": "Revue des modifications",
+      "empty": "Aucune modification en attente.",
+      "candidate": "Candidat(e)",
+      "field": "Champ",
+      "current": "Actuel",
+      "proposed": "Proposé",
+      "comment": "Commentaire (facultatif)",
+      "approve": "Approuver",
+      "reject": "Refuser",
+      "submittedAt": "Soumis le",
+      "source": "Source",
+      "sourceLanguage": "Langue de saisie",
+      "done": "Décision enregistrée.",
+      "error": "L'action a échoué."
+    },
+    "documents": {
+      "title": "Revue des documents",
+      "empty": "Aucun document en attente.",
+      "view": "Ouvrir le document",
+      "approve": "Approuver",
+      "reject": "Refuser",
+      "note": "Note de vérification (facultatif)",
+      "type": "Type",
+      "filename": "Nom du fichier",
+      "uploadedAt": "Téléversé le",
+      "candidate": "Candidat(e)",
+      "done": "Décision enregistrée.",
+      "error": "L'action a échoué."
+    },
+    "candidates": {
+      "title": "Candidats",
+      "create": "Créer un compte candidat",
+      "email": "E-mail",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "candidateType": "Type de candidat",
+      "locale": "Langue préférée",
+      "inviteMode": "Invitation",
+      "inviteEmail": "Envoyer l'invitation par e-mail",
+      "inviteLink": "Générer un lien d'invitation (sans e-mail)",
+      "submit": "Créer le compte",
+      "created": "Compte candidat créé.",
+      "inviteLinkLabel": "Lien d'invitation (à copier maintenant — affiché une seule fois)",
+      "error": "Échec de la création.",
+      "list": "Tous les candidats",
+      "code": "Code",
+      "name": "Nom",
+      "type": "Type",
+      "germanLevel": "Allemand",
+      "accountStatus": "Statut du compte",
+      "noCandidates": "Aucun candidat pour le moment."
+    },
+    "companies": {
+      "title": "Entreprises",
+      "create": "Créer une entreprise",
+      "name": "Nom",
+      "website": "Site web",
+      "industry": "Secteur",
+      "country": "Pays",
+      "city": "Ville",
+      "submit": "Créer",
+      "created": "Entreprise créée.",
+      "noCompanies": "Aucune entreprise pour le moment.",
+      "createEmployer": "Créer un compte employeur",
+      "employerEmail": "E-mail de l'employeur",
+      "company": "Entreprise",
+      "employerCreated": "Compte employeur créé.",
+      "error": "Échec de la création."
+    }
+  },
+  "employer": {
+    "title": "Espace employeur",
+    "welcome": "Bienvenue chez NORAV.",
+    "company": "Votre entreprise",
+    "noCompany": "Aucune entreprise n'est encore associée à votre compte.",
+    "comingSoon": "La place de marché des candidats suivra dans une étape ultérieure."
+  }
+}

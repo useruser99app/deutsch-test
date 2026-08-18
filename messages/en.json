@@ -1,0 +1,252 @@
+{
+  "common": {
+    "appName": "NORAV",
+    "logout": "Log out",
+    "language": "Language",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "yes": "Yes",
+    "no": "No",
+    "none": "—",
+    "error": "Something went wrong."
+  },
+  "home": {
+    "title": "NORAV",
+    "subtitle": "International recruiting for vocational training and skilled work in Germany",
+    "login": "Log in"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
+      "forgot": "Forgot password?",
+      "invalid": "Login failed. Please check your email and password."
+    },
+    "forgot": {
+      "title": "Reset password",
+      "description": "We will send you a link to reset your password.",
+      "submit": "Send link",
+      "sent": "If an account exists for this email, a message has been sent."
+    },
+    "reset": {
+      "title": "Set a new password",
+      "password": "New password (min. 8 characters)",
+      "submit": "Save password",
+      "error": "The password could not be saved.",
+      "tooShort": "The password must be at least 8 characters long."
+    },
+    "setPassword": {
+      "title": "Activate your account",
+      "description": "Please set a password to activate your NORAV account."
+    },
+    "inactive": {
+      "title": "Account not active",
+      "description": "Your account is currently not active. Please contact the NORAV team."
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "changes": "Propose changes",
+    "documents": "Documents",
+    "review": "Change review",
+    "adminDocuments": "Document review",
+    "candidates": "Candidates",
+    "companies": "Companies"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "pending_review": "Pending review",
+    "superseded": "Superseded",
+    "draft": "Draft",
+    "published": "Published",
+    "unpublished": "Unpublished",
+    "invited": "Invited",
+    "active": "Active",
+    "suspended": "Suspended",
+    "pending_verification": "Pending verification",
+    "inactive": "Inactive",
+    "archived": "Archived"
+  },
+  "enums": {
+    "candidateType": {
+      "apprenticeship_candidate": "Apprenticeship candidate",
+      "skilled_worker": "Skilled worker"
+    },
+    "documentType": {
+      "cv": "CV",
+      "school_certificate": "School certificate",
+      "diploma": "Diploma",
+      "work_certificate": "Work certificate",
+      "internship_certificate": "Internship certificate",
+      "language_certificate": "Language certificate",
+      "passport": "Passport",
+      "other": "Other"
+    }
+  },
+  "fields": {
+    "first_name": "First name",
+    "last_name": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "date_of_birth": "Date of birth",
+    "nationality": "Nationality",
+    "country_of_residence": "Country of residence",
+    "german_level": "German level",
+    "availability_date": "Available from",
+    "drivers_license": "Driver's license",
+    "relocation_ready": "Ready to relocate",
+    "target_occupations": "Desired training occupations",
+    "desired_training_start": "Desired training start",
+    "school_qualification": "School qualification",
+    "school_specialization": "School specialization",
+    "graduation_year": "Graduation year",
+    "german_certificate_type": "German certificate (type)",
+    "german_certificate_status": "German certificate (status)",
+    "internship_experience": "Internship experience",
+    "relevant_experience": "Relevant experience",
+    "preferred_locations": "Preferred locations",
+    "motivation_summary": "Motivation",
+    "profession": "Profession",
+    "years_experience": "Years of experience",
+    "highest_qualification": "Highest qualification",
+    "specialization": "Specialization",
+    "preferred_positions": "Preferred positions",
+    "candidate_code": "Candidate code",
+    "candidate_type": "Candidate type",
+    "status": "Status",
+    "profile_status": "Profile status"
+  },
+  "candidate": {
+    "dashboard": {
+      "title": "My dashboard",
+      "approvedData": "Approved data",
+      "pendingChanges": "Pending changes",
+      "noPendingChanges": "No pending changes.",
+      "documents": "Documents",
+      "noDocuments": "No documents uploaded yet.",
+      "proposeChanges": "Propose changes",
+      "uploadDocument": "Upload document",
+      "submitted": "Your changes have been submitted for review.",
+      "currentLabel": "Current",
+      "proposedLabel": "Proposed",
+      "reviewComment": "Comment",
+      "profileStatus": "Profile status",
+      "noProfile": "No publication profile created yet.",
+      "approvalNote": "Changes only take effect after approval by the NORAV team. Until then the current values remain valid."
+    },
+    "changes": {
+      "title": "Propose changes",
+      "description": "Your proposals are reviewed by the NORAV team. The current values remain valid and visible until approval.",
+      "sourceLanguage": "Input language",
+      "listHint": "Separate multiple values with commas.",
+      "submit": "Submit for review",
+      "error": "Submission failed. Please fill in at least one field.",
+      "noChange": "— no change —"
+    },
+    "documents": {
+      "title": "My documents",
+      "upload": "Upload document",
+      "documentType": "Document type",
+      "file": "File",
+      "submit": "Upload",
+      "success": "Document uploaded — review pending.",
+      "error": "Upload failed.",
+      "uploadedAt": "Uploaded on",
+      "reviewNote": "Review note",
+      "noDocuments": "No documents yet."
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin dashboard",
+      "pendingChanges": "Pending changes",
+      "pendingDocuments": "Pending documents",
+      "candidates": "Candidates",
+      "companies": "Companies",
+      "open": "Open"
+    },
+    "review": {
+      "title": "Change review",
+      "empty": "No pending changes.",
+      "candidate": "Candidate",
+      "field": "Field",
+      "current": "Current",
+      "proposed": "Proposed",
+      "comment": "Comment (optional)",
+      "approve": "Approve",
+      "reject": "Reject",
+      "submittedAt": "Submitted on",
+      "source": "Source",
+      "sourceLanguage": "Input language",
+      "done": "Decision saved.",
+      "error": "Action failed."
+    },
+    "documents": {
+      "title": "Document review",
+      "empty": "No pending documents.",
+      "view": "Open document",
+      "approve": "Approve",
+      "reject": "Reject",
+      "note": "Review note (optional)",
+      "type": "Type",
+      "filename": "Filename",
+      "uploadedAt": "Uploaded on",
+      "candidate": "Candidate",
+      "done": "Decision saved.",
+      "error": "Action failed."
+    },
+    "candidates": {
+      "title": "Candidates",
+      "create": "Create candidate account",
+      "email": "Email",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "candidateType": "Candidate type",
+      "locale": "Preferred language",
+      "inviteMode": "Invitation",
+      "inviteEmail": "Send invite email",
+      "inviteLink": "Generate invite link (no email)",
+      "submit": "Create account",
+      "created": "Candidate account created.",
+      "inviteLinkLabel": "Invite link (copy now — shown only once)",
+      "error": "Creation failed.",
+      "list": "All candidates",
+      "code": "Code",
+      "name": "Name",
+      "type": "Type",
+      "germanLevel": "German",
+      "accountStatus": "Account status",
+      "noCandidates": "No candidates yet."
+    },
+    "companies": {
+      "title": "Companies",
+      "create": "Create company",
+      "name": "Name",
+      "website": "Website",
+      "industry": "Industry",
+      "country": "Country",
+      "city": "City",
+      "submit": "Create",
+      "created": "Company created.",
+      "noCompanies": "No companies yet.",
+      "createEmployer": "Create employer account",
+      "employerEmail": "Employer email",
+      "company": "Company",
+      "employerCreated": "Employer account created.",
+      "error": "Creation failed."
+    }
+  },
+  "employer": {
+    "title": "Employer area",
+    "welcome": "Welcome to NORAV.",
+    "company": "Your company",
+    "noCompany": "No company is assigned to your account yet.",
+    "comingSoon": "The candidate marketplace follows in a later milestone."
+  }
+}
