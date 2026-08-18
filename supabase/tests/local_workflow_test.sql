@@ -410,5 +410,46 @@ begin
   raise notice 'PASS: admin can read all candidate document files';
 end $$;
 
+-- ---------------------------------------------------------------
+-- 9. Public marketplace preparation (migration 0008): anon access
+-- ---------------------------------------------------------------
+reset role;
+insert into public.candidate_profile_localizations
+  (candidate_profile_id, locale, public_title, translation_status)
+select id, 'de', 'Pflege-Auszubildende (B2)', 'approved' from public.candidate_profiles limit 1;
+insert into public.candidate_profile_localizations
+  (candidate_profile_id, locale, public_title, translation_status)
+select id, 'fr', 'Brouillon interne', 'draft' from public.candidate_profiles limit 1;
+
+set role anon;
+reset request.jwt.claim.sub;
+do $$
+begin
+  if (select count(*) from public.candidate_profiles) <> 1 then
+    raise exception 'FAIL: anon should see exactly the 1 published profile';
+  end if;
+  if (select count(*) from public.candidate_profile_localizations) <> 1
+     or exists (select 1 from public.candidate_profile_localizations where translation_status <> 'approved') then
+    raise exception 'FAIL: anon should see only approved localizations';
+  end if;
+  if exists (select 1 from public.candidates)
+     or exists (select 1 from public.candidate_documents)
+     or exists (select 1 from public.candidate_change_items)
+     or exists (select 1 from public.app_users)
+     or exists (select 1 from public.companies)
+     or exists (select 1 from storage.objects) then
+    raise exception 'FAIL: anon can read protected data';
+  end if;
+  begin
+    insert into public.interest_requests (company_id, candidate_profile_id, message)
+    select '30000000-0000-0000-0000-000000000001', id, 'anon attempt'
+    from public.candidate_profiles limit 1;
+    raise exception 'FAIL: anon created an interest request';
+  exception when others then
+    if sqlerrm like 'FAIL:%' then raise; end if;
+  end;
+  raise notice 'PASS: anon sees only published+approved profile data; identity, documents and requests stay closed';
+end $$;
+
 reset role;
 select 'ALL LOCAL WORKFLOW TESTS PASSED' as result;

@@ -1,9 +1,14 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { candidateTypes, localeCodes } from "@/lib/domain";
+import {
+  candidateTypes,
+  localeCodes,
+  type InviteActionState,
+} from "@/lib/domain";
 
 function text(formData: FormData, key: string): string {
   return String(formData.get(key) ?? "").trim();
@@ -25,8 +30,14 @@ function pick<T extends readonly string[]>(
  * account_status = 'invited'; the candidate activates it by setting a
  * password at /set-password. For environments without SMTP the admin can
  * generate the invite link directly instead of sending an email.
+ *
+ * useActionState action: the generated invite link is returned only in the
+ * POST response (one-time display) and never appears in a URL.
  */
-export async function createCandidateAccount(formData: FormData) {
+export async function createCandidateAccountAction(
+  _prev: InviteActionState,
+  formData: FormData
+): Promise<InviteActionState> {
   const locale = text(formData, "locale");
   const { supabase } = await requireRole(locale, "admin");
 
@@ -42,7 +53,7 @@ export async function createCandidateAccount(formData: FormData) {
   const inviteMode = text(formData, "invite_mode") === "link" ? "link" : "email";
 
   if (!email || !firstName || !lastName) {
-    redirect(`/${locale}/admin/candidates?error=failed`);
+    return { status: "error" };
   }
 
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -64,7 +75,7 @@ export async function createCandidateAccount(formData: FormData) {
       options: { data: metadata, redirectTo },
     });
     if (error || !data.user) {
-      redirect(`/${locale}/admin/candidates?error=failed`);
+      return { status: "error" };
     }
     userId = data.user.id;
     inviteLink = data.properties?.action_link ?? null;
@@ -74,7 +85,7 @@ export async function createCandidateAccount(formData: FormData) {
       redirectTo,
     });
     if (error || !data.user) {
-      redirect(`/${locale}/admin/candidates?error=failed`);
+      return { status: "error" };
     }
     userId = data.user.id;
   }
@@ -93,7 +104,7 @@ export async function createCandidateAccount(formData: FormData) {
     .select("id, candidate_code")
     .single();
   if (candidateError || !candidate) {
-    redirect(`/${locale}/admin/candidates?error=failed`);
+    return { status: "error" };
   }
 
   if (candidateType === "apprenticeship_candidate") {
@@ -110,9 +121,12 @@ export async function createCandidateAccount(formData: FormData) {
     candidate_type: candidateType,
   });
 
-  const params = new URLSearchParams({ created: candidate.candidate_code });
-  if (inviteLink) params.set("invite_link", inviteLink);
-  redirect(`/${locale}/admin/candidates?${params.toString()}`);
+  revalidatePath(`/${locale}/admin/candidates`);
+  return {
+    status: "success",
+    candidateCode: candidate.candidate_code,
+    inviteLink,
+  };
 }
 
 export async function createCompany(formData: FormData) {
@@ -133,8 +147,15 @@ export async function createCompany(formData: FormData) {
   redirect(`/${locale}/admin/companies?created=1`);
 }
 
-/** Admin-created employer accounts assigned to a company (§3A/§14). */
-export async function createEmployerAccount(formData: FormData) {
+/**
+ * Admin-created employer accounts assigned to a company (§3A/§14).
+ * useActionState action — invite link only in the POST response, never in
+ * a URL.
+ */
+export async function createEmployerAccountAction(
+  _prev: InviteActionState,
+  formData: FormData
+): Promise<InviteActionState> {
   const locale = text(formData, "locale");
   const { supabase } = await requireRole(locale, "admin");
 
@@ -144,7 +165,7 @@ export async function createEmployerAccount(formData: FormData) {
   const inviteMode = text(formData, "invite_mode") === "link" ? "link" : "email";
 
   if (!email || !companyId) {
-    redirect(`/${locale}/admin/companies?error=failed`);
+    return { status: "error" };
   }
 
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -166,7 +187,7 @@ export async function createEmployerAccount(formData: FormData) {
       options: { data: metadata, redirectTo },
     });
     if (error || !data.user) {
-      redirect(`/${locale}/admin/companies?error=failed`);
+      return { status: "error" };
     }
     userId = data.user.id;
     inviteLink = data.properties?.action_link ?? null;
@@ -176,7 +197,7 @@ export async function createEmployerAccount(formData: FormData) {
       redirectTo,
     });
     if (error || !data.user) {
-      redirect(`/${locale}/admin/companies?error=failed`);
+      return { status: "error" };
     }
     userId = data.user.id;
   }
@@ -186,11 +207,10 @@ export async function createEmployerAccount(formData: FormData) {
     user_id: userId,
     member_role: "member",
   });
-  if (memberError) redirect(`/${locale}/admin/companies?error=failed`);
+  if (memberError) return { status: "error" };
 
-  const params = new URLSearchParams({ employer_created: "1" });
-  if (inviteLink) params.set("invite_link", inviteLink);
-  redirect(`/${locale}/admin/companies?${params.toString()}`);
+  revalidatePath(`/${locale}/admin/companies`);
+  return { status: "success", inviteLink };
 }
 
 /** Approve one change item — applies the value to the canonical model (§29). */

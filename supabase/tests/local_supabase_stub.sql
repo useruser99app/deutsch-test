@@ -45,4 +45,5 @@ language sql immutable as $$
 $$;
 grant usage on schema storage to anon, authenticated, service_role;
 grant all on storage.objects to authenticated, service_role;
+grant select on storage.objects to anon;
 grant execute on function storage.foldername(text) to anon, authenticated, service_role;

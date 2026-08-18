@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireRole } from "@/lib/auth";
-import { createCompany, createEmployerAccount } from "@/lib/actions/admin";
-import { localeCodes } from "@/lib/domain";
+import { createCompany } from "@/lib/actions/admin";
+import CreateEmployerForm from "@/components/CreateEmployerForm";
 
 interface CompanyRow {
   id: string;
@@ -17,25 +17,14 @@ export default async function AdminCompaniesPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{
-    created?: string;
-    employer_created?: string;
-    invite_link?: string;
-    error?: string;
-  }>;
+  searchParams: Promise<{ created?: string; error?: string }>;
 }) {
   const { locale } = await params;
-  const {
-    created,
-    employer_created: employerCreated,
-    invite_link: inviteLink,
-    error,
-  } = await searchParams;
+  const { created, error } = await searchParams;
   setRequestLocale(locale);
   const { supabase } = await requireRole(locale, "admin");
 
   const t = await getTranslations("admin.companies");
-  const tCandidates = await getTranslations("admin.candidates");
 
   const { data: companies } = await supabase
     .from("companies")
@@ -54,19 +43,6 @@ export default async function AdminCompaniesPage({
         <p className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
           {t("created")}
         </p>
-      )}
-      {employerCreated && (
-        <div className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
-          <p>{t("employerCreated")}</p>
-          {inviteLink && (
-            <div className="mt-2">
-              <p className="font-medium">{tCandidates("inviteLinkLabel")}</p>
-              <code className="mt-1 block break-all rounded bg-white p-2 text-xs">
-                {inviteLink}
-              </code>
-            </div>
-          )}
-        </div>
       )}
       {error && (
         <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -143,80 +119,12 @@ export default async function AdminCompaniesPage({
           </button>
         </form>
 
-        <form
-          action={createEmployerAccount}
-          className="space-y-4 rounded-lg border border-gray-200 bg-white p-6"
-        >
-          <input type="hidden" name="locale" value={locale} />
-          <h2 className="text-lg font-semibold">{t("createEmployer")}</h2>
-          <div>
-            <label className={labelClass} htmlFor="employer_email">
-              {t("employerEmail")}
-            </label>
-            <input
-              id="employer_email"
-              type="email"
-              name="email"
-              required
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className={labelClass} htmlFor="company_id">
-              {t("company")}
-            </label>
-            <select
-              id="company_id"
-              name="company_id"
-              required
-              className={inputClass}
-            >
-              {rows.map((company) => (
-                <option key={company.id} value={company.id}>
-                  {company.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className={labelClass} htmlFor="employer_locale">
-                {tCandidates("locale")}
-              </label>
-              <select
-                id="employer_locale"
-                name="preferred_locale"
-                defaultValue="de"
-                className={inputClass}
-              >
-                {localeCodes.map((code) => (
-                  <option key={code} value={code}>
-                    {code}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="employer_invite_mode">
-                {tCandidates("inviteMode")}
-              </label>
-              <select
-                id="employer_invite_mode"
-                name="invite_mode"
-                className={inputClass}
-              >
-                <option value="email">{tCandidates("inviteEmail")}</option>
-                <option value="link">{tCandidates("inviteLink")}</option>
-              </select>
-            </div>
-          </div>
-          <button
-            type="submit"
-            className="rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-700"
-          >
-            {tCandidates("submit")}
-          </button>
-        </form>
+        <CreateEmployerForm
+          companies={rows.map((company) => ({
+            id: company.id,
+            name: company.name,
+          }))}
+        />
       </div>
 
       <section>

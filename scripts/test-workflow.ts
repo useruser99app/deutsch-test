@@ -317,6 +317,28 @@ async function main() {
     );
 
     // ------------------------------------------------------------------
+    console.log("\n== 5b. Anonymous access (public marketplace preparation) ==");
+    const anon = anonClient();
+    const { data: anonProfiles } = await anon
+      .from("candidate_profiles")
+      .select("id, profile_status");
+    check(
+      (anonProfiles ?? []).length >= 1 &&
+        (anonProfiles ?? []).every((p) => p.profile_status === "published"),
+      "anon sees only published profiles"
+    );
+    const { data: anonCandidates } = await anon.from("candidates").select("id");
+    check((anonCandidates ?? []).length === 0, "anon sees no candidate identities");
+    const { data: anonDocs } = await anon
+      .from("candidate_documents")
+      .select("id");
+    check((anonDocs ?? []).length === 0, "anon sees no documents");
+    const { data: anonFile } = await anon.storage
+      .from("candidate-documents")
+      .download(certificatePath);
+    check(!anonFile, "anon cannot download candidate files");
+
+    // ------------------------------------------------------------------
     console.log("\n== 6. Security: suspended & invited accounts ==");
     await service
       .from("app_users")

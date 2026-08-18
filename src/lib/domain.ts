@@ -106,6 +106,18 @@ export const changeableFields: Record<string, FieldType> = {
   preferred_positions: "array",
 };
 
+/**
+ * Result state for admin account-creation forms (useActionState).
+ * The one-time invite link is returned ONLY in the POST response body —
+ * never through URL query parameters (no browser history, access logs,
+ * analytics or copied URLs).
+ */
+export interface InviteActionState {
+  status: "idle" | "success" | "error";
+  candidateCode?: string;
+  inviteLink?: string | null;
+}
+
 export interface AppUser {
   id: string;
   email: string;

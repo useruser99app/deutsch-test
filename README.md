@@ -25,6 +25,18 @@ nicht nur in der UI. Dokumente folgen demselben Muster inkl.
 Supersede-Historie. Die zukünftige KI-Extraktion nutzt exakt denselben
 Workflow (`source = 'ai_extraction'`).
 
+## Marketplace-Architekturentscheidung (vorbereitet, nicht gebaut)
+
+Veröffentlichte anonymisierte Profile sollen später **ohne**
+Arbeitgeber-Konto einsehbar sein. Migration `…0008_public_profiles.sql`
+bereitet das auf Datenbankebene vor: `anon` darf ausschließlich
+`candidate_profiles` mit `profile_status = 'published'` und deren
+Lokalisierungen mit `translation_status = 'approved'` lesen. Identität,
+Kontaktdaten, Dokumente, Storage-Pfade, ausstehende Änderungen und
+Admin-Daten bleiben für `anon` vollständig gesperrt. Die „Request
+Introduction“-Aktion bleibt authentifizierungspflichtig
+(Insert-Policy auf `interest_requests` nur für aktive Arbeitgeber).
+
 ## Setup
 
 1. **Supabase-Projekt anlegen** (https://supabase.com).
