@@ -40,10 +40,16 @@ Introduction“-Aktion bleibt authentifizierungspflichtig
 ## Setup
 
 1. **Supabase-Projekt anlegen** (https://supabase.com).
-2. **Migrationen ausführen** (Reihenfolge!): alle Dateien aus
-   `supabase/migrations/` — entweder per Supabase CLI
-   (`supabase link && supabase db push`) oder nacheinander im SQL-Editor.
-   Danach `supabase/seed.sql` ausführen (Referenzdaten, idempotent).
+2. **Datenbank einrichten** — zwei Wege:
+   - **Einfach (empfohlen für die Ersteinrichtung):** den gesamten Inhalt
+     von `supabase/setup-all.sql` im Supabase SQL-Editor einfügen und
+     einmal ausführen. Die Datei enthält alle Migrationen plus Seed.
+   - **Regulär:** alle Dateien aus `supabase/migrations/` in Reihenfolge
+     (per Supabase CLI `supabase link && supabase db push` oder einzeln im
+     SQL-Editor), danach `supabase/seed.sql`.
+
+   Verbindliche Quelle für spätere Änderungen bleiben die Einzeldateien in
+   `supabase/migrations/`; `setup-all.sql` wird daraus generiert.
 3. **Auth-Konfiguration** (Dashboard → Authentication):
    - Sign-ups deaktivieren („Allow new users to sign up“ = off) — Konten
      werden ausschließlich vom Admin angelegt (§3A).
