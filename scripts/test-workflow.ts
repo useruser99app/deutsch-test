@@ -29,6 +29,15 @@ function check(condition: boolean, label: string, detail?: unknown) {
   }
 }
 
+/** Stops the run with a readable diagnosis instead of a follow-up crash. */
+function abort(lines: string[]): never {
+  console.error("\n  DIAGNOSE — Abbruch:");
+  for (const line of lines) {
+    console.error(`    - ${line}`);
+  }
+  throw new Error(lines[0]);
+}
+
 async function signIn(email: string, password: string): Promise<SupabaseClient> {
   const client = anonClient();
   const { error } = await client.auth.signInWithPassword({ email, password });
@@ -108,8 +117,188 @@ async function main() {
     console.log(`Candidate A = ${candidateA.candidate_code}`);
 
     // ------------------------------------------------------------------
-    console.log("\n== 1. Candidate A proposes German B1 → B2 ==");
+    // Diagnostics before any workflow step. own_candidate_id() joins three
+    // links: auth.uid() -> app_users (role + account_status = 'active') ->
+    // candidates.user_id. If any link is missing or inactive the function
+    // returns NULL, and the only symptom further down is the opaque
+    // "Only active candidates may submit changes". Verify each link
+    // explicitly here and abort with a readable diagnosis instead.
+    // Prints ids, role and account_status only — never tokens or secrets.
+    console.log("\n== 0. Diagnose: Identitaetskette Candidate A ==");
     const sessionA = await signIn(candA.email, candA.password);
+    const problems: string[] = [];
+
+    // (1) Does the signed-in session resolve to a user at all?
+    const { data: authData, error: authError } = await sessionA.auth.getUser();
+    const sessionUserId = authData?.user?.id ?? null;
+    console.log(`  auth.getUser() user id : ${sessionUserId ?? "(keine)"}`);
+    console.log(`  erwartete candA.id     : ${candA.id}`);
+    if (authError) {
+      problems.push(`auth.getUser() meldete einen Fehler: ${authError.message}`);
+    }
+    if (!sessionUserId) {
+      problems.push(
+        "auth.getUser() liefert keine User-ID — die Session traegt kein gueltiges JWT, " +
+          "daher ist auth.uid() in der Datenbank NULL."
+      );
+    }
+
+    // (2) Is it the same user the service role provisioned?
+    if (sessionUserId && sessionUserId !== candA.id) {
+      problems.push(
+        `Session-User-ID (${sessionUserId}) weicht von candA.id (${candA.id}) ab — ` +
+          "die Anmeldung traf ein anderes Konto als das angelegte."
+      );
+    }
+
+    // (3) What does the service role see in public.app_users for this user?
+    const { data: appUserService, error: appUserServiceError } = await service
+      .from("app_users")
+      .select("id, role, account_status")
+      .eq("id", candA.id)
+      .maybeSingle();
+    console.log(
+      `  app_users (service role): ${
+        appUserService
+          ? `id=${appUserService.id} role=${appUserService.role} account_status=${appUserService.account_status}`
+          : "(kein Datensatz)"
+      }`
+    );
+    if (appUserServiceError) {
+      problems.push(
+        `Lesen von app_users per Service-Role schlug fehl: ${appUserServiceError.message}`
+      );
+    }
+    if (!appUserService) {
+      problems.push(
+        `Kein app_users-Datensatz fuer candA.id (${candA.id}). Der Trigger ` +
+          "handle_new_user() auf auth.users hat keine Zeile angelegt."
+      );
+    } else {
+      if (appUserService.role !== "candidate") {
+        problems.push(
+          `app_users.role ist '${appUserService.role}', erwartet 'candidate'. ` +
+            "own_candidate_id() verlangt die Rolle 'candidate'."
+        );
+      }
+      if (appUserService.account_status !== "active") {
+        problems.push(
+          `app_users.account_status ist '${appUserService.account_status}', erwartet 'active'. ` +
+            "own_candidate_id() liefert nur fuer aktive Konten eine ID — das ist die " +
+            "wahrscheinlichste Ursache von 'Only active candidates may submit changes'. " +
+            "Die Metadaten aus createUser({app_metadata}) sind offenbar nicht im " +
+            "Trigger angekommen, sodass die Defaults ('candidate'/'invited') griffen."
+        );
+      }
+    }
+
+    // (4) What does the candidate see of their own app_users row through RLS?
+    const { data: appUserRls, error: appUserRlsError } = await sessionA
+      .from("app_users")
+      .select("id, role, account_status")
+      .eq("id", candA.id)
+      .maybeSingle();
+    console.log(
+      `  app_users (per RLS)     : ${
+        appUserRls
+          ? `id=${appUserRls.id} role=${appUserRls.role} account_status=${appUserRls.account_status}`
+          : "(kein Datensatz)"
+      }`
+    );
+    if (appUserRlsError) {
+      problems.push(
+        `Kandidat kann eigenen app_users-Datensatz nicht lesen: ${appUserRlsError.message}`
+      );
+    }
+    if (appUserService && !appUserRls) {
+      problems.push(
+        "Der app_users-Datensatz existiert, ist fuer den eingeloggten Kandidaten per RLS " +
+          "aber nicht sichtbar — die Policy \"users read own account\" greift nicht, " +
+          "was ebenfalls auf ein fehlendes auth.uid() hindeutet."
+      );
+    }
+
+    // (5) Does the canonical candidate row link back to this auth user?
+    const { data: candidateService, error: candidateServiceError } = await service
+      .from("candidates")
+      .select("id, candidate_code, user_id, status")
+      .eq("user_id", candA.id)
+      .maybeSingle();
+    console.log(
+      `  candidates (service role): ${
+        candidateService
+          ? `id=${candidateService.id} code=${candidateService.candidate_code} user_id=${candidateService.user_id}`
+          : "(kein Datensatz)"
+      }`
+    );
+    if (candidateServiceError) {
+      problems.push(
+        `Lesen von candidates per Service-Role schlug fehl: ${candidateServiceError.message}`
+      );
+    }
+    if (!candidateService) {
+      problems.push(
+        `Kein candidates-Datensatz mit user_id = ${candA.id}. Die Verknuepfung ` +
+          "zwischen Auth-Konto und kanonischem Kandidaten fehlt."
+      );
+    } else if (candidateService.id !== candidateA.id) {
+      problems.push(
+        `candidates.user_id verweist auf einen anderen Datensatz (${candidateService.id}) ` +
+          `als den angelegten (${candidateA.id}).`
+      );
+    }
+
+    // (6) Can the candidate read their own canonical row through RLS?
+    const { data: candidateRls, error: candidateRlsError } = await sessionA
+      .from("candidates")
+      .select("id, candidate_code, german_level")
+      .eq("id", candidateA.id)
+      .maybeSingle();
+    console.log(
+      `  candidates (per RLS)    : ${
+        candidateRls
+          ? `id=${candidateRls.id} code=${candidateRls.candidate_code} german_level=${candidateRls.german_level}`
+          : "(kein Datensatz)"
+      }`
+    );
+    if (candidateRlsError) {
+      problems.push(
+        `Kandidat kann eigenen candidates-Datensatz nicht lesen: ${candidateRlsError.message}`
+      );
+    }
+    if (candidateService && !candidateRls) {
+      problems.push(
+        "Der candidates-Datensatz existiert, ist per RLS aber nicht sichtbar — " +
+          "own_candidate_id() liefert fuer diese Session NULL."
+      );
+    }
+
+    // Direct probe: what does the database itself compute for this session?
+    const { data: ownCandidateId, error: ownCandidateIdError } =
+      await sessionA.rpc("own_candidate_id");
+    console.log(
+      `  own_candidate_id()      : ${ownCandidateId ?? "(NULL)"}${
+        ownCandidateIdError ? ` [Fehler: ${ownCandidateIdError.message}]` : ""
+      }`
+    );
+    if (!ownCandidateId) {
+      problems.push(
+        "own_candidate_id() liefert NULL — submit_candidate_changes() wird deshalb " +
+          "'Only active candidates may submit changes' werfen. Die Ursache steht in " +
+          "den Punkten darueber."
+      );
+    }
+
+    if (problems.length > 0) {
+      abort([
+        "Die Identitaetskette von Candidate A ist unvollstaendig.",
+        ...problems,
+      ]);
+    }
+    console.log("  Identitaetskette vollstaendig — Workflow-Test startet.");
+
+    // ------------------------------------------------------------------
+    console.log("\n== 1. Candidate A proposes German B1 → B2 ==");
     const { data: setId, error: submitError } = await sessionA.rpc(
       "submit_candidate_changes",
       { p_items: [{ field_key: "german_level", proposed_value: "B2" }] }
@@ -131,6 +320,15 @@ async function main() {
       .select("id, field_key, current_value, proposed_value, status")
       .eq("status", "pending");
     const pendingItem = (pendingItems ?? [])[0];
+    if (!pendingItem) {
+      abort([
+        "Kein ausstehendes change item fuer Candidate A vorhanden.",
+        submitError
+          ? `submit_candidate_changes() meldete: ${submitError.message}`
+          : "submit_candidate_changes() lief ohne Fehler, legte aber keine Zeile an.",
+        "Ohne dieses Item koennen die Freigabe-Schritte nicht geprueft werden.",
+      ]);
+    }
     check(
       !!pendingItem &&
         pendingItem.current_value === "B1" &&
