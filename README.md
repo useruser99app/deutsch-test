@@ -90,6 +90,7 @@ Supabase-Dashboard einen User mit `app_metadata`
 | `npm run dev` / `build` / `start` | Next.js |
 | `npm run typecheck` | TypeScript |
 | `npm run lint` | ESLint |
+| `npm run check:consistency` | i18n-Kataloge + Kandidaten-Feld-Registry prüfen |
 | `npm run seed:dev` | Dev-Testkonten (ohne SMTP) |
 | `npm run test:workflow` | Pflichttest §34 gegen das echte Supabase-Projekt |
 
@@ -97,6 +98,12 @@ Supabase-Dashboard einen User mit `app_metadata`
 
 - `src/app/[locale]/…` — lokalisierte Routen; geschützte Bereiche
   `/admin`, `/candidate`, `/employer` (+ Login/Passwort-Flows)
+- `src/app/[locale]/candidate/…` — Candidate Portal: Dashboard,
+  `changes` (Vorschläge), `documents`, `reviews` (Prüfstatus & Historie)
+- `src/lib/candidate-fields.ts` — welche Felder das Portal anbietet;
+  jeder Schlüssel muss in der Änderungs-Registry existieren
+- `src/lib/candidate-data.ts` — serverseitiger Loader für den
+  freigegebenen Stand (RLS-gebunden, keine zweite Datenlogik)
 - `src/app/auth/callback` — Supabase-E-Mail-Link-Callback
 - `src/lib/supabase/` — Browser-/Server-/Admin-Clients (Service-Role nur
   serverseitig)

@@ -55,7 +55,8 @@
     "review": "Revue des modifications",
     "adminDocuments": "Revue des documents",
     "candidates": "Candidats",
-    "companies": "Entreprises"
+    "companies": "Entreprises",
+    "reviews": "Statut de vérification"
   },
   "status": {
     "pending": "En attente",
@@ -87,6 +88,16 @@
       "language_certificate": "Certificat de langue",
       "passport": "Passeport",
       "other": "Autre"
+    },
+    "boolean": {
+      "true": "Oui",
+      "false": "Non"
+    },
+    "certificateStatus": {
+      "none": "Aucun certificat",
+      "planned": "Prévu",
+      "registered": "Inscrit",
+      "obtained": "Obtenu"
     }
   },
   "fields": {
@@ -138,7 +149,16 @@
       "reviewComment": "Commentaire",
       "profileStatus": "Statut du profil",
       "noProfile": "Aucun profil de publication créé pour le moment.",
-      "approvalNote": "Les modifications ne prennent effet qu'après validation par l'équipe NORAV. Jusque-là, les valeurs actuelles restent valables."
+      "approvalNote": "Les modifications ne prennent effet qu'après validation par l'équipe NORAV. Jusque-là, les valeurs actuelles restent valables.",
+      "greeting": "Bon retour, {name}.",
+      "noRecord": "Aucun profil de candidat n'est encore associé à votre compte. Veuillez contacter l'équipe NORAV.",
+      "accountStatus": "Statut du compte",
+      "primaryOccupation": "Premier choix",
+      "openSection": "Tout afficher",
+      "hintPendingChanges": "Vos modifications sont en cours de vérification. En attente : {count}.",
+      "hintPendingDocuments": "Vos documents sont en cours de vérification. En attente : {count}.",
+      "hintNoDocuments": "Téléversez vos documents pour compléter votre profil.",
+      "hintAllClear": "Tout est à jour. Vous pouvez proposer des modifications à tout moment."
     },
     "changes": {
       "title": "Proposer des modifications",
@@ -147,7 +167,16 @@
       "listHint": "Séparez plusieurs valeurs par des virgules.",
       "submit": "Soumettre pour vérification",
       "error": "Échec de l'envoi. Veuillez remplir au moins un champ.",
-      "noChange": "— aucune modification —"
+      "noChange": "— aucune modification —",
+      "submitting": "Envoi en cours …",
+      "orderHint": "Séparez les métiers par des virgules. L'ordre détermine la priorité — le premier est votre choix principal.",
+      "alreadyPending": "Une proposition pour ce champ est déjà en cours de vérification.",
+      "sourceLanguageHint": "Dans quelle langue avez-vous rédigé les textes libres ? Cela aide l'équipe lors de la vérification.",
+      "submitted": "Soumis pour vérification : {count} modification(s). Les valeurs actuelles restent valables jusqu'à la validation.",
+      "errorEmpty": "Veuillez modifier au moins un champ.",
+      "errorUnchanged": "Aucune modification détectée — les valeurs saisies correspondent aux données approuvées.",
+      "errorFailed": "Échec de l'envoi. Veuillez réessayer plus tard.",
+      "reviewNote": "Vos propositions ne prennent effet qu'après validation par l'équipe NORAV."
     },
     "documents": {
       "title": "Mes documents",
@@ -159,7 +188,40 @@
       "error": "Échec du téléversement.",
       "uploadedAt": "Téléversé le",
       "reviewNote": "Note de vérification",
-      "noDocuments": "Aucun document pour le moment."
+      "noDocuments": "Aucun document pour le moment.",
+      "description": "Téléversez vos justificatifs. Chaque document est vérifié par l'équipe NORAV.",
+      "listTitle": "Vos documents",
+      "uploading": "Téléversement …",
+      "errorNoFile": "Veuillez choisir un fichier.",
+      "reviewedAt": "Vérifié le",
+      "replaces": "Remplace",
+      "supersededNote": "Ce document a été remplacé par une version approuvée plus récente.",
+      "reviewNoteLabel": "Note de vérification",
+      "uploadHint": "Après le téléversement, le document passe en « vérification en attente »."
+    },
+    "sections": {
+      "profile": "Profil",
+      "occupation": "Objectif professionnel",
+      "language": "Compétences linguistiques",
+      "education": "Formation et qualification",
+      "experience": "Expérience",
+      "availability": "Disponibilité et mobilité"
+    },
+    "reviews": {
+      "title": "Statut de vérification",
+      "description": "Consultez ce qui est en cours de vérification et les décisions sur vos propositions précédentes.",
+      "pendingTitle": "Modifications en cours de vérification",
+      "pendingDescription": "Ces propositions sont chez l'équipe NORAV. La valeur approuvée reste valable jusqu'à leur acceptation.",
+      "noPending": "Rien n'est en cours de vérification actuellement.",
+      "historyTitle": "Historique des vérifications",
+      "historyDescription": "Propositions précédentes et leur résultat — approuvées ou refusées.",
+      "noHistory": "Aucune vérification terminée pour le moment.",
+      "currentValue": "Valeur approuvée",
+      "proposedValue": "Proposé",
+      "submittedAt": "Soumis",
+      "reviewedAt": "Vérifié",
+      "sourceLanguage": "Langue de saisie",
+      "reviewComment": "Commentaire"
     }
   },
   "admin": {

@@ -1,120 +1,100 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireRole } from "@/lib/auth";
-import { uploadDocument } from "@/lib/actions/candidate";
-import { documentTypes, type CandidateDocument } from "@/lib/domain";
+import { loadDocuments } from "@/lib/candidate-data";
 import StatusBadge from "@/components/StatusBadge";
+import SectionCard from "@/components/candidate/SectionCard";
+import DocumentUploadForm from "@/components/candidate/DocumentUploadForm";
 
 export default async function CandidateDocumentsPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ ok?: string; error?: string }>;
 }) {
   const { locale } = await params;
-  const { ok, error } = await searchParams;
   setRequestLocale(locale);
   const { supabase } = await requireRole(locale, "candidate");
 
   const t = await getTranslations("candidate.documents");
   const tEnums = await getTranslations("enums");
 
-  const { data: documents } = await supabase
-    .from("candidate_documents")
-    .select("*")
-    .order("uploaded_at", { ascending: false });
+  const documents = await loadDocuments(supabase);
+  const byId = new Map(documents.map((doc) => [doc.id, doc]));
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8">
-      <h1 className="text-2xl font-semibold">{t("title")}</h1>
+    <div className="mx-auto max-w-3xl space-y-5">
+      <header>
+        <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
+          {t("title")}
+        </h1>
+        <p className="mt-1 text-sm text-gray-600">{t("description")}</p>
+      </header>
 
-      {ok && (
-        <p className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
-          {t("success")}
-        </p>
-      )}
-      {error && (
-        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-          {t("error")}
-        </p>
-      )}
+      <SectionCard title={t("upload")}>
+        <DocumentUploadForm />
+      </SectionCard>
 
-      <form
-        action={uploadDocument}
-        className="space-y-4 rounded-lg border border-gray-200 bg-white p-6"
-      >
-        <input type="hidden" name="locale" value={locale} />
-        <h2 className="text-lg font-semibold">{t("upload")}</h2>
-        <div>
-          <label
-            className="mb-1 block text-sm text-gray-700"
-            htmlFor="document_type"
-          >
-            {t("documentType")}
-          </label>
-          <select
-            id="document_type"
-            name="document_type"
-            className="w-full rounded-md border border-gray-300 px-3 py-2"
-          >
-            {documentTypes.map((type) => (
-              <option key={type} value={type}>
-                {tEnums(`documentType.${type}`)}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="mb-1 block text-sm text-gray-700" htmlFor="file">
-            {t("file")}
-          </label>
-          <input
-            id="file"
-            type="file"
-            name="file"
-            required
-            className="w-full text-sm"
-          />
-        </div>
-        <button
-          type="submit"
-          className="rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-700"
-        >
-          {t("submit")}
-        </button>
-      </form>
+      <SectionCard title={t("listTitle")}>
+        {documents.length === 0 ? (
+          <p className="py-2 text-sm text-gray-600">{t("noDocuments")}</p>
+        ) : (
+          <ul className="divide-y divide-gray-100">
+            {documents.map((doc) => {
+              const replaced = doc.replaces_document_id
+                ? byId.get(doc.replaces_document_id)
+                : null;
 
-      {(documents ?? []).length === 0 ? (
-        <p className="text-sm text-gray-600">{t("noDocuments")}</p>
-      ) : (
-        <ul className="space-y-2">
-          {(documents ?? []).map((doc: CandidateDocument) => (
-            <li
-              key={doc.id}
-              className="rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span>
-                  <span className="font-medium">
-                    {tEnums(`documentType.${doc.document_type}`)}
-                  </span>{" "}
-                  · {doc.original_filename}
-                </span>
-                <StatusBadge status={doc.verification_status} />
-              </div>
-              <div className="mt-1 text-xs text-gray-500">
-                {t("uploadedAt")}: {new Date(doc.uploaded_at).toISOString().slice(0, 10)}
-                {doc.review_note && (
-                  <span>
-                    {" "}
-                    · {t("reviewNote")}: {doc.review_note}
-                  </span>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              return (
+                <li key={doc.id} className="py-3">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900">
+                        {tEnums(`documentType.${doc.document_type}`)}
+                      </p>
+                      <p className="mt-0.5 break-all text-xs text-gray-500">
+                        {doc.original_filename}
+                      </p>
+                    </div>
+                    <StatusBadge status={doc.verification_status} />
+                  </div>
+
+                  <dl className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-500">
+                    <div className="flex gap-1">
+                      <dt>{t("uploadedAt")}:</dt>
+                      <dd>{doc.uploaded_at.slice(0, 10)}</dd>
+                    </div>
+                    {doc.reviewed_at && (
+                      <div className="flex gap-1">
+                        <dt>{t("reviewedAt")}:</dt>
+                        <dd>{doc.reviewed_at.slice(0, 10)}</dd>
+                      </div>
+                    )}
+                    {replaced && (
+                      <div className="flex gap-1">
+                        <dt>{t("replaces")}:</dt>
+                        <dd className="break-all">
+                          {replaced.original_filename}
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+
+                  {doc.verification_status === "superseded" && (
+                    <p className="mt-2 text-xs text-gray-500">
+                      {t("supersededNote")}
+                    </p>
+                  )}
+                  {doc.review_note && (
+                    <p className="mt-2 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                      <span className="font-medium">{t("reviewNoteLabel")}: </span>
+                      {doc.review_note}
+                    </p>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </SectionCard>
     </div>
   );
 }

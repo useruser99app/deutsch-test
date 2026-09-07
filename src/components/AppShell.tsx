@@ -22,25 +22,14 @@ export default async function AppShell({
   const t = await getTranslations("common");
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-4 py-3">
-          <span className="text-lg font-bold tracking-tight">
+    <div className="min-h-screen bg-gray-50">
+      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white">
+        <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3">
+          <span className="text-lg font-bold tracking-tight text-gray-900">
             {t("appName")}
           </span>
-          <nav className="flex flex-wrap items-center gap-3 text-sm">
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="ms-auto flex items-center gap-3">
-            <span className="hidden text-xs text-gray-500 sm:inline">
+          <div className="ms-auto flex items-center gap-2">
+            <span className="hidden max-w-[14rem] truncate text-xs text-gray-500 sm:inline">
               {email}
             </span>
             <LocaleSwitcher persist />
@@ -48,15 +37,32 @@ export default async function AppShell({
               <input type="hidden" name="locale" value={locale} />
               <button
                 type="submit"
-                className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
               >
                 {t("logout")}
               </button>
             </form>
           </div>
         </div>
+
+        {/* Horizontally scrollable on narrow screens instead of wrapping. */}
+        <nav className="mx-auto max-w-5xl overflow-x-auto px-4 pb-2">
+          <ul className="flex gap-1 whitespace-nowrap">
+            {nav.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="inline-block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+
+      <main className="mx-auto max-w-5xl px-4 py-6 sm:py-8">{children}</main>
     </div>
   );
 }

@@ -55,7 +55,8 @@
     "review": "Änderungs-Review",
     "adminDocuments": "Dokumenten-Review",
     "candidates": "Kandidaten",
-    "companies": "Unternehmen"
+    "companies": "Unternehmen",
+    "reviews": "Prüfstatus"
   },
   "status": {
     "pending": "Ausstehend",
@@ -87,6 +88,16 @@
       "language_certificate": "Sprachzertifikat",
       "passport": "Reisepass",
       "other": "Sonstiges"
+    },
+    "boolean": {
+      "true": "Ja",
+      "false": "Nein"
+    },
+    "certificateStatus": {
+      "none": "Kein Zertifikat",
+      "planned": "Geplant",
+      "registered": "Angemeldet",
+      "obtained": "Erworben"
     }
   },
   "fields": {
@@ -138,7 +149,16 @@
       "reviewComment": "Kommentar",
       "profileStatus": "Profilstatus",
       "noProfile": "Noch kein Veröffentlichungsprofil angelegt.",
-      "approvalNote": "Änderungen werden erst nach Freigabe durch das NORAV-Team übernommen. Bis dahin bleiben die aktuellen Werte gültig."
+      "approvalNote": "Änderungen werden erst nach Freigabe durch das NORAV-Team übernommen. Bis dahin bleiben die aktuellen Werte gültig.",
+      "greeting": "Willkommen zurück, {name}.",
+      "noRecord": "Zu deinem Konto ist noch kein Kandidatenprofil angelegt. Bitte wende dich an das NORAV-Team.",
+      "accountStatus": "Kontostatus",
+      "primaryOccupation": "Hauptwunsch",
+      "openSection": "Alles ansehen",
+      "hintPendingChanges": "Deine Änderungen werden geprüft. In Prüfung: {count}.",
+      "hintPendingDocuments": "Deine Dokumente werden geprüft. In Prüfung: {count}.",
+      "hintNoDocuments": "Lade deine Dokumente hoch, damit dein Profil vollständig wird.",
+      "hintAllClear": "Alles auf dem aktuellen Stand. Du kannst jederzeit Änderungen vorschlagen."
     },
     "changes": {
       "title": "Änderungen vorschlagen",
@@ -147,7 +167,16 @@
       "listHint": "Mehrere Werte mit Komma trennen.",
       "submit": "Zur Prüfung einreichen",
       "error": "Einreichen fehlgeschlagen. Bitte mindestens ein Feld ausfüllen.",
-      "noChange": "— keine Änderung —"
+      "noChange": "— keine Änderung —",
+      "submitting": "Wird eingereicht …",
+      "orderHint": "Mehrere Berufe mit Komma trennen. Die Reihenfolge bestimmt die Priorität — der erste ist dein Hauptwunsch.",
+      "alreadyPending": "Für dieses Feld liegt bereits ein Vorschlag zur Prüfung vor.",
+      "sourceLanguageHint": "In welcher Sprache hast du die Freitexte verfasst? Das hilft dem Team bei der Prüfung.",
+      "submitted": "Zur Prüfung eingereicht: {count} Änderung(en). Bis zur Freigabe bleiben die aktuellen Werte gültig.",
+      "errorEmpty": "Bitte ändere mindestens ein Feld.",
+      "errorUnchanged": "Es wurden keine Änderungen erkannt — die eingetragenen Werte entsprechen dem freigegebenen Stand.",
+      "errorFailed": "Einreichen fehlgeschlagen. Bitte später erneut versuchen.",
+      "reviewNote": "Deine Vorschläge werden erst nach Freigabe durch das NORAV-Team übernommen."
     },
     "documents": {
       "title": "Meine Dokumente",
@@ -159,7 +188,40 @@
       "error": "Upload fehlgeschlagen.",
       "uploadedAt": "Hochgeladen am",
       "reviewNote": "Prüfkommentar",
-      "noDocuments": "Noch keine Dokumente."
+      "noDocuments": "Noch keine Dokumente.",
+      "description": "Lade deine Nachweise hoch. Jedes Dokument wird vom NORAV-Team geprüft.",
+      "listTitle": "Deine Dokumente",
+      "uploading": "Wird hochgeladen …",
+      "errorNoFile": "Bitte wähle eine Datei aus.",
+      "reviewedAt": "Geprüft am",
+      "replaces": "Ersetzt",
+      "supersededNote": "Dieses Dokument wurde durch eine neuere freigegebene Version ersetzt.",
+      "reviewNoteLabel": "Prüfkommentar",
+      "uploadHint": "Nach dem Hochladen steht das Dokument auf „Prüfung ausstehend“."
+    },
+    "sections": {
+      "profile": "Profil",
+      "occupation": "Berufsziel",
+      "language": "Sprachkenntnisse",
+      "education": "Ausbildung & Qualifikation",
+      "experience": "Erfahrung",
+      "availability": "Verfügbarkeit & Mobilität"
+    },
+    "reviews": {
+      "title": "Prüfstatus",
+      "description": "Hier siehst du, was gerade geprüft wird und wie frühere Vorschläge entschieden wurden.",
+      "pendingTitle": "Änderungen in Prüfung",
+      "pendingDescription": "Diese Vorschläge liegen beim NORAV-Team. Bis zur Freigabe gilt weiterhin der freigegebene Wert.",
+      "noPending": "Zurzeit wird nichts geprüft.",
+      "historyTitle": "Prüfhistorie",
+      "historyDescription": "Frühere Vorschläge mit Ergebnis — freigegeben oder abgelehnt.",
+      "noHistory": "Noch keine abgeschlossenen Prüfungen.",
+      "currentValue": "Freigegebener Wert",
+      "proposedValue": "Vorgeschlagen",
+      "submittedAt": "Eingereicht",
+      "reviewedAt": "Geprüft",
+      "sourceLanguage": "Eingabesprache",
+      "reviewComment": "Kommentar"
     }
   },
   "admin": {

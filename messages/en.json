@@ -55,7 +55,8 @@
     "review": "Change review",
     "adminDocuments": "Document review",
     "candidates": "Candidates",
-    "companies": "Companies"
+    "companies": "Companies",
+    "reviews": "Review status"
   },
   "status": {
     "pending": "Pending",
@@ -87,6 +88,16 @@
       "language_certificate": "Language certificate",
       "passport": "Passport",
       "other": "Other"
+    },
+    "boolean": {
+      "true": "Yes",
+      "false": "No"
+    },
+    "certificateStatus": {
+      "none": "No certificate",
+      "planned": "Planned",
+      "registered": "Registered",
+      "obtained": "Obtained"
     }
   },
   "fields": {
@@ -138,7 +149,16 @@
       "reviewComment": "Comment",
       "profileStatus": "Profile status",
       "noProfile": "No publication profile created yet.",
-      "approvalNote": "Changes only take effect after approval by the NORAV team. Until then the current values remain valid."
+      "approvalNote": "Changes only take effect after approval by the NORAV team. Until then the current values remain valid.",
+      "greeting": "Welcome back, {name}.",
+      "noRecord": "No candidate profile is linked to your account yet. Please contact the NORAV team.",
+      "accountStatus": "Account status",
+      "primaryOccupation": "First choice",
+      "openSection": "View all",
+      "hintPendingChanges": "Your changes are under review. Pending: {count}.",
+      "hintPendingDocuments": "Your documents are under review. Pending: {count}.",
+      "hintNoDocuments": "Upload your documents to complete your profile.",
+      "hintAllClear": "Everything is up to date. You can propose changes at any time."
     },
     "changes": {
       "title": "Propose changes",
@@ -147,7 +167,16 @@
       "listHint": "Separate multiple values with commas.",
       "submit": "Submit for review",
       "error": "Submission failed. Please fill in at least one field.",
-      "noChange": "— no change —"
+      "noChange": "— no change —",
+      "submitting": "Submitting …",
+      "orderHint": "Separate occupations with commas. The order sets the priority — the first one is your main choice.",
+      "alreadyPending": "A proposal for this field is already under review.",
+      "sourceLanguageHint": "Which language did you write the free text in? This helps the team during review.",
+      "submitted": "Submitted for review: {count} change(s). The current values stay valid until approval.",
+      "errorEmpty": "Please change at least one field.",
+      "errorUnchanged": "No changes detected — the values you entered match the approved data.",
+      "errorFailed": "Submission failed. Please try again later.",
+      "reviewNote": "Your proposals only take effect after approval by the NORAV team."
     },
     "documents": {
       "title": "My documents",
@@ -159,7 +188,40 @@
       "error": "Upload failed.",
       "uploadedAt": "Uploaded on",
       "reviewNote": "Review note",
-      "noDocuments": "No documents yet."
+      "noDocuments": "No documents yet.",
+      "description": "Upload your records. Every document is reviewed by the NORAV team.",
+      "listTitle": "Your documents",
+      "uploading": "Uploading …",
+      "errorNoFile": "Please choose a file.",
+      "reviewedAt": "Reviewed on",
+      "replaces": "Replaces",
+      "supersededNote": "This document was replaced by a newer approved version.",
+      "reviewNoteLabel": "Review note",
+      "uploadHint": "After uploading, the document is set to “pending review”."
+    },
+    "sections": {
+      "profile": "Profile",
+      "occupation": "Career goal",
+      "language": "Language skills",
+      "education": "Education & qualification",
+      "experience": "Experience",
+      "availability": "Availability & mobility"
+    },
+    "reviews": {
+      "title": "Review status",
+      "description": "See what is currently under review and how earlier proposals were decided.",
+      "pendingTitle": "Changes under review",
+      "pendingDescription": "These proposals are with the NORAV team. The approved value stays valid until they are accepted.",
+      "noPending": "Nothing is under review right now.",
+      "historyTitle": "Review history",
+      "historyDescription": "Earlier proposals with their outcome — approved or rejected.",
+      "noHistory": "No completed reviews yet.",
+      "currentValue": "Approved value",
+      "proposedValue": "Proposed",
+      "submittedAt": "Submitted",
+      "reviewedAt": "Reviewed",
+      "sourceLanguage": "Input language",
+      "reviewComment": "Comment"
     }
   },
   "admin": {

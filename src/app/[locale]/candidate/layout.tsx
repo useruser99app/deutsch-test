@@ -22,6 +22,7 @@ export default async function CandidateLayout({
         { href: "/candidate", label: t("dashboard") },
         { href: "/candidate/changes", label: t("changes") },
         { href: "/candidate/documents", label: t("documents") },
+        { href: "/candidate/reviews", label: t("reviews") },
       ]}
     >
       {children}

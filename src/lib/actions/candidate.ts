@@ -1,8 +1,21 @@
 "use server";
 
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth";
 import { documentTypes, germanLevels, localeCodes } from "@/lib/domain";
+import {
+  certificateStatuses,
+  fieldsFor,
+  type CandidateFieldDef,
+} from "@/lib/candidate-fields";
+import { approvedValue, loadCandidateSnapshot } from "@/lib/candidate-data";
+
+export interface CandidateFormState {
+  status: "idle" | "success" | "error";
+  /** Message key resolved against the i18n catalogs. */
+  reason?: "empty" | "failed" | "unchanged";
+  submittedCount?: number;
+}
 
 interface ProposedItem {
   field_key: string;
@@ -10,101 +23,142 @@ interface ProposedItem {
   source_language?: string | null;
 }
 
-function textOrNull(formData: FormData, key: string): string | null {
-  const value = String(formData.get(key) ?? "").trim();
-  return value.length > 0 ? value : null;
-}
-
-function listOrNull(formData: FormData, key: string): string[] | null {
-  const raw = textOrNull(formData, key);
-  if (!raw) return null;
-  const items = raw
-    .split(",")
-    .map((entry) => entry.trim())
-    .filter((entry) => entry.length > 0);
-  return items.length > 0 ? items : null;
+function raw(formData: FormData, key: string): string {
+  return String(formData.get(key) ?? "").trim();
 }
 
 /**
- * Candidate change submission (§5/§6). Builds a change set via the
- * SECURITY DEFINER RPC — the canonical data is never written here.
+ * Parses one form value according to its field descriptor.
+ * Returns null when the candidate left the field empty — the change
+ * workflow stores proposed_value NOT NULL, so "empty" means "leave the
+ * approved value as it is", never "clear it".
  */
-export async function submitChanges(formData: FormData) {
-  const locale = String(formData.get("locale") ?? "de");
+function parseField(
+  formData: FormData,
+  field: CandidateFieldDef
+): unknown | null {
+  const value = raw(formData, field.key);
+  if (value.length === 0) return null;
+
+  switch (field.input) {
+    case "list": {
+      const items = value
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter((entry) => entry.length > 0);
+      return items.length > 0 ? items : null;
+    }
+    case "number": {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+    case "boolean":
+      return value === "true" ? true : value === "false" ? false : null;
+    case "german_level":
+      return (germanLevels as readonly string[]).includes(value) ? value : null;
+    case "certificate_status":
+      return (certificateStatuses as readonly string[]).includes(value)
+        ? value
+        : null;
+    default:
+      return value;
+  }
+}
+
+/** True when the proposal matches the approved value (nothing to submit). */
+function isUnchanged(proposed: unknown, approved: unknown): boolean {
+  if (approved === null || approved === undefined) return false;
+
+  if (Array.isArray(proposed)) {
+    if (!Array.isArray(approved)) return false;
+    return (
+      proposed.length === approved.length &&
+      proposed.every((entry, index) => String(entry) === String(approved[index]))
+    );
+  }
+  if (typeof proposed === "number") {
+    return Number(approved) === proposed;
+  }
+  if (typeof proposed === "boolean") {
+    return approved === proposed;
+  }
+  return String(approved) === String(proposed);
+}
+
+/**
+ * Candidate change submission (§5/§6). Canonical tables are never written
+ * here: every value goes into a pending change set through the
+ * submit_candidate_changes() RPC and only becomes canonical after an admin
+ * approves it.
+ */
+export async function submitChangesAction(
+  _prev: CandidateFormState,
+  formData: FormData
+): Promise<CandidateFormState> {
+  const locale = raw(formData, "locale");
   const { supabase, profile } = await requireRole(locale, "candidate");
 
-  const sourceLanguageRaw = String(formData.get("source_language") ?? "");
-  const sourceLanguage = (
-    localeCodes as readonly string[]
-  ).includes(sourceLanguageRaw)
+  const snapshot = await loadCandidateSnapshot(supabase);
+  if (!snapshot) return { status: "error", reason: "failed" };
+
+  const sourceLanguageRaw = raw(formData, "source_language");
+  const sourceLanguage = (localeCodes as readonly string[]).includes(
+    sourceLanguageRaw
+  )
     ? sourceLanguageRaw
     : profile.preferred_locale;
 
   const items: ProposedItem[] = [];
+  let unchangedCount = 0;
 
-  const germanLevel = textOrNull(formData, "german_level");
-  if (germanLevel && (germanLevels as readonly string[]).includes(germanLevel)) {
-    items.push({ field_key: "german_level", proposed_value: germanLevel });
-  }
+  for (const field of fieldsFor(snapshot.candidate.candidate_type)) {
+    const proposed = parseField(formData, field);
+    if (proposed === null) continue;
 
-  const availability = textOrNull(formData, "availability_date");
-  if (availability) {
-    items.push({ field_key: "availability_date", proposed_value: availability });
-  }
+    if (isUnchanged(proposed, approvedValue(snapshot, field.key))) {
+      unchangedCount += 1;
+      continue;
+    }
 
-  const phone = textOrNull(formData, "phone");
-  if (phone) {
-    items.push({ field_key: "phone", proposed_value: phone });
-  }
-
-  const preferredLocations = listOrNull(formData, "preferred_locations");
-  if (preferredLocations) {
     items.push({
-      field_key: "preferred_locations",
-      proposed_value: preferredLocations,
-    });
-  }
-
-  const targetOccupations = listOrNull(formData, "target_occupations");
-  if (targetOccupations) {
-    items.push({
-      field_key: "target_occupations",
-      proposed_value: targetOccupations,
-    });
-  }
-
-  const motivation = textOrNull(formData, "motivation_summary");
-  if (motivation) {
-    items.push({
-      field_key: "motivation_summary",
-      proposed_value: motivation,
-      source_language: sourceLanguage,
+      field_key: field.key,
+      proposed_value: proposed,
+      ...(field.freeText ? { source_language: sourceLanguage } : {}),
     });
   }
 
   if (items.length === 0) {
-    redirect(`/${locale}/candidate/changes?error=empty`);
+    return {
+      status: "error",
+      reason: unchangedCount > 0 ? "unchanged" : "empty",
+    };
   }
 
   const { error } = await supabase.rpc("submit_candidate_changes", {
     p_items: items,
   });
   if (error) {
-    redirect(`/${locale}/candidate/changes?error=failed`);
+    return { status: "error", reason: "failed" };
   }
-  redirect(`/${locale}/candidate?submitted=1`);
+
+  revalidatePath(`/${locale}/candidate`);
+  revalidatePath(`/${locale}/candidate/reviews`);
+  return { status: "success", submittedCount: items.length };
 }
 
 /**
- * Candidate document upload (§7): file goes to the private bucket under
- * <candidate_id>/…, metadata row starts as pending_review. Both writes are
- * governed by RLS of the candidate's own session.
+ * Candidate document upload (§7). The file goes to the private bucket under
+ * <candidate_id>/…; the metadata row is created as pending_review. Both
+ * writes run under the candidate's own RLS session.
  */
-export async function uploadDocument(formData: FormData) {
-  const locale = String(formData.get("locale") ?? "de");
+export async function uploadDocumentAction(
+  _prev: CandidateFormState,
+  formData: FormData
+): Promise<CandidateFormState> {
+  const locale = raw(formData, "locale");
   const { supabase, user } = await requireRole(locale, "candidate");
 
-  const documentTypeRaw = String(formData.get("document_type") ?? "");
+  const documentTypeRaw = raw(formData, "document_type");
   const documentType = (documentTypes as readonly string[]).includes(
     documentTypeRaw
   )
@@ -113,16 +167,14 @@ export async function uploadDocument(formData: FormData) {
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    redirect(`/${locale}/candidate/documents?error=failed`);
+    return { status: "error", reason: "empty" };
   }
 
   const { data: candidate } = await supabase
     .from("candidates")
     .select("id")
     .maybeSingle();
-  if (!candidate) {
-    redirect(`/${locale}/candidate/documents?error=failed`);
-  }
+  if (!candidate) return { status: "error", reason: "failed" };
 
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 100);
   const filePath = `${candidate.id}/${crypto.randomUUID()}-${safeName}`;
@@ -132,9 +184,7 @@ export async function uploadDocument(formData: FormData) {
     .upload(filePath, file, {
       contentType: file.type || "application/octet-stream",
     });
-  if (uploadError) {
-    redirect(`/${locale}/candidate/documents?error=failed`);
-  }
+  if (uploadError) return { status: "error", reason: "failed" };
 
   const { error: insertError } = await supabase
     .from("candidate_documents")
@@ -150,8 +200,10 @@ export async function uploadDocument(formData: FormData) {
     });
   if (insertError) {
     await supabase.storage.from("candidate-documents").remove([filePath]);
-    redirect(`/${locale}/candidate/documents?error=failed`);
+    return { status: "error", reason: "failed" };
   }
 
-  redirect(`/${locale}/candidate/documents?ok=1`);
+  revalidatePath(`/${locale}/candidate`);
+  revalidatePath(`/${locale}/candidate/documents`);
+  return { status: "success", submittedCount: 1 };
 }
