@@ -9,6 +9,7 @@ import {
   localeCodes,
   type InviteActionState,
 } from "@/lib/domain";
+import { provisionAccount, ProvisioningError } from "@/lib/provisioning";
 
 function text(formData: FormData, key: string): string {
   return String(formData.get(key) ?? "").trim();
@@ -88,6 +89,26 @@ export async function createCandidateAccountAction(
       return { status: "error" };
     }
     userId = data.user.id;
+  }
+
+  // The invite only creates the auth user; handle_new_user() gives it safe
+  // defaults (candidate / invited). State the intended account state
+  // explicitly with the service role and verify it — never rely on the
+  // trigger reading the invite metadata.
+  try {
+    await provisionAccount(admin, {
+      userId,
+      email,
+      role: "candidate",
+      accountStatus: "invited",
+      locale: preferredLocale,
+    });
+  } catch (error) {
+    console.error(
+      "Candidate account provisioning failed",
+      error instanceof ProvisioningError ? error.message : error
+    );
+    return { status: "error" };
   }
 
   // Canonical candidate row + empty type-specific detail row + draft
@@ -200,6 +221,24 @@ export async function createEmployerAccountAction(
       return { status: "error" };
     }
     userId = data.user.id;
+  }
+
+  // Same as above: the employer role must be written explicitly, otherwise
+  // the trigger's safe default would leave this account as 'candidate'.
+  try {
+    await provisionAccount(admin, {
+      userId,
+      email,
+      role: "employer",
+      accountStatus: "invited",
+      locale: preferredLocale,
+    });
+  } catch (error) {
+    console.error(
+      "Employer account provisioning failed",
+      error instanceof ProvisioningError ? error.message : error
+    );
+    return { status: "error" };
   }
 
   const { error: memberError } = await supabase.from("company_members").insert({

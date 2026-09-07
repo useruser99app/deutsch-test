@@ -15,6 +15,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { anonClient, ensureUser, serviceClient } from "./lib";
+import { provisionAccount } from "../src/lib/provisioning";
 
 let passed = 0;
 let failed = 0;
@@ -535,6 +536,95 @@ async function main() {
       .from("candidate-documents")
       .download(certificatePath);
     check(!anonFile, "anon cannot download candidate files");
+
+    // ------------------------------------------------------------------
+    // Regression for the production invite path (src/lib/actions/admin.ts).
+    // It creates the auth user with generateLink/inviteUserByEmail — whose
+    // metadata lands in user_metadata — and then provisions app_users
+    // explicitly with the service role. Before that fix an invited employer
+    // silently became a 'candidate'.
+    console.log("\n== 5c. Real invite path: employer provisioning ==");
+    const inviteEmail = `wf-invite-emp-${run}@norav.local`;
+    const { data: inviteData, error: inviteError } =
+      await service.auth.admin.generateLink({
+        type: "invite",
+        email: inviteEmail,
+        options: {
+          data: {
+            norav_role: "employer",
+            norav_account_status: "invited",
+            norav_locale: "de",
+          },
+        },
+      });
+    check(
+      !inviteError && !!inviteData?.user,
+      "invite created an auth user",
+      inviteError?.message
+    );
+    const invitedEmployerId = inviteData?.user?.id;
+    if (invitedEmployerId) {
+      cleanupUserIds.push(invitedEmployerId);
+
+      // What the trigger alone produced — informational, and the reason the
+      // explicit provisioning step exists.
+      const { data: beforeProvisioning } = await service
+        .from("app_users")
+        .select("role, account_status")
+        .eq("id", invitedEmployerId)
+        .maybeSingle();
+      console.log(
+        `  nach dem Invite, vor Provisioning: role=${beforeProvisioning?.role} ` +
+          `account_status=${beforeProvisioning?.account_status}`
+      );
+
+      // Exactly what createEmployerAccountAction() now does.
+      await provisionAccount(service, {
+        userId: invitedEmployerId,
+        email: inviteEmail,
+        role: "employer",
+        accountStatus: "invited",
+        locale: "de",
+      });
+
+      const { data: afterProvisioning } = await service
+        .from("app_users")
+        .select("role, account_status, preferred_locale")
+        .eq("id", invitedEmployerId)
+        .maybeSingle();
+      check(
+        afterProvisioning?.role === "employer",
+        "invited employer has role 'employer' (not 'candidate')",
+        afterProvisioning
+      );
+      check(
+        afterProvisioning?.account_status === "invited",
+        "invited employer starts with account_status 'invited'",
+        afterProvisioning
+      );
+      check(
+        afterProvisioning?.preferred_locale === "de",
+        "invited employer keeps the requested locale",
+        afterProvisioning
+      );
+    }
+
+    // No signed-in user may raise their own role or status.
+    const { data: escalated } = await sessionE
+      .from("app_users")
+      .update({ role: "admin", account_status: "active" })
+      .eq("id", employer.id)
+      .select("id");
+    const { data: employerRow } = await service
+      .from("app_users")
+      .select("role")
+      .eq("id", employer.id)
+      .maybeSingle();
+    check(
+      (escalated ?? []).length === 0 && employerRow?.role === "employer",
+      "signed-in employer cannot raise their own role to admin",
+      employerRow
+    );
 
     // ------------------------------------------------------------------
     console.log("\n== 6. Security: suspended & invited accounts ==");

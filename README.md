@@ -15,6 +15,20 @@ späteren Meilensteinen.
 - next-intl (Locales: `de`, `en`, `fr`, `ar` — Arabisch mit strukturellem RTL)
 - Vercel-kompatibel
 
+## Account-Provisioning
+
+Rolle, `account_status` und Locale eines Kontos werden **immer explizit
+serverseitig** gesetzt — über `provisionAccount()` in
+`src/lib/provisioning.ts`, das den geschriebenen Zustand anschließend
+zurückliest und verifiziert. Dieselbe Funktion nutzen der Admin-Invite-Flow
+(`src/lib/actions/admin.ts`) und die Skripte (`scripts/lib.ts`).
+
+Der Trigger `handle_new_user()` legt nur eine sichere Startzeile an
+(`candidate` / `invited`) und liest privilegierte Felder ausschließlich aus
+`raw_app_meta_data`, das allein die Service-Role schreiben kann.
+`raw_user_meta_data` ist client-beschreibbar und beeinflusst weder Rolle noch
+Status. Ein Konto ohne Provisioning ist damit nie aktiv und nie privilegiert.
+
 ## Kernprinzip: Verifizierte Daten
 
 Kandidat/innen ändern kanonische Daten **nie** direkt. Jede Änderung läuft als

@@ -451,5 +451,104 @@ begin
   raise notice 'PASS: anon sees only published+approved profile data; identity, documents and requests stay closed';
 end $$;
 
+-- ---------------------------------------------------------------
+-- 10. Provisioning: safe trigger defaults + no privilege escalation
+--     (migration 0009). raw_user_meta_data is client-writable, so it must
+--     never decide role or account_status.
+-- ---------------------------------------------------------------
+reset role;
+
+-- A self-registration style insert claiming admin/active via USER metadata
+-- must be ignored: the account has to fall back to the safe defaults.
+insert into auth.users (id, email, raw_user_meta_data) values (
+  '00000000-0000-0000-0000-0000000000f1',
+  'escalation@test',
+  '{"norav_role":"admin","norav_account_status":"active","norav_locale":"fr"}'
+);
+do $$
+declare r public.user_role; st public.account_status; loc public.locale_code;
+begin
+  select role, account_status, preferred_locale into r, st, loc
+  from public.app_users where email = 'escalation@test';
+  if r <> 'candidate' or st <> 'invited' then
+    raise exception 'FAIL: user_metadata escalated to role=% status=%', r, st;
+  end if;
+  if loc <> 'fr' then
+    raise exception 'FAIL: non-privileged locale from user_metadata was dropped (%)', loc;
+  end if;
+  raise notice 'PASS: user_metadata cannot set role/account_status; locale still honoured';
+end $$;
+
+-- The service-role path (app_metadata) still provisions correctly.
+insert into auth.users (id, email, raw_app_meta_data) values (
+  '00000000-0000-0000-0000-0000000000f2',
+  'employer-invite@test',
+  '{"norav_role":"employer","norav_account_status":"invited","norav_locale":"de"}'
+);
+do $$
+declare r public.user_role; st public.account_status;
+begin
+  select role, account_status into r, st
+  from public.app_users where email = 'employer-invite@test';
+  if r <> 'employer' or st <> 'invited' then
+    raise exception 'FAIL: app_metadata provisioning gave role=% status=%', r, st;
+  end if;
+  raise notice 'PASS: app_metadata (service role only) still provisions employer/invited';
+end $$;
+
+-- An invite that carries NO metadata at all — the real path, where the app
+-- provisions explicitly afterwards — must start safe.
+insert into auth.users (id, email) values (
+  '00000000-0000-0000-0000-0000000000f3', 'bare-invite@test'
+);
+do $$
+declare r public.user_role; st public.account_status;
+begin
+  select role, account_status into r, st
+  from public.app_users where email = 'bare-invite@test';
+  if r <> 'candidate' or st <> 'invited' then
+    raise exception 'FAIL: bare invite gave role=% status=%', r, st;
+  end if;
+  raise notice 'PASS: invite without metadata starts as candidate/invited (safe default)';
+end $$;
+
+-- Explicit server-side provisioning (what src/lib/provisioning.ts does with
+-- the service role) turns it into the intended employer account.
+update public.app_users
+set role = 'employer', account_status = 'invited', preferred_locale = 'de'
+where email = 'bare-invite@test';
+do $$
+begin
+  if (select role from public.app_users where email = 'bare-invite@test') <> 'employer' then
+    raise exception 'FAIL: server-side provisioning did not apply';
+  end if;
+  raise notice 'PASS: server-side provisioning sets role=employer';
+end $$;
+
+-- No signed-in user may raise their own role or status.
+set role authenticated;
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000c1';
+do $$
+declare n int;
+begin
+  update public.app_users set role = 'admin', account_status = 'active'
+  where id = auth.uid();
+  get diagnostics n = row_count;
+  if n <> 0 then
+    raise exception 'FAIL: user escalated own app_users row';
+  end if;
+  if (select role from public.app_users where id = auth.uid()) <> 'candidate' then
+    raise exception 'FAIL: own role changed';
+  end if;
+  -- and not anyone else's either
+  update public.app_users set account_status = 'active'
+  where email = 'bare-invite@test';
+  get diagnostics n = row_count;
+  if n <> 0 then
+    raise exception 'FAIL: user modified a foreign app_users row';
+  end if;
+  raise notice 'PASS: authenticated user cannot raise own or foreign role/status';
+end $$;
+
 reset role;
 select 'ALL LOCAL WORKFLOW TESTS PASSED' as result;
