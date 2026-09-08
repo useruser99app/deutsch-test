@@ -68,26 +68,27 @@ export default async function AdminDashboard({
         />
       </div>
 
-      {/* Needs attention — the candidates the queues actually belong to. */}
+      {/* Needs attention — compact and calm when nothing is waiting (§5). */}
       <div className="mt-6">
-        <Panel
-          title={t("needsAttention")}
-          description={t("needsAttentionDescription")}
-          action={
-            <Link
-              href="/admin/candidates?pendingOnly=1"
-              className="text-sm font-medium text-accent hover:underline"
-            >
-              {t("open")}
-            </Link>
-          }
-          bleed
-        >
-          {attention.rows.length === 0 ? (
-            <div className="p-5">
-              <EmptyState message={t("noAttention")} compact />
-            </div>
-          ) : (
+        {attention.rows.length === 0 ? (
+          <div className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface px-5 py-3.5 shadow-panel">
+            <StatusBadge status="approved" size="sm" />
+            <p className="t-body text-ink-600">{t("noAttention")}</p>
+          </div>
+        ) : (
+          <Panel
+            title={t("needsAttention")}
+            description={t("needsAttentionDescription")}
+            action={
+              <Link
+                href="/admin/candidates?pendingOnly=1"
+                className="text-sm font-medium text-accent hover:underline"
+              >
+                {t("open")}
+              </Link>
+            }
+            bleed
+          >
             <ul className="divide-y divide-hairline">
               {attention.rows.slice(0, 6).map((row) => {
                 const changes = attention.pendingChanges.get(row.id) ?? 0;
@@ -120,8 +121,8 @@ export default async function AdminDashboard({
                 );
               })}
             </ul>
-          )}
-        </Panel>
+          </Panel>
+        )}
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">

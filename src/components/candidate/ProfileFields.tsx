@@ -3,27 +3,23 @@ import { useValueFormatter } from "@/components/ui/useValueFormatter";
 import { InfoGrid, InfoItem } from "@/components/ui/InfoGrid";
 import { approvedValue, type CandidateSnapshot } from "@/lib/candidate-data";
 import {
+  fieldSections,
   fieldsForSection,
   type FieldSection,
 } from "@/lib/candidate-fields";
 import StatusBadge from "@/components/ui/StatusBadge";
 
-/**
- * Approved profile values for one section, laid out as a compact grid.
- * Shared by the candidate dashboard and the admin candidate workspace so
- * both read from the same field registry and formatting rules.
- */
-export default function ProfileFields({
+/** One section's approved values, laid out as a compact grid. */
+function SectionFields({
   snapshot,
   section,
   pendingValues,
-  columns = 3,
+  columns,
 }: {
   snapshot: CandidateSnapshot;
   section: FieldSection;
-  /** field_key → proposed value, when a proposal is open for that field. */
   pendingValues?: Map<string, unknown>;
-  columns?: 2 | 3;
+  columns: 2 | 3;
 }) {
   const format = useValueFormatter();
   const tFields = useTranslations("fields");
@@ -39,17 +35,17 @@ export default function ProfileFields({
     <InfoGrid columns={columns}>
       {showOccupationList && (
         <InfoItem label={tFields("target_occupations")} wide>
-          <ol className="space-y-1.5">
+          <ol className="flex flex-wrap gap-x-4 gap-y-1.5">
             {snapshot.occupations.map((entry) => (
-              <li
-                key={entry.occupation}
-                className="flex flex-wrap items-center gap-2"
-              >
+              <li key={entry.occupation} className="flex items-center gap-2">
                 <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink-100 text-[11px] font-semibold text-ink-600 tabular-nums">
                   {entry.rank}
                 </span>
                 <span className="font-medium text-ink-900">
-                  {entry.occupation}
+                  {/* Canonical German occupation value, never translated —
+                      isolated so it reads LTR inside Arabic copy without
+                      flipping the row. */}
+                  <bdi>{entry.occupation}</bdi>
                 </span>
                 {entry.rank === 1 && (
                   <span className="rounded bg-ink-900 px-1.5 py-0.5 text-[11px] font-medium text-white">
@@ -66,29 +62,74 @@ export default function ProfileFields({
         if (field.key === "target_occupations" && showOccupationList) {
           return null;
         }
-        const hasPending = pendingValues?.has(field.key) ?? false;
+        const value = format(
+          approvedValue(snapshot, field.key),
+          field.input,
+          field.key
+        );
+        const pendingValue = pendingValues?.has(field.key)
+          ? format(pendingValues.get(field.key), field.input, field.key)
+          : null;
 
         return (
           <InfoItem
             key={field.key}
             label={tFields.has(field.key) ? tFields(field.key) : field.key}
             wide={field.input === "textarea"}
+            empty={value.isEmpty}
             hint={
-              hasPending ? (
+              pendingValue ? (
                 <span className="flex flex-wrap items-center gap-2">
                   <StatusBadge status="pending" size="sm" />
                   <span className="t-meta">
-                    {t("proposedLabel")}:{" "}
-                    {format(pendingValues?.get(field.key), field.input)}
+                    {t("proposedLabel")}: <bdi>{pendingValue.text}</bdi>
                   </span>
                 </span>
               ) : undefined
             }
           >
-            {format(approvedValue(snapshot, field.key), field.input)}
+            {value.text}
           </InfoItem>
         );
       })}
     </InfoGrid>
+  );
+}
+
+/**
+ * The whole approved profile as ONE surface with internal dividers, rather
+ * than a stack of separate panels for a handful of fields each. Shared by
+ * the candidate dashboard and the admin candidate workspace.
+ */
+export default function ProfileFields({
+  snapshot,
+  pendingValues,
+  columns = 3,
+}: {
+  snapshot: CandidateSnapshot;
+  pendingValues?: Map<string, unknown>;
+  columns?: 2 | 3;
+}) {
+  const tSections = useTranslations("candidate.sections");
+
+  const sections = fieldSections.filter(
+    (section) =>
+      fieldsForSection(snapshot.candidate.candidate_type, section).length > 0
+  );
+
+  return (
+    <div className="divide-y divide-hairline">
+      {sections.map((section) => (
+        <section key={section} className="px-5 py-5 first:pt-4 last:pb-4">
+          <h3 className="t-section-label mb-3.5">{tSections(section)}</h3>
+          <SectionFields
+            snapshot={snapshot}
+            section={section}
+            pendingValues={pendingValues}
+            columns={columns}
+          />
+        </section>
+      ))}
+    </div>
   );
 }

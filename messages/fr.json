@@ -10,7 +10,8 @@
     "yes": "Oui",
     "no": "Non",
     "none": "—",
-    "error": "Une erreur est survenue."
+    "error": "Une erreur est survenue.",
+    "notProvided": "Non renseigné"
   },
   "home": {
     "title": "NORAV",
@@ -330,13 +331,14 @@
       "applyFilters": "Filtrer",
       "resetFilters": "Réinitialiser",
       "pendingOnly": "Uniquement avec vérification en cours",
-      "pendingColumn": "En attente (mod./doc.)",
+      "pendingColumn": "Vérifications en attente",
       "pendingSummary": "En attente : {changes} modifications, {documents} documents",
       "resultCount": "Résultats : {count}",
       "noResults": "Aucun candidat pour ces filtres.",
       "truncated": "Seuls les premiers résultats sont affichés. Affinez la recherche ou les filtres.",
       "pendingChangesShort": "{count} modifications",
-      "pendingDocumentsShort": "{count} documents"
+      "pendingDocumentsShort": "{count} documents",
+      "createShort": "+ Ajouter un candidat"
     },
     "companies": {
       "title": "Entreprises",
@@ -360,7 +362,11 @@
       "openWork": "En attente",
       "pendingChanges": "Modifications : {count}",
       "pendingDocuments": "Documents : {count}",
-      "primaryOccupation": "Premier choix"
+      "primaryOccupation": "Premier choix",
+      "candidateStatus": "Statut du candidat",
+      "primaryTarget": "Métier principal souhaité",
+      "noOpenReviews": "Aucune vérification en attente",
+      "profileTitle": "Profil du candidat"
     }
   },
   "employer": {

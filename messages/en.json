@@ -10,7 +10,8 @@
     "yes": "Yes",
     "no": "No",
     "none": "—",
-    "error": "Something went wrong."
+    "error": "Something went wrong.",
+    "notProvided": "Not provided"
   },
   "home": {
     "title": "NORAV",
@@ -330,13 +331,14 @@
       "applyFilters": "Filter",
       "resetFilters": "Reset",
       "pendingOnly": "Only with open review",
-      "pendingColumn": "Open (chg./doc.)",
+      "pendingColumn": "Open reviews",
       "pendingSummary": "Open: {changes} changes, {documents} documents",
       "resultCount": "Results: {count}",
       "noResults": "No candidates match these filters.",
       "truncated": "Only the first results are shown. Please refine the search or filters.",
       "pendingChangesShort": "{count} changes",
-      "pendingDocumentsShort": "{count} documents"
+      "pendingDocumentsShort": "{count} documents",
+      "createShort": "+ Add candidate"
     },
     "companies": {
       "title": "Companies",
@@ -360,7 +362,11 @@
       "openWork": "Open",
       "pendingChanges": "Changes: {count}",
       "pendingDocuments": "Documents: {count}",
-      "primaryOccupation": "First choice"
+      "primaryOccupation": "First choice",
+      "candidateStatus": "Candidate status",
+      "primaryTarget": "Primary target occupation",
+      "noOpenReviews": "No open reviews",
+      "profileTitle": "Candidate profile"
     }
   },
   "employer": {

@@ -10,7 +10,8 @@
     "yes": "Ja",
     "no": "Nein",
     "none": "—",
-    "error": "Es ist ein Fehler aufgetreten."
+    "error": "Es ist ein Fehler aufgetreten.",
+    "notProvided": "Nicht angegeben"
   },
   "home": {
     "title": "NORAV",
@@ -330,13 +331,14 @@
       "applyFilters": "Filtern",
       "resetFilters": "Zurücksetzen",
       "pendingOnly": "Nur mit offener Prüfung",
-      "pendingColumn": "Offen (Änd./Dok.)",
+      "pendingColumn": "Offene Prüfungen",
       "pendingSummary": "Offen: {changes} Änderungen, {documents} Dokumente",
       "resultCount": "Treffer: {count}",
       "noResults": "Keine Kandidaten für diese Filter.",
       "truncated": "Es werden nur die ersten Treffer angezeigt. Bitte Suche oder Filter verfeinern.",
       "pendingChangesShort": "{count} Änderungen",
-      "pendingDocumentsShort": "{count} Dokumente"
+      "pendingDocumentsShort": "{count} Dokumente",
+      "createShort": "+ Kandidat anlegen"
     },
     "companies": {
       "title": "Unternehmen",
@@ -360,7 +362,11 @@
       "openWork": "Offen",
       "pendingChanges": "Änderungen: {count}",
       "pendingDocuments": "Dokumente: {count}",
-      "primaryOccupation": "Hauptwunsch"
+      "primaryOccupation": "Hauptwunsch",
+      "candidateStatus": "Kandidatenstatus",
+      "primaryTarget": "Hauptwunschberuf",
+      "noOpenReviews": "Keine offenen Prüfungen",
+      "profileTitle": "Kandidatenprofil"
     }
   },
   "employer": {

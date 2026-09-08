@@ -33,7 +33,7 @@ export default function ChangeItemRow({ item }: { item: ChangeItem }) {
 
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
         <span className="text-sm text-ink-500 line-through decoration-ink-300">
-          {format(item.current_value)}
+          <bdi>{format(item.current_value).text}</bdi>
         </span>
         <span aria-hidden className="text-ink-300">
           <span className="rtl:hidden">→</span>
@@ -44,7 +44,7 @@ export default function ChangeItemRow({ item }: { item: ChangeItem }) {
             item.status === "rejected" ? "text-ink-600" : "text-ink-900"
           }`}
         >
-          {format(item.proposed_value)}
+          <bdi>{format(item.proposed_value).text}</bdi>
         </span>
       </div>
 

@@ -6,7 +6,6 @@ import {
   loadChangeItems,
   loadDocuments,
 } from "@/lib/candidate-data";
-import { fieldSections, fieldsForSection } from "@/lib/candidate-fields";
 import PageHeader from "@/components/ui/PageHeader";
 import Panel from "@/components/ui/Panel";
 import StatusBadge from "@/components/ui/StatusBadge";
@@ -24,7 +23,6 @@ export default async function CandidateDashboard({
   const { supabase } = await requireRole(locale, "candidate");
 
   const t = await getTranslations("candidate.dashboard");
-  const tSections = await getTranslations("candidate.sections");
   const tEnums = await getTranslations("enums");
   const tReviews = await getTranslations("candidate.reviews");
   const tDocs = await getTranslations("candidate.documents");
@@ -47,12 +45,17 @@ export default async function CandidateDashboard({
   const pendingDocuments = documents.filter(
     (doc) => doc.verification_status === "pending_review"
   );
+  const openCount = pending.length + pendingDocuments.length;
 
-  // One concrete next step, phrased without internal terminology (§10).
+  // Exactly one primary next step, phrased without internal terminology.
   const nextStep =
     documents.length === 0
-      ? { text: t("hintNoDocuments"), href: "/candidate/documents", cta: t("uploadDocument") }
-      : pending.length > 0 || pendingDocuments.length > 0
+      ? {
+          text: t("hintNoDocuments"),
+          href: "/candidate/documents",
+          cta: t("uploadDocument"),
+        }
+      : openCount > 0
         ? {
             text:
               pending.length > 0
@@ -61,27 +64,25 @@ export default async function CandidateDashboard({
             href: "/candidate/reviews",
             cta: tReviews("title"),
           }
-        : { text: t("hintAllClear"), href: "/candidate/changes", cta: t("proposeChanges") };
+        : {
+            text: t("hintAllClear"),
+            href: "/candidate/changes",
+            cta: t("proposeChanges"),
+          };
+
+  // The secondary link is always a different destination than the primary.
+  const secondary =
+    nextStep.href === "/candidate/changes"
+      ? { href: "/candidate/documents", label: t("uploadDocument") }
+      : { href: "/candidate/changes", label: t("proposeChanges") };
 
   return (
     <>
-      <PageHeader
-        title={t("greeting", { name: candidate.first_name })}
-        actions={
-          <>
-            <Link href="/candidate/changes" className={buttonClass("primary")}>
-              {t("proposeChanges")}
-            </Link>
-            <Link href="/candidate/documents" className={buttonClass("secondary")}>
-              {t("uploadDocument")}
-            </Link>
-          </>
-        }
-      />
+      <PageHeader title={t("greeting", { name: candidate.first_name })} />
 
-      {/* Status and next step — the four questions, answered at the top. */}
-      <section className="rounded-lg border border-hairline bg-surface p-5 shadow-panel">
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+      {/* Status and next step — one primary action, no duplication. */}
+      <section className="rounded-lg border border-hairline bg-surface shadow-panel">
+        <div className="grid gap-x-8 gap-y-4 px-5 py-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="t-label">{t("profileStatus")}</p>
             <div className="mt-1.5">
@@ -94,43 +95,53 @@ export default async function CandidateDashboard({
           </div>
           <div>
             <p className="t-label">{tReviews("pendingTitle")}</p>
-            <p className="mt-1 text-sm font-semibold text-ink-900 tabular-nums">
-              {pending.length + pendingDocuments.length}
+            <p className="mt-1 text-lg font-semibold text-ink-900 tabular-nums">
+              {openCount}
             </p>
           </div>
-          <div className="ms-auto text-end">
-            <p className="t-label">{tEnums(`candidateType.${candidate.candidate_type}`)}</p>
-            <p className="t-meta mt-1 font-mono">{candidate.candidate_code}</p>
+          <div>
+            <p className="t-label">{tFields("german_level")}</p>
+            <p className="mt-1 text-lg font-semibold text-ink-900">
+              <bdi>{candidate.german_level}</bdi>
+            </p>
+          </div>
+          <div>
+            <p className="t-label">{tFields("candidate_code")}</p>
+            <p className="t-value mt-1 font-mono">
+              <bdi>{candidate.candidate_code}</bdi>
+            </p>
+            <p className="t-meta">
+              {tEnums(`candidateType.${candidate.candidate_type}`)}
+            </p>
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-md border border-accent/20 bg-accent-soft px-4 py-3">
-          <p className="text-sm text-ink-800">{nextStep.text}</p>
-          <Link href={nextStep.href} className={buttonClass("primary", "sm")}>
-            {nextStep.cta}
-          </Link>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-hairline bg-accent-soft px-5 py-4">
+          <p className="t-body max-w-xl text-ink-800">{nextStep.text}</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href={secondary.href} className="text-sm font-medium text-accent hover:underline">
+              {secondary.label}
+            </Link>
+            <Link href={nextStep.href} className={buttonClass("primary", "sm")}>
+              {nextStep.cta}
+            </Link>
+          </div>
         </div>
 
-        <p className="t-meta mt-3">{t("approvalNote")}</p>
+        <p className="t-meta border-t border-hairline px-5 py-3">
+          {t("approvalNote")}
+        </p>
       </section>
 
-      {/* Approved profile, compact */}
-      <div className="mt-6 space-y-6">
-        {fieldSections.map((section) => {
-          if (fieldsForSection(candidate.candidate_type, section).length === 0) {
-            return null;
-          }
-          return (
-            <Panel key={section} title={tSections(section)}>
-              <ProfileFields
-                snapshot={snapshot}
-                section={section}
-                pendingValues={pendingByField}
-                columns={2}
-              />
-            </Panel>
-          );
-        })}
+      {/* The whole approved profile as one surface with internal dividers. */}
+      <div className="mt-6">
+        <Panel title={t("approvedData")} bleed>
+          <ProfileFields
+            snapshot={snapshot}
+            pendingValues={pendingByField}
+            columns={3}
+          />
+        </Panel>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
@@ -162,7 +173,7 @@ export default async function CandidateDashboard({
                       {tEnums(`documentType.${doc.document_type}`)}
                     </span>
                     <span className="t-meta block truncate">
-                      {doc.original_filename}
+                      <bdi>{doc.original_filename}</bdi>
                     </span>
                   </span>
                   <StatusBadge status={doc.verification_status} size="sm" />

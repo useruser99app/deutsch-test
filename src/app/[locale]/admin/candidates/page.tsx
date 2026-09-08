@@ -65,6 +65,14 @@ export default async function AdminCandidatesPage({
       <PageHeader
         title={t("title")}
         description={t("resultCount", { count: rows.length })}
+        actions={
+          <Link
+            href="/admin/candidates?create=1#create"
+            className={buttonClass("primary", "md")}
+          >
+            {t("createShort")}
+          </Link>
+        }
       />
 
       {/* Search leads; the narrower filters sit beneath it. */}
@@ -338,8 +346,9 @@ export default async function AdminCandidatesPage({
       )}
 
       <details
+        id="create"
         open={sp.create === "1"}
-        className="mt-6 rounded-lg border border-hairline bg-surface shadow-panel"
+        className="mt-6 scroll-mt-6 rounded-lg border border-hairline bg-surface shadow-panel"
       >
         <summary className="cursor-pointer px-5 py-4 text-sm font-medium text-ink-800">
           {t("create")}

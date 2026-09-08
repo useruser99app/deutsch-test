@@ -10,7 +10,8 @@
     "yes": "نعم",
     "no": "لا",
     "none": "—",
-    "error": "حدث خطأ ما."
+    "error": "حدث خطأ ما.",
+    "notProvided": "غير محدد"
   },
   "home": {
     "title": "NORAV",
@@ -330,13 +331,14 @@
       "applyFilters": "تصفية",
       "resetFilters": "إعادة تعيين",
       "pendingOnly": "فقط مع مراجعة مفتوحة",
-      "pendingColumn": "مفتوح (تعديلات/مستندات)",
+      "pendingColumn": "مراجعات مفتوحة",
       "pendingSummary": "مفتوح: {changes} تعديلات، {documents} مستندات",
       "resultCount": "النتائج: {count}",
       "noResults": "لا يوجد مرشحون مطابقون لهذه المرشحات.",
       "truncated": "يتم عرض النتائج الأولى فقط. يرجى تضييق البحث أو المرشحات.",
       "pendingChangesShort": "{count} تعديلات",
-      "pendingDocumentsShort": "{count} مستندات"
+      "pendingDocumentsShort": "{count} مستندات",
+      "createShort": "+ إضافة مرشح"
     },
     "companies": {
       "title": "الشركات",
@@ -360,7 +362,11 @@
       "openWork": "مفتوح",
       "pendingChanges": "التعديلات: {count}",
       "pendingDocuments": "المستندات: {count}",
-      "primaryOccupation": "الخيار الأول"
+      "primaryOccupation": "الخيار الأول",
+      "candidateStatus": "حالة المرشح",
+      "primaryTarget": "المهنة المرغوبة الرئيسية",
+      "noOpenReviews": "لا توجد مراجعات مفتوحة",
+      "profileTitle": "ملف المرشح"
     }
   },
   "employer": {

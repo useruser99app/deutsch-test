@@ -74,6 +74,88 @@
   table {
     font-variant-numeric: tabular-nums;
   }
+
+  /* ---------------------------------------------------------------------
+   * Arabic is a first-class UI language here, not a mirrored afterthought.
+   * Arabic glyphs need more vertical room and read poorly at the small
+   * sizes Latin copy tolerates, so the whole scale steps up. Letter-spacing
+   * and uppercasing are DISABLED: Arabic has no case, and tracking breaks
+   * the connected script.
+   * ------------------------------------------------------------------ */
+  html[lang="ar"] body {
+    font-family: "Noto Sans Arabic", "Geeza Pro", "Segoe UI",
+      "Dubai", "Tahoma", -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.75;
+  }
+}
+
+@layer components {
+  html[lang="ar"] .t-page-title {
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+    letter-spacing: 0;
+  }
+
+  html[lang="ar"] .t-section-title,
+  html[lang="ar"] .t-entity {
+    font-size: 1.0625rem;
+    line-height: 1.875rem;
+  }
+
+  html[lang="ar"] .t-label {
+    font-size: 0.8125rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--color-ink-500);
+  }
+
+  /* The section heading must stay clearly above the field labels. Arabic
+   * cannot use uppercase or tracking for that job, so it separates by
+   * size, weight and ink instead. */
+  html[lang="ar"] .t-section-label {
+    font-size: 1rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--color-ink-800);
+  }
+
+  /* Arabic has no italic: browsers synthesise a slant that degrades the
+   * connected script. The "no value" state separates by ink alone here. */
+  html[lang="ar"] .t-empty {
+    font-style: normal;
+  }
+
+  html[lang="ar"] .t-value {
+    font-size: 0.9375rem;
+    line-height: 1.75rem;
+  }
+
+  html[lang="ar"] .t-meta {
+    font-size: 0.8125rem;
+    line-height: 1.5rem;
+  }
+
+  html[lang="ar"] .t-body {
+    font-size: 0.9375rem;
+    line-height: 1.875rem;
+  }
+
+  /* Latin values inside Arabic copy — B2, NOR-00011, e-mail addresses,
+   * German occupation names — must not be reordered by the bidi algorithm
+   * or inherit the RTL baseline direction. */
+  .bidi {
+    unicode-bidi: isolate;
+  }
+
+  .bidi-ltr {
+    unicode-bidi: isolate;
+    direction: ltr;
+    text-align: start;
+  }
 }
 
 @layer components {
@@ -110,10 +192,27 @@
     color: var(--color-ink-400);
   }
 
+  /* Heading of a section inside a panel — one clear step above .t-label,
+   * which sits under it and must not compete. */
+  .t-section-label {
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-700);
+  }
+
   .t-value {
     font-size: 0.875rem;
     line-height: 1.375rem;
     color: var(--color-ink-800);
+  }
+
+  /* A field with no stored value: quieter than real data, never an error. */
+  .t-empty {
+    color: var(--color-ink-400);
+    font-style: italic;
   }
 
   .t-meta {

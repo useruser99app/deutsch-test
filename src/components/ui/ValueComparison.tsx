@@ -24,7 +24,7 @@ export default function ValueComparison({
       <div className="rounded-md border border-hairline bg-ink-50 px-3 py-2.5">
         <p className="t-label">{t("current")}</p>
         <p className="mt-1 break-words text-sm text-ink-600 line-through decoration-ink-300">
-          {format(currentValue)}
+          <bdi>{format(currentValue).text}</bdi>
         </p>
       </div>
 
@@ -51,7 +51,7 @@ export default function ValueComparison({
             muted ? "text-ink-800" : "text-positive"
           }`}
         >
-          {format(proposedValue)}
+          <bdi>{format(proposedValue).text}</bdi>
         </p>
       </div>
     </div>
