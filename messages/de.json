@@ -231,7 +231,15 @@
       "pendingDocuments": "Ausstehende Dokumente",
       "candidates": "Kandidaten",
       "companies": "Unternehmen",
-      "open": "Öffnen"
+      "open": "Öffnen",
+      "openQueue": "Warteschlange öffnen",
+      "queueSummary": "Offene Vorgänge: {count}.",
+      "queueEmpty": "Keine offenen Vorgänge.",
+      "candidatesByType": "Kandidaten nach Typ",
+      "recentChanges": "Zuletzt eingereichte Änderungen",
+      "recentDocuments": "Zuletzt hochgeladene Dokumente",
+      "noRecentChanges": "Noch keine Änderungen eingereicht.",
+      "noRecentDocuments": "Noch keine Dokumente hochgeladen."
     },
     "review": {
       "title": "Änderungs-Review",
@@ -247,7 +255,19 @@
       "source": "Quelle",
       "sourceLanguage": "Eingabesprache",
       "done": "Entscheidung gespeichert.",
-      "error": "Aktion fehlgeschlagen."
+      "error": "Aktion fehlgeschlagen.",
+      "queueCount": "Zu prüfen: {count}",
+      "pendingTitle": "Zu prüfende Änderungen",
+      "pendingDescription": "Bis zur Freigabe bleibt der aktuelle Wert kanonisch.",
+      "noPending": "Keine offenen Änderungen.",
+      "historyTitle": "Entscheidungen",
+      "historyDescription": "Abgeschlossene Prüfungen mit Ergebnis und Kommentar.",
+      "noHistory": "Noch keine Entscheidungen.",
+      "reviewedAt": "Geprüft",
+      "reviewer": "durch NORAV-Team geprüft",
+      "working": "Wird gespeichert …",
+      "doneApproved": "Freigegeben.",
+      "doneRejected": "Abgelehnt."
     },
     "documents": {
       "title": "Dokumenten-Review",
@@ -261,7 +281,18 @@
       "uploadedAt": "Hochgeladen am",
       "candidate": "Kandidat/in",
       "done": "Entscheidung gespeichert.",
-      "error": "Aktion fehlgeschlagen."
+      "error": "Aktion fehlgeschlagen.",
+      "queueCount": "Zu prüfen: {count}",
+      "pendingTitle": "Zu prüfende Dokumente",
+      "pendingDescription": "Freigegebene Vorgängerversionen bleiben gültig, bis der Ersatz freigegeben ist.",
+      "historyTitle": "Geprüfte Dokumente",
+      "historyDescription": "Abgeschlossene Dokumentenprüfungen.",
+      "noHistory": "Noch keine geprüften Dokumente.",
+      "reviewedAt": "Geprüft am",
+      "replaces": "Ersetzt",
+      "reviewNote": "Prüfkommentar",
+      "noDocuments": "Keine Dokumente vorhanden.",
+      "supersedeHint": "Mit der Freigabe wird die bisher freigegebene Version auf „Ersetzt“ gesetzt."
     },
     "candidates": {
       "title": "Kandidaten",
@@ -284,7 +315,18 @@
       "type": "Typ",
       "germanLevel": "Deutsch",
       "accountStatus": "Kontostatus",
-      "noCandidates": "Noch keine Kandidaten."
+      "noCandidates": "Noch keine Kandidaten.",
+      "searchLabel": "Suche",
+      "searchPlaceholder": "Code, Vorname, Nachname oder E-Mail",
+      "filterAll": "Alle",
+      "applyFilters": "Filtern",
+      "resetFilters": "Zurücksetzen",
+      "pendingOnly": "Nur mit offener Prüfung",
+      "pendingColumn": "Offen (Änd./Dok.)",
+      "pendingSummary": "Offen: {changes} Änderungen, {documents} Dokumente",
+      "resultCount": "Treffer: {count}",
+      "noResults": "Keine Kandidaten für diese Filter.",
+      "truncated": "Es werden nur die ersten Treffer angezeigt. Bitte Suche oder Filter verfeinern."
     },
     "companies": {
       "title": "Unternehmen",
@@ -302,6 +344,13 @@
       "company": "Unternehmen",
       "employerCreated": "Arbeitgeberkonto angelegt.",
       "error": "Anlegen fehlgeschlagen."
+    },
+    "candidateDetail": {
+      "backToList": "← Zurück zur Kandidatenliste",
+      "openWork": "Offen",
+      "pendingChanges": "Änderungen: {count}",
+      "pendingDocuments": "Dokumente: {count}",
+      "primaryOccupation": "Hauptwunsch"
     }
   },
   "employer": {

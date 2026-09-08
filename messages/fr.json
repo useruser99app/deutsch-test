@@ -231,7 +231,15 @@
       "pendingDocuments": "Documents en attente",
       "candidates": "Candidats",
       "companies": "Entreprises",
-      "open": "Ouvrir"
+      "open": "Ouvrir",
+      "openQueue": "Ouvrir la file",
+      "queueSummary": "Éléments en attente : {count}.",
+      "queueEmpty": "Rien à vérifier.",
+      "candidatesByType": "Candidats par type",
+      "recentChanges": "Modifications récemment soumises",
+      "recentDocuments": "Documents récemment téléversés",
+      "noRecentChanges": "Aucune modification soumise pour le moment.",
+      "noRecentDocuments": "Aucun document téléversé pour le moment."
     },
     "review": {
       "title": "Revue des modifications",
@@ -247,7 +255,19 @@
       "source": "Source",
       "sourceLanguage": "Langue de saisie",
       "done": "Décision enregistrée.",
-      "error": "L'action a échoué."
+      "error": "L'action a échoué.",
+      "queueCount": "À vérifier : {count}",
+      "pendingTitle": "Modifications à vérifier",
+      "pendingDescription": "La valeur actuelle reste canonique jusqu'à la validation.",
+      "noPending": "Aucune modification en attente.",
+      "historyTitle": "Décisions",
+      "historyDescription": "Vérifications terminées avec résultat et commentaire.",
+      "noHistory": "Aucune décision pour le moment.",
+      "reviewedAt": "Vérifié",
+      "reviewer": "vérifié par l'équipe NORAV",
+      "working": "Enregistrement …",
+      "doneApproved": "Approuvé.",
+      "doneRejected": "Refusé."
     },
     "documents": {
       "title": "Revue des documents",
@@ -261,7 +281,18 @@
       "uploadedAt": "Téléversé le",
       "candidate": "Candidat(e)",
       "done": "Décision enregistrée.",
-      "error": "L'action a échoué."
+      "error": "L'action a échoué.",
+      "queueCount": "À vérifier : {count}",
+      "pendingTitle": "Documents à vérifier",
+      "pendingDescription": "Une version approuvée reste valable jusqu'à l'approbation du remplacement.",
+      "historyTitle": "Documents vérifiés",
+      "historyDescription": "Vérifications de documents terminées.",
+      "noHistory": "Aucun document vérifié pour le moment.",
+      "reviewedAt": "Vérifié le",
+      "replaces": "Remplace",
+      "reviewNote": "Note de vérification",
+      "noDocuments": "Aucun document.",
+      "supersedeHint": "L'approbation place la version précédemment approuvée en « remplacé »."
     },
     "candidates": {
       "title": "Candidats",
@@ -284,7 +315,18 @@
       "type": "Type",
       "germanLevel": "Allemand",
       "accountStatus": "Statut du compte",
-      "noCandidates": "Aucun candidat pour le moment."
+      "noCandidates": "Aucun candidat pour le moment.",
+      "searchLabel": "Recherche",
+      "searchPlaceholder": "Code, prénom, nom ou e-mail",
+      "filterAll": "Tous",
+      "applyFilters": "Filtrer",
+      "resetFilters": "Réinitialiser",
+      "pendingOnly": "Uniquement avec vérification en cours",
+      "pendingColumn": "En attente (mod./doc.)",
+      "pendingSummary": "En attente : {changes} modifications, {documents} documents",
+      "resultCount": "Résultats : {count}",
+      "noResults": "Aucun candidat pour ces filtres.",
+      "truncated": "Seuls les premiers résultats sont affichés. Affinez la recherche ou les filtres."
     },
     "companies": {
       "title": "Entreprises",
@@ -302,6 +344,13 @@
       "company": "Entreprise",
       "employerCreated": "Compte employeur créé.",
       "error": "Échec de la création."
+    },
+    "candidateDetail": {
+      "backToList": "← Retour à la liste des candidats",
+      "openWork": "En attente",
+      "pendingChanges": "Modifications : {count}",
+      "pendingDocuments": "Documents : {count}",
+      "primaryOccupation": "Premier choix"
     }
   },
   "employer": {

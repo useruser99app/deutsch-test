@@ -231,7 +231,15 @@
       "pendingDocuments": "المستندات قيد الانتظار",
       "candidates": "المرشحون",
       "companies": "الشركات",
-      "open": "فتح"
+      "open": "فتح",
+      "openQueue": "فتح قائمة المراجعة",
+      "queueSummary": "عناصر قيد الانتظار: {count}.",
+      "queueEmpty": "لا يوجد ما يحتاج مراجعة.",
+      "candidatesByType": "المرشحون حسب النوع",
+      "recentChanges": "أحدث التعديلات المُرسلة",
+      "recentDocuments": "أحدث المستندات المرفوعة",
+      "noRecentChanges": "لم تُرسل أي تعديلات بعد.",
+      "noRecentDocuments": "لم تُرفع أي مستندات بعد."
     },
     "review": {
       "title": "مراجعة التعديلات",
@@ -247,7 +255,19 @@
       "source": "المصدر",
       "sourceLanguage": "لغة الإدخال",
       "done": "تم حفظ القرار.",
-      "error": "فشل الإجراء."
+      "error": "فشل الإجراء.",
+      "queueCount": "بانتظار المراجعة: {count}",
+      "pendingTitle": "تعديلات بانتظار المراجعة",
+      "pendingDescription": "تبقى القيمة الحالية معتمدة حتى الموافقة.",
+      "noPending": "لا توجد تعديلات مفتوحة.",
+      "historyTitle": "القرارات",
+      "historyDescription": "المراجعات المكتملة مع النتيجة والتعليق.",
+      "noHistory": "لا توجد قرارات بعد.",
+      "reviewedAt": "روجع",
+      "reviewer": "روجع من فريق NORAV",
+      "working": "جارٍ الحفظ …",
+      "doneApproved": "تم الاعتماد.",
+      "doneRejected": "تم الرفض."
     },
     "documents": {
       "title": "مراجعة المستندات",
@@ -261,7 +281,18 @@
       "uploadedAt": "تاريخ الرفع",
       "candidate": "المرشح",
       "done": "تم حفظ القرار.",
-      "error": "فشل الإجراء."
+      "error": "فشل الإجراء.",
+      "queueCount": "بانتظار المراجعة: {count}",
+      "pendingTitle": "مستندات بانتظار المراجعة",
+      "pendingDescription": "تبقى النسخة المعتمدة سارية حتى اعتماد البديل.",
+      "historyTitle": "المستندات المراجَعة",
+      "historyDescription": "مراجعات المستندات المكتملة.",
+      "noHistory": "لا توجد مستندات مراجَعة بعد.",
+      "reviewedAt": "تمت المراجعة في",
+      "replaces": "يحل محل",
+      "reviewNote": "ملاحظة المراجعة",
+      "noDocuments": "لا توجد مستندات.",
+      "supersedeHint": "الاعتماد يجعل النسخة المعتمدة السابقة «مستبدَلة»."
     },
     "candidates": {
       "title": "المرشحون",
@@ -284,7 +315,18 @@
       "type": "النوع",
       "germanLevel": "الألمانية",
       "accountStatus": "حالة الحساب",
-      "noCandidates": "لا يوجد مرشحون بعد."
+      "noCandidates": "لا يوجد مرشحون بعد.",
+      "searchLabel": "بحث",
+      "searchPlaceholder": "الرمز أو الاسم أو البريد الإلكتروني",
+      "filterAll": "الكل",
+      "applyFilters": "تصفية",
+      "resetFilters": "إعادة تعيين",
+      "pendingOnly": "فقط مع مراجعة مفتوحة",
+      "pendingColumn": "مفتوح (تعديلات/مستندات)",
+      "pendingSummary": "مفتوح: {changes} تعديلات، {documents} مستندات",
+      "resultCount": "النتائج: {count}",
+      "noResults": "لا يوجد مرشحون مطابقون لهذه المرشحات.",
+      "truncated": "يتم عرض النتائج الأولى فقط. يرجى تضييق البحث أو المرشحات."
     },
     "companies": {
       "title": "الشركات",
@@ -302,6 +344,13 @@
       "company": "الشركة",
       "employerCreated": "تم إنشاء حساب صاحب العمل.",
       "error": "فشل الإنشاء."
+    },
+    "candidateDetail": {
+      "backToList": "← العودة إلى قائمة المرشحين",
+      "openWork": "مفتوح",
+      "pendingChanges": "التعديلات: {count}",
+      "pendingDocuments": "المستندات: {count}",
+      "primaryOccupation": "الخيار الأول"
     }
   },
   "employer": {

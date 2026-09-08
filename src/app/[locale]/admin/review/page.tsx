@@ -1,160 +1,151 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireRole } from "@/lib/auth";
-import { approveChangeItem, rejectChangeItem } from "@/lib/actions/admin";
-import { formatJsonValue, type ChangeItem } from "@/lib/domain";
-
-interface PendingItem extends ChangeItem {
-  candidate_change_sets: {
-    submitted_at: string;
-    source: string;
-    candidates: {
-      candidate_code: string;
-      first_name: string;
-      last_name: string;
-    } | null;
-  } | null;
-}
+import { loadDecidedChanges, loadPendingChanges } from "@/lib/admin-data";
+import StatusBadge from "@/components/StatusBadge";
+import SectionCard from "@/components/candidate/SectionCard";
+import ValueCompare from "@/components/admin/ValueCompare";
+import ReviewDecisionForm from "@/components/admin/ReviewDecisionForm";
+import CandidateRef from "@/components/admin/CandidateRef";
 
 export default async function AdminReviewPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ ok?: string; error?: string }>;
 }) {
   const { locale } = await params;
-  const { ok, error } = await searchParams;
   setRequestLocale(locale);
   const { supabase } = await requireRole(locale, "admin");
 
   const t = await getTranslations("admin.review");
   const tFields = await getTranslations("fields");
 
-  const { data: items } = await supabase
-    .from("candidate_change_items")
-    .select(
-      `*, candidate_change_sets ( submitted_at, source,
-        candidates ( candidate_code, first_name, last_name ) )`
-    )
-    .eq("status", "pending")
-    .order("created_at", { ascending: true });
-
-  const pending = (items ?? []) as PendingItem[];
+  const [pending, history] = await Promise.all([
+    loadPendingChanges(supabase),
+    loadDecidedChanges(supabase),
+  ]);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">{t("title")}</h1>
-
-      {ok && (
-        <p className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
-          {t("done")}
+      <header>
+        <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
+          {t("title")}
+        </h1>
+        <p className="mt-1 text-sm text-gray-600">
+          {pending.length > 0
+            ? t("queueCount", { count: pending.length })
+            : t("noPending")}
         </p>
-      )}
-      {error && (
-        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-          {t("error")}
-        </p>
-      )}
+      </header>
 
-      {pending.length === 0 ? (
-        <p className="text-sm text-gray-600">{t("empty")}</p>
-      ) : (
-        <ul className="space-y-4">
-          {pending.map((item) => {
-            const set = item.candidate_change_sets;
-            const candidate = set?.candidates;
-            return (
+      <SectionCard
+        title={t("pendingTitle")}
+        description={t("pendingDescription")}
+      >
+        {pending.length === 0 ? (
+          <p className="py-2 text-sm text-gray-600">{t("noPending")}</p>
+        ) : (
+          <ul className="space-y-4 py-1">
+            {pending.map((item) => (
               <li
                 key={item.id}
-                className="rounded-lg border border-gray-200 bg-white p-4"
+                className="rounded-lg border border-gray-200 p-4"
               >
-                <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
-                  <span className="font-mono font-medium text-gray-900">
-                    {candidate?.candidate_code ?? "—"}
-                  </span>
-                  <span>
-                    {candidate
-                      ? `${candidate.first_name} ${candidate.last_name}`
+                <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+                  <CandidateRef
+                    candidate={item.candidates}
+                    candidateId={item.candidate_id}
+                  />
+                  <span className="text-xs text-gray-500">
+                    {t("submittedAt")}:{" "}
+                    {(
+                      item.candidate_change_sets?.submitted_at ??
+                      item.created_at
+                    ).slice(0, 10)}
+                    {item.candidate_change_sets?.source
+                      ? ` · ${t("source")}: ${item.candidate_change_sets.source}`
                       : ""}
                   </span>
-                  <span>
-                    {t("submittedAt")}:{" "}
-                    {set ? set.submitted_at.slice(0, 10) : "—"}
-                  </span>
-                  <span>
-                    {t("source")}: {set?.source ?? "—"}
-                  </span>
+                </div>
+
+                <p className="mb-2 text-sm font-semibold text-gray-900">
+                  {tFields.has(item.field_key)
+                    ? tFields(item.field_key)
+                    : item.field_key}
                   {item.source_language && (
-                    <span>
+                    <span className="ms-2 text-xs font-normal text-gray-500">
                       {t("sourceLanguage")}: {item.source_language}
                     </span>
                   )}
-                </div>
+                </p>
 
-                <div className="mb-4 grid gap-3 sm:grid-cols-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-500">
-                      {t("field")}
-                    </p>
-                    <p className="font-medium">
-                      {tFields.has(item.field_key)
-                        ? tFields(item.field_key)
-                        : item.field_key}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-500">
-                      {t("current")}
-                    </p>
-                    <p className="text-gray-700">
-                      {formatJsonValue(item.current_value)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-500">
-                      {t("proposed")}
-                    </p>
-                    <p className="font-semibold text-green-800">
-                      {formatJsonValue(item.proposed_value)}
-                    </p>
-                  </div>
-                </div>
+                <ValueCompare
+                  currentValue={item.current_value}
+                  proposedValue={item.proposed_value}
+                />
 
-                <form
-                  action={approveChangeItem}
-                  className="flex flex-wrap items-end gap-3"
-                >
-                  <input type="hidden" name="locale" value={locale} />
-                  <input type="hidden" name="item_id" value={item.id} />
-                  <label className="block text-sm">
-                    <span className="mb-1 block text-gray-600">
-                      {t("comment")}
-                    </span>
-                    <input
-                      type="text"
-                      name="comment"
-                      className="w-64 rounded-md border border-gray-300 px-3 py-1.5"
-                    />
-                  </label>
-                  <button
-                    type="submit"
-                    className="rounded-md bg-green-700 px-4 py-1.5 text-sm text-white hover:bg-green-600"
-                  >
-                    {t("approve")}
-                  </button>
-                  <button
-                    type="submit"
-                    formAction={rejectChangeItem}
-                    className="rounded-md bg-red-700 px-4 py-1.5 text-sm text-white hover:bg-red-600"
-                  >
-                    {t("reject")}
-                  </button>
-                </form>
+                <div className="mt-3">
+                  <ReviewDecisionForm
+                    kind="change"
+                    id={item.id}
+                    candidateId={item.candidate_id}
+                  />
+                </div>
               </li>
-            );
-          })}
-        </ul>
-      )}
+            ))}
+          </ul>
+        )}
+      </SectionCard>
+
+      <SectionCard
+        title={t("historyTitle")}
+        description={t("historyDescription")}
+      >
+        {history.length === 0 ? (
+          <p className="py-2 text-sm text-gray-600">{t("noHistory")}</p>
+        ) : (
+          <ul className="space-y-3 py-1">
+            {history.map((item) => (
+              <li
+                key={item.id}
+                className="rounded-lg border border-gray-200 p-4"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <CandidateRef
+                    candidate={item.candidates}
+                    candidateId={item.candidate_id}
+                  />
+                  <StatusBadge status={item.status} />
+                </div>
+
+                <p className="mt-2 mb-2 text-sm font-semibold text-gray-900">
+                  {tFields.has(item.field_key)
+                    ? tFields(item.field_key)
+                    : item.field_key}
+                </p>
+
+                <ValueCompare
+                  currentValue={item.current_value}
+                  proposedValue={item.proposed_value}
+                />
+
+                <p className="mt-2 text-xs text-gray-500">
+                  {t("reviewedAt")}: {item.reviewed_at?.slice(0, 10) ?? "—"}
+                  {item.candidate_change_sets?.source
+                    ? ` · ${t("source")}: ${item.candidate_change_sets.source}`
+                    : ""}
+                </p>
+
+                {item.review_comment && (
+                  <p className="mt-2 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                    <span className="font-medium">{t("comment")}: </span>
+                    {item.review_comment}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </SectionCard>
     </div>
   );
 }

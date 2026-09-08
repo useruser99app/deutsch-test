@@ -46,32 +46,44 @@ export interface CandidateSnapshot {
   profile: CandidateProfileRow | null;
 }
 
-/** Loads the canonical (approved) state of the signed-in candidate. */
+/**
+ * Loads the canonical (approved) state of a candidate.
+ *
+ * Without `candidateId` this resolves to the signed-in candidate's own row
+ * (RLS returns exactly that one). Admins pass a `candidateId` to inspect a
+ * specific candidate — same queries, same RLS, no second data path.
+ */
 export async function loadCandidateSnapshot(
-  supabase: SupabaseClient
+  supabase: SupabaseClient,
+  candidateId?: string
 ): Promise<CandidateSnapshot | null> {
-  const { data: candidate } = await supabase
-    .from("candidates")
-    .select("*")
-    .maybeSingle<Candidate>();
+  const candidateQuery = supabase.from("candidates").select("*");
+  if (candidateId) candidateQuery.eq("id", candidateId);
+  const { data: candidate } = await candidateQuery.maybeSingle<Candidate>();
   if (!candidate) return null;
 
   const isApprenticeship =
     candidate.candidate_type === "apprenticeship_candidate";
 
   const [detailsResult, occupationsResult, profileResult] = await Promise.all([
-    isApprenticeship
-      ? supabase.from("apprenticeship_details").select("*").maybeSingle()
-      : supabase.from("skilled_worker_details").select("*").maybeSingle(),
+    supabase
+      .from(
+        isApprenticeship ? "apprenticeship_details" : "skilled_worker_details"
+      )
+      .select("*")
+      .eq("candidate_id", candidate.id)
+      .maybeSingle(),
     isApprenticeship
       ? supabase
           .from("candidate_target_occupations")
           .select("occupation, rank")
+          .eq("candidate_id", candidate.id)
           .order("rank")
       : Promise.resolve({ data: [] as { occupation: string; rank: number }[] }),
     supabase
       .from("candidate_profiles")
       .select("profile_status, published_at")
+      .eq("candidate_id", candidate.id)
       .maybeSingle<CandidateProfileRow>(),
   ]);
 
@@ -135,15 +147,13 @@ export interface CandidateReviewData {
  */
 export async function loadChangeItems(
   supabase: SupabaseClient,
-  limit?: number
+  options: { candidateId?: string; limit?: number } = {}
 ): Promise<CandidateReviewData> {
-  let query = supabase
-    .from("candidate_change_items")
-    .select("*")
-    .order("created_at", { ascending: false });
-  if (limit) query = query.limit(limit);
+  let query = supabase.from("candidate_change_items").select("*");
+  if (options.candidateId) query = query.eq("candidate_id", options.candidateId);
 
-  const { data } = await query;
+  const ordered = query.order("created_at", { ascending: false });
+  const { data } = await (options.limit ? ordered.limit(options.limit) : ordered);
   const items = (data ?? []) as ChangeItem[];
 
   return {
@@ -153,11 +163,12 @@ export async function loadChangeItems(
 }
 
 export async function loadDocuments(
-  supabase: SupabaseClient
+  supabase: SupabaseClient,
+  candidateId?: string
 ): Promise<CandidateDocument[]> {
-  const { data } = await supabase
-    .from("candidate_documents")
-    .select("*")
-    .order("uploaded_at", { ascending: false });
+  let query = supabase.from("candidate_documents").select("*");
+  if (candidateId) query = query.eq("candidate_id", candidateId);
+
+  const { data } = await query.order("uploaded_at", { ascending: false });
   return (data ?? []) as CandidateDocument[];
 }

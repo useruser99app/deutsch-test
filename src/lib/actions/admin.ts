@@ -252,38 +252,85 @@ export async function createEmployerAccountAction(
   return { status: "success", inviteLink };
 }
 
-/** Approve one change item — applies the value to the canonical model (§29). */
-export async function approveChangeItem(formData: FormData) {
-  const locale = text(formData, "locale");
-  const { supabase } = await requireRole(locale, "admin");
-
-  const { error } = await supabase.rpc("approve_change_item", {
-    p_item_id: text(formData, "item_id"),
-    p_comment: text(formData, "comment") || null,
-  });
-  redirect(`/${locale}/admin/review?${error ? "error=failed" : "ok=1"}`);
+export interface ReviewActionState {
+  status: "idle" | "success" | "error";
+  decision?: "approved" | "rejected";
+  itemId?: string;
 }
 
-export async function rejectChangeItem(formData: FormData) {
-  const locale = text(formData, "locale");
-  const { supabase } = await requireRole(locale, "admin");
-
-  const { error } = await supabase.rpc("reject_change_item", {
-    p_item_id: text(formData, "item_id"),
-    p_comment: text(formData, "comment") || null,
-  });
-  redirect(`/${locale}/admin/review?${error ? "error=failed" : "ok=1"}`);
+/**
+ * Revalidates every surface a review decision is visible on, so the item
+ * leaves the pending queue and the history updates without a manual reload.
+ */
+function revalidateReviewSurfaces(locale: string, candidateId?: string) {
+  revalidatePath(`/${locale}/admin`);
+  revalidatePath(`/${locale}/admin/review`);
+  revalidatePath(`/${locale}/admin/documents`);
+  revalidatePath(`/${locale}/admin/candidates`);
+  if (candidateId) {
+    revalidatePath(`/${locale}/admin/candidates/${candidateId}`);
+  }
 }
 
-/** Approve/reject a document; approval supersedes the previous version (§7). */
-export async function reviewDocument(formData: FormData) {
+/**
+ * Approve or reject one change item (§10). The decision itself is executed by
+ * the existing SECURITY DEFINER functions — approval applies the value to the
+ * canonical model inside the database. Nothing is written directly from here.
+ */
+export async function reviewChangeItemAction(
+  _prev: ReviewActionState,
+  formData: FormData
+): Promise<ReviewActionState> {
   const locale = text(formData, "locale");
   const { supabase } = await requireRole(locale, "admin");
+
+  const itemId = text(formData, "item_id");
+  const approve = text(formData, "decision") === "approve";
+  const comment = text(formData, "comment") || null;
+  if (!itemId) return { status: "error" };
+
+  const { error } = await supabase.rpc(
+    approve ? "approve_change_item" : "reject_change_item",
+    { p_item_id: itemId, p_comment: comment }
+  );
+  if (error) return { status: "error", itemId };
+
+  revalidateReviewSurfaces(locale, text(formData, "candidate_id") || undefined);
+  return {
+    status: "success",
+    decision: approve ? "approved" : "rejected",
+    itemId,
+  };
+}
+
+/**
+ * Approve or reject a document (§13). Approval supersedes the previously
+ * approved document of the same type — that rule lives in review_document()
+ * and is left untouched.
+ */
+export async function reviewDocumentAction(
+  _prev: ReviewActionState,
+  formData: FormData
+): Promise<ReviewActionState> {
+  const locale = text(formData, "locale");
+  const { supabase } = await requireRole(locale, "admin");
+
+  const documentId = text(formData, "document_id");
+  const approve = text(formData, "decision") === "approve";
+  const note = text(formData, "note") || null;
+  if (!documentId) return { status: "error" };
 
   const { error } = await supabase.rpc("review_document", {
-    p_document_id: text(formData, "document_id"),
-    p_approve: text(formData, "decision") === "approve",
-    p_note: text(formData, "note") || null,
+    p_document_id: documentId,
+    p_approve: approve,
+    p_note: note,
   });
-  redirect(`/${locale}/admin/documents?${error ? "error=failed" : "ok=1"}`);
+  if (error) return { status: "error", itemId: documentId };
+
+  revalidateReviewSurfaces(locale, text(formData, "candidate_id") || undefined);
+  return {
+    status: "success",
+    decision: approve ? "approved" : "rejected",
+    itemId: documentId,
+  };
 }

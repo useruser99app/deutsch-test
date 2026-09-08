@@ -231,7 +231,15 @@
       "pendingDocuments": "Pending documents",
       "candidates": "Candidates",
       "companies": "Companies",
-      "open": "Open"
+      "open": "Open",
+      "openQueue": "Open queue",
+      "queueSummary": "Open items: {count}.",
+      "queueEmpty": "Nothing waiting for review.",
+      "candidatesByType": "Candidates by type",
+      "recentChanges": "Recently submitted changes",
+      "recentDocuments": "Recently uploaded documents",
+      "noRecentChanges": "No changes submitted yet.",
+      "noRecentDocuments": "No documents uploaded yet."
     },
     "review": {
       "title": "Change review",
@@ -247,7 +255,19 @@
       "source": "Source",
       "sourceLanguage": "Input language",
       "done": "Decision saved.",
-      "error": "Action failed."
+      "error": "Action failed.",
+      "queueCount": "To review: {count}",
+      "pendingTitle": "Changes to review",
+      "pendingDescription": "The current value stays canonical until approval.",
+      "noPending": "No open changes.",
+      "historyTitle": "Decisions",
+      "historyDescription": "Completed reviews with outcome and comment.",
+      "noHistory": "No decisions yet.",
+      "reviewedAt": "Reviewed",
+      "reviewer": "reviewed by the NORAV team",
+      "working": "Saving …",
+      "doneApproved": "Approved.",
+      "doneRejected": "Rejected."
     },
     "documents": {
       "title": "Document review",
@@ -261,7 +281,18 @@
       "uploadedAt": "Uploaded on",
       "candidate": "Candidate",
       "done": "Decision saved.",
-      "error": "Action failed."
+      "error": "Action failed.",
+      "queueCount": "To review: {count}",
+      "pendingTitle": "Documents to review",
+      "pendingDescription": "An approved previous version stays valid until the replacement is approved.",
+      "historyTitle": "Reviewed documents",
+      "historyDescription": "Completed document reviews.",
+      "noHistory": "No reviewed documents yet.",
+      "reviewedAt": "Reviewed on",
+      "replaces": "Replaces",
+      "reviewNote": "Review note",
+      "noDocuments": "No documents.",
+      "supersedeHint": "Approving this sets the previously approved version to “superseded”."
     },
     "candidates": {
       "title": "Candidates",
@@ -284,7 +315,18 @@
       "type": "Type",
       "germanLevel": "German",
       "accountStatus": "Account status",
-      "noCandidates": "No candidates yet."
+      "noCandidates": "No candidates yet.",
+      "searchLabel": "Search",
+      "searchPlaceholder": "Code, first name, last name or email",
+      "filterAll": "All",
+      "applyFilters": "Filter",
+      "resetFilters": "Reset",
+      "pendingOnly": "Only with open review",
+      "pendingColumn": "Open (chg./doc.)",
+      "pendingSummary": "Open: {changes} changes, {documents} documents",
+      "resultCount": "Results: {count}",
+      "noResults": "No candidates match these filters.",
+      "truncated": "Only the first results are shown. Please refine the search or filters."
     },
     "companies": {
       "title": "Companies",
@@ -302,6 +344,13 @@
       "company": "Company",
       "employerCreated": "Employer account created.",
       "error": "Creation failed."
+    },
+    "candidateDetail": {
+      "backToList": "← Back to candidate list",
+      "openWork": "Open",
+      "pendingChanges": "Changes: {count}",
+      "pendingDocuments": "Documents: {count}",
+      "primaryOccupation": "First choice"
     }
   },
   "employer": {
