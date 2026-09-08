@@ -56,7 +56,12 @@
     "adminDocuments": "Revue des documents",
     "candidates": "Candidats",
     "companies": "Entreprises",
-    "reviews": "Statut de vérification"
+    "reviews": "Statut de vérification",
+    "adminWorkspace": "Administration",
+    "candidatePortal": "Espace candidat",
+    "employerPortal": "Espace employeur",
+    "groupOperations": "Vérification",
+    "groupManagement": "Données"
   },
   "status": {
     "pending": "En attente",
@@ -239,7 +244,10 @@
       "recentChanges": "Modifications récemment soumises",
       "recentDocuments": "Documents récemment téléversés",
       "noRecentChanges": "Aucune modification soumise pour le moment.",
-      "noRecentDocuments": "Aucun document téléversé pour le moment."
+      "noRecentDocuments": "Aucun document téléversé pour le moment.",
+      "needsAttention": "Requiert une attention",
+      "needsAttentionDescription": "Candidats avec des modifications ou documents en attente.",
+      "noAttention": "Rien n'attend de vérification actuellement."
     },
     "review": {
       "title": "Revue des modifications",
@@ -326,7 +334,9 @@
       "pendingSummary": "En attente : {changes} modifications, {documents} documents",
       "resultCount": "Résultats : {count}",
       "noResults": "Aucun candidat pour ces filtres.",
-      "truncated": "Seuls les premiers résultats sont affichés. Affinez la recherche ou les filtres."
+      "truncated": "Seuls les premiers résultats sont affichés. Affinez la recherche ou les filtres.",
+      "pendingChangesShort": "{count} modifications",
+      "pendingDocumentsShort": "{count} documents"
     },
     "companies": {
       "title": "Entreprises",

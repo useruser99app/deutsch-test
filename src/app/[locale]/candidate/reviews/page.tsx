@@ -1,7 +1,9 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireRole } from "@/lib/auth";
 import { loadChangeItems } from "@/lib/candidate-data";
-import SectionCard from "@/components/candidate/SectionCard";
+import PageHeader from "@/components/ui/PageHeader";
+import Panel from "@/components/ui/Panel";
+import EmptyState from "@/components/ui/EmptyState";
 import ChangeItemRow from "@/components/candidate/ChangeItemRow";
 
 export default async function CandidateReviewsPage({
@@ -17,43 +19,34 @@ export default async function CandidateReviewsPage({
   const { pending, history } = await loadChangeItems(supabase);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-5">
-      <header>
-        <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-sm text-gray-600">{t("description")}</p>
-      </header>
+    <>
+      <PageHeader title={t("title")} description={t("description")} />
 
-      <SectionCard
-        title={t("pendingTitle")}
-        description={t("pendingDescription")}
-      >
+      <Panel title={t("pendingTitle")} description={t("pendingDescription")}>
         {pending.length === 0 ? (
-          <p className="py-2 text-sm text-gray-600">{t("noPending")}</p>
+          <EmptyState message={t("noPending")} compact />
         ) : (
-          <ul className="space-y-3 py-1">
+          <ul className="space-y-3">
             {pending.map((item) => (
               <ChangeItemRow key={item.id} item={item} />
             ))}
           </ul>
         )}
-      </SectionCard>
+      </Panel>
 
-      <SectionCard
-        title={t("historyTitle")}
-        description={t("historyDescription")}
-      >
-        {history.length === 0 ? (
-          <p className="py-2 text-sm text-gray-600">{t("noHistory")}</p>
-        ) : (
-          <ul className="space-y-3 py-1">
-            {history.map((item) => (
-              <ChangeItemRow key={item.id} item={item} />
-            ))}
-          </ul>
-        )}
-      </SectionCard>
-    </div>
+      <div className="mt-6">
+        <Panel title={t("historyTitle")} description={t("historyDescription")}>
+          {history.length === 0 ? (
+            <EmptyState message={t("noHistory")} compact />
+          ) : (
+            <ul className="space-y-3">
+              {history.map((item) => (
+                <ChangeItemRow key={item.id} item={item} />
+              ))}
+            </ul>
+          )}
+        </Panel>
+      </div>
+    </>
   );
 }

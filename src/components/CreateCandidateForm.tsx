@@ -8,6 +8,7 @@ import {
   localeCodes,
   type InviteActionState,
 } from "@/lib/domain";
+import { buttonClass, controlClass } from "@/components/ui/button";
 
 const initialState: InviteActionState = { status: "idle" };
 
@@ -25,20 +26,20 @@ export default function CreateCandidateForm() {
     initialState
   );
 
-  const inputClass = "w-full rounded-md border border-gray-300 px-3 py-2";
-  const labelClass = "mb-1 block text-sm text-gray-700";
+  const inputClass = controlClass;
+  const labelClass = "t-label mb-1.5 block";
 
   return (
     <div className="space-y-4">
       {state.status === "success" && (
-        <div className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
+        <div className="rounded-md border border-positive/25 bg-positive-soft px-3 py-2 text-sm text-positive">
           <p>
             {t("created")} ({state.candidateCode})
           </p>
           {state.inviteLink && (
             <div className="mt-2">
               <p className="font-medium">{t("inviteLinkLabel")}</p>
-              <code className="mt-1 block break-all rounded bg-white p-2 text-xs">
+              <code className="mt-1 block break-all rounded border border-hairline bg-surface p-2 font-mono text-xs text-ink-800">
                 {state.inviteLink}
               </code>
             </div>
@@ -46,17 +47,17 @@ export default function CreateCandidateForm() {
         </div>
       )}
       {state.status === "error" && (
-        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-md border border-critical/25 bg-critical-soft px-3 py-2 text-sm text-critical">
           {t("error")}
         </p>
       )}
 
       <form
         action={formAction}
-        className="space-y-4 rounded-lg border border-gray-200 bg-white p-6"
+        className="space-y-4"
       >
         <input type="hidden" name="locale" value={locale} />
-        <h2 className="text-lg font-semibold">{t("create")}</h2>
+        <h2 className="t-section-title">{t("create")}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className={labelClass} htmlFor="email">
@@ -140,7 +141,7 @@ export default function CreateCandidateForm() {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-700 disabled:opacity-50"
+          className={buttonClass("primary", "md")}
         >
           {t("submit")}
         </button>

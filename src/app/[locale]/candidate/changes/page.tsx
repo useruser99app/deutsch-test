@@ -7,6 +7,8 @@ import {
 } from "@/lib/candidate-data";
 import { fieldsFor } from "@/lib/candidate-fields";
 import ChangeForm from "@/components/candidate/ChangeForm";
+import PageHeader from "@/components/ui/PageHeader";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default async function ProposeChangesPage({
   params,
@@ -22,11 +24,7 @@ export default async function ProposeChangesPage({
   const snapshot = await loadCandidateSnapshot(supabase);
   if (!snapshot) {
     const tDashboard = await getTranslations("candidate.dashboard");
-    return (
-      <p className="rounded-xl border border-gray-200 bg-white p-6 text-sm text-gray-600">
-        {tDashboard("noRecord")}
-      </p>
-    );
+    return <EmptyState message={tDashboard("noRecord")} />;
   }
 
   const { pending } = await loadChangeItems(supabase);
@@ -38,13 +36,8 @@ export default async function ProposeChangesPage({
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-5">
-      <header>
-        <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-sm text-gray-600">{t("description")}</p>
-      </header>
+    <div className="mx-auto max-w-3xl">
+      <PageHeader title={t("title")} description={t("description")} />
 
       <ChangeForm
         candidateType={snapshot.candidate.candidate_type}

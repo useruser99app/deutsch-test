@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import AppShell from "@/components/AppShell";
+import PortalShell from "@/components/shell/PortalShell";
 import { requireRole } from "@/lib/auth";
 
 export default async function EmployerLayout({
@@ -15,12 +15,13 @@ export default async function EmployerLayout({
   const t = await getTranslations("nav");
 
   return (
-    <AppShell
+    <PortalShell
       locale={locale}
       email={profile.email}
+      workspaceLabel={t("employerPortal")}
       nav={[{ href: "/employer", label: t("dashboard") }]}
     >
       {children}
-    </AppShell>
+    </PortalShell>
   );
 }

@@ -1,11 +1,13 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireRole } from "@/lib/auth";
 import { loadDecidedChanges, loadPendingChanges } from "@/lib/admin-data";
-import StatusBadge from "@/components/StatusBadge";
-import SectionCard from "@/components/candidate/SectionCard";
-import ValueCompare from "@/components/admin/ValueCompare";
+import PageHeader from "@/components/ui/PageHeader";
+import Panel from "@/components/ui/Panel";
+import StatusBadge from "@/components/ui/StatusBadge";
+import EmptyState from "@/components/ui/EmptyState";
+import ValueComparison from "@/components/ui/ValueComparison";
+import CandidateIdentity from "@/components/ui/CandidateIdentity";
 import ReviewDecisionForm from "@/components/admin/ReviewDecisionForm";
-import CandidateRef from "@/components/admin/CandidateRef";
 
 export default async function AdminReviewPage({
   params,
@@ -25,127 +27,122 @@ export default async function AdminReviewPage({
   ]);
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-sm text-gray-600">
-          {pending.length > 0
-            ? t("queueCount", { count: pending.length })
-            : t("noPending")}
-        </p>
-      </header>
+    <>
+      <PageHeader
+        title={t("title")}
+        description={
+          pending.length > 0 ? t("queueCount", { count: pending.length }) : t("noPending")
+        }
+      />
 
-      <SectionCard
-        title={t("pendingTitle")}
-        description={t("pendingDescription")}
-      >
-        {pending.length === 0 ? (
-          <p className="py-2 text-sm text-gray-600">{t("noPending")}</p>
-        ) : (
-          <ul className="space-y-4 py-1">
-            {pending.map((item) => (
-              <li
-                key={item.id}
-                className="rounded-lg border border-gray-200 p-4"
-              >
-                <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
-                  <CandidateRef
-                    candidate={item.candidates}
-                    candidateId={item.candidate_id}
-                  />
-                  <span className="text-xs text-gray-500">
-                    {t("submittedAt")}:{" "}
-                    {(
-                      item.candidate_change_sets?.submitted_at ??
-                      item.created_at
-                    ).slice(0, 10)}
-                    {item.candidate_change_sets?.source
-                      ? ` · ${t("source")}: ${item.candidate_change_sets.source}`
-                      : ""}
+      {/* Open work: each item is one decision, visually foregrounded. */}
+      {pending.length === 0 ? (
+        <EmptyState message={t("noPending")} />
+      ) : (
+        <ul className="space-y-4">
+          {pending.map((item) => (
+            <li
+              key={item.id}
+              className="rounded-lg border border-hairline bg-surface shadow-panel"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3 border-b border-hairline px-5 py-4">
+                <CandidateIdentity
+                  candidate={item.candidates}
+                  candidateId={item.candidate_id}
+                  size="sm"
+                />
+                <span className="t-meta">
+                  {t("submittedAt")}:{" "}
+                  {(
+                    item.candidate_change_sets?.submitted_at ?? item.created_at
+                  ).slice(0, 10)}
+                  {item.candidate_change_sets?.source
+                    ? ` · ${t("source")}: ${item.candidate_change_sets.source}`
+                    : ""}
+                </span>
+              </div>
+
+              <div className="px-5 py-4">
+                <p className="mb-3 flex flex-wrap items-baseline gap-2">
+                  <span className="t-entity text-[15px]">
+                    {tFields.has(item.field_key)
+                      ? tFields(item.field_key)
+                      : item.field_key}
                   </span>
-                </div>
-
-                <p className="mb-2 text-sm font-semibold text-gray-900">
-                  {tFields.has(item.field_key)
-                    ? tFields(item.field_key)
-                    : item.field_key}
                   {item.source_language && (
-                    <span className="ms-2 text-xs font-normal text-gray-500">
+                    <span className="t-meta">
                       {t("sourceLanguage")}: {item.source_language}
                     </span>
                   )}
                 </p>
 
-                <ValueCompare
+                <ValueComparison
                   currentValue={item.current_value}
                   proposedValue={item.proposed_value}
                 />
 
-                <div className="mt-3">
+                <div className="mt-4">
                   <ReviewDecisionForm
                     kind="change"
                     id={item.id}
                     candidateId={item.candidate_id}
                   />
                 </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </SectionCard>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <SectionCard
-        title={t("historyTitle")}
-        description={t("historyDescription")}
-      >
-        {history.length === 0 ? (
-          <p className="py-2 text-sm text-gray-600">{t("noHistory")}</p>
-        ) : (
-          <ul className="space-y-3 py-1">
-            {history.map((item) => (
-              <li
-                key={item.id}
-                className="rounded-lg border border-gray-200 p-4"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <CandidateRef
-                    candidate={item.candidates}
-                    candidateId={item.candidate_id}
-                  />
-                  <StatusBadge status={item.status} />
-                </div>
+      {/* Decided history — same information, deliberately quieter. */}
+      <div className="mt-8">
+        <Panel title={t("historyTitle")} description={t("historyDescription")} bleed>
+          {history.length === 0 ? (
+            <div className="p-5">
+              <EmptyState message={t("noHistory")} compact />
+            </div>
+          ) : (
+            <ul className="divide-y divide-hairline">
+              {history.map((item) => (
+                <li key={item.id} className="px-5 py-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <CandidateIdentity
+                      candidate={item.candidates}
+                      candidateId={item.candidate_id}
+                      size="sm"
+                    />
+                    <span className="flex items-center gap-3">
+                      <span className="t-meta">
+                        {t("reviewedAt")}: {item.reviewed_at?.slice(0, 10) ?? "—"}
+                      </span>
+                      <StatusBadge status={item.status} size="sm" />
+                    </span>
+                  </div>
 
-                <p className="mt-2 mb-2 text-sm font-semibold text-gray-900">
-                  {tFields.has(item.field_key)
-                    ? tFields(item.field_key)
-                    : item.field_key}
-                </p>
-
-                <ValueCompare
-                  currentValue={item.current_value}
-                  proposedValue={item.proposed_value}
-                />
-
-                <p className="mt-2 text-xs text-gray-500">
-                  {t("reviewedAt")}: {item.reviewed_at?.slice(0, 10) ?? "—"}
-                  {item.candidate_change_sets?.source
-                    ? ` · ${t("source")}: ${item.candidate_change_sets.source}`
-                    : ""}
-                </p>
-
-                {item.review_comment && (
-                  <p className="mt-2 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">
-                    <span className="font-medium">{t("comment")}: </span>
-                    {item.review_comment}
+                  <p className="mt-2.5 mb-2 text-sm font-semibold text-ink-800">
+                    {tFields.has(item.field_key)
+                      ? tFields(item.field_key)
+                      : item.field_key}
                   </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </SectionCard>
-    </div>
+
+                  <ValueComparison
+                    currentValue={item.current_value}
+                    proposedValue={item.proposed_value}
+                    muted
+                  />
+
+                  {item.review_comment && (
+                    <p className="t-body mt-3 rounded-md bg-ink-50 px-3 py-2">
+                      <span className="font-medium">{t("comment")}: </span>
+                      {item.review_comment}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+      </div>
+    </>
   );
 }

@@ -56,7 +56,12 @@
     "adminDocuments": "Dokumenten-Review",
     "candidates": "Kandidaten",
     "companies": "Unternehmen",
-    "reviews": "Prüfstatus"
+    "reviews": "Prüfstatus",
+    "adminWorkspace": "Verwaltung",
+    "candidatePortal": "Kandidatenportal",
+    "employerPortal": "Arbeitgeberbereich",
+    "groupOperations": "Prüfung",
+    "groupManagement": "Stammdaten"
   },
   "status": {
     "pending": "Ausstehend",
@@ -239,7 +244,10 @@
       "recentChanges": "Zuletzt eingereichte Änderungen",
       "recentDocuments": "Zuletzt hochgeladene Dokumente",
       "noRecentChanges": "Noch keine Änderungen eingereicht.",
-      "noRecentDocuments": "Noch keine Dokumente hochgeladen."
+      "noRecentDocuments": "Noch keine Dokumente hochgeladen.",
+      "needsAttention": "Erfordert Aufmerksamkeit",
+      "needsAttentionDescription": "Kandidaten mit offenen Änderungen oder Dokumenten.",
+      "noAttention": "Zurzeit wartet nichts auf Prüfung."
     },
     "review": {
       "title": "Änderungs-Review",
@@ -326,7 +334,9 @@
       "pendingSummary": "Offen: {changes} Änderungen, {documents} Dokumente",
       "resultCount": "Treffer: {count}",
       "noResults": "Keine Kandidaten für diese Filter.",
-      "truncated": "Es werden nur die ersten Treffer angezeigt. Bitte Suche oder Filter verfeinern."
+      "truncated": "Es werden nur die ersten Treffer angezeigt. Bitte Suche oder Filter verfeinern.",
+      "pendingChangesShort": "{count} Änderungen",
+      "pendingDocumentsShort": "{count} Dokumente"
     },
     "companies": {
       "title": "Unternehmen",

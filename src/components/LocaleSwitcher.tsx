@@ -15,8 +15,11 @@ const localeLabels: Record<string, string> = {
 
 export default function LocaleSwitcher({
   persist = false,
+  tone = "dark",
 }: {
   persist?: boolean;
+  /** "light" for the dark sidebar, "dark" for light surfaces. */
+  tone?: "light" | "dark";
 }) {
   const locale = useLocale();
   const pathname = usePathname();
@@ -36,7 +39,11 @@ export default function LocaleSwitcher({
           router.replace(pathname, { locale: nextLocale });
         });
       }}
-      className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"
+      className={
+        tone === "light"
+          ? "rounded-md border border-white/15 bg-transparent px-2 py-1.5 text-sm text-ink-200 [&>option]:text-ink-900"
+          : "rounded-md border border-hairline bg-surface px-2 py-1.5 text-sm text-ink-700"
+      }
     >
       {locales.map((code) => (
         <option key={code} value={code}>

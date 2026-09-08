@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { getSessionProfile, homePathForRole } from "@/lib/auth";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import BrandMark from "@/components/shell/BrandMark";
+import { buttonClass } from "@/components/ui/button";
 
 export default async function HomePage({
   params,
@@ -20,18 +22,25 @@ export default async function HomePage({
   const t = await getTranslations("home");
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-4">
-      <div className="absolute end-4 top-4">
+    <div className="flex min-h-screen flex-col">
+      <div className="flex items-center justify-between px-4 py-5 sm:px-8">
+        <BrandMark tone="dark" />
         <LocaleSwitcher />
       </div>
-      <h1 className="text-4xl font-bold tracking-tight">{t("title")}</h1>
-      <p className="max-w-md text-center text-gray-600">{t("subtitle")}</p>
-      <Link
-        href="/login"
-        className="rounded-md bg-gray-900 px-6 py-2 text-white hover:bg-gray-700"
-      >
-        {t("login")}
-      </Link>
+
+      <main className="flex flex-1 items-center justify-center px-6 pb-24">
+        <div className="max-w-xl text-center">
+          <h1 className="text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">
+            {t("title")}
+          </h1>
+          <p className="t-body mx-auto mt-4 max-w-md text-base">
+            {t("subtitle")}
+          </p>
+          <Link href="/login" className={buttonClass("primary", "md", "mt-8")}>
+            {t("login")}
+          </Link>
+        </div>
+      </main>
     </div>
   );
 }

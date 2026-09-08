@@ -56,7 +56,12 @@
     "adminDocuments": "Document review",
     "candidates": "Candidates",
     "companies": "Companies",
-    "reviews": "Review status"
+    "reviews": "Review status",
+    "adminWorkspace": "Administration",
+    "candidatePortal": "Candidate portal",
+    "employerPortal": "Employer area",
+    "groupOperations": "Review",
+    "groupManagement": "Records"
   },
   "status": {
     "pending": "Pending",
@@ -239,7 +244,10 @@
       "recentChanges": "Recently submitted changes",
       "recentDocuments": "Recently uploaded documents",
       "noRecentChanges": "No changes submitted yet.",
-      "noRecentDocuments": "No documents uploaded yet."
+      "noRecentDocuments": "No documents uploaded yet.",
+      "needsAttention": "Needs attention",
+      "needsAttentionDescription": "Candidates with open changes or documents.",
+      "noAttention": "Nothing is waiting for review right now."
     },
     "review": {
       "title": "Change review",
@@ -326,7 +334,9 @@
       "pendingSummary": "Open: {changes} changes, {documents} documents",
       "resultCount": "Results: {count}",
       "noResults": "No candidates match these filters.",
-      "truncated": "Only the first results are shown. Please refine the search or filters."
+      "truncated": "Only the first results are shown. Please refine the search or filters.",
+      "pendingChangesShort": "{count} changes",
+      "pendingDocumentsShort": "{count} documents"
     },
     "companies": {
       "title": "Companies",

@@ -1,5 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { logout } from "@/lib/actions/auth";
+import AuthShell from "@/components/shell/AuthShell";
+import { buttonClass } from "@/components/ui/button";
 
 export default async function AccountInactivePage({
   params,
@@ -12,20 +14,16 @@ export default async function AccountInactivePage({
   const tCommon = await getTranslations("common");
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm rounded-lg border border-gray-200 bg-white p-6 text-center shadow-sm">
-        <h1 className="mb-2 text-xl font-semibold">{t("title")}</h1>
-        <p className="mb-4 text-sm text-gray-600">{t("description")}</p>
-        <form action={logout}>
-          <input type="hidden" name="locale" value={locale} />
-          <button
-            type="submit"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100"
-          >
-            {tCommon("logout")}
-          </button>
-        </form>
-      </div>
-    </div>
+    <AuthShell title={t("title")} description={t("description")}>
+      <form action={logout}>
+        <input type="hidden" name="locale" value={locale} />
+        <button
+          type="submit"
+          className={buttonClass("secondary", "md", "w-full")}
+        >
+          {tCommon("logout")}
+        </button>
+      </form>
+    </AuthShell>
   );
 }

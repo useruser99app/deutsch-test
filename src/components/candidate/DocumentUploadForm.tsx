@@ -7,6 +7,7 @@ import {
   type CandidateFormState,
 } from "@/lib/actions/candidate";
 import { documentTypes } from "@/lib/domain";
+import { buttonClass, controlClass } from "@/components/ui/button";
 
 const initialState: CandidateFormState = { status: "idle" };
 
@@ -20,9 +21,7 @@ export default function DocumentUploadForm() {
     initialState
   );
 
-  const inputClass =
-    "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-base text-gray-900 " +
-    "focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 sm:text-sm";
+  const inputClass = controlClass;
 
   return (
     <form
@@ -38,7 +37,7 @@ export default function DocumentUploadForm() {
       {state.status === "success" && (
         <p
           role="status"
-          className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800"
+          className="rounded-md border border-positive/25 bg-positive-soft px-4 py-3 text-sm text-positive"
         >
           {t("success")}
         </p>
@@ -46,7 +45,7 @@ export default function DocumentUploadForm() {
       {state.status === "error" && (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800"
+          className="rounded-md border border-critical/25 bg-critical-soft px-4 py-3 text-sm text-critical"
         >
           {state.reason === "empty" ? t("errorNoFile") : t("error")}
         </p>
@@ -55,7 +54,7 @@ export default function DocumentUploadForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label
-            className="mb-1 block text-sm font-medium text-gray-700"
+            className="t-label mb-1.5 block"
             htmlFor="document_type"
           >
             {t("documentType")}
@@ -75,7 +74,7 @@ export default function DocumentUploadForm() {
         </div>
         <div>
           <label
-            className="mb-1 block text-sm font-medium text-gray-700"
+            className="t-label mb-1.5 block"
             htmlFor="file"
           >
             {t("file")}
@@ -85,7 +84,7 @@ export default function DocumentUploadForm() {
             type="file"
             name="file"
             required
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-sm file:text-gray-700"
+            className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm text-ink-700 file:me-3 file:rounded file:border-0 file:bg-ink-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-ink-700"
           />
         </div>
       </div>
@@ -93,11 +92,11 @@ export default function DocumentUploadForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        className={buttonClass("primary", "md", "w-full sm:w-auto")}
       >
         {pending ? t("uploading") : t("submit")}
       </button>
-      <p className="text-xs text-gray-500">{t("uploadHint")}</p>
+      <p className="t-meta">{t("uploadHint")}</p>
     </form>
   );
 }

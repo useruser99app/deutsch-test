@@ -7,15 +7,17 @@ import {
   reviewDocumentAction,
   type ReviewActionState,
 } from "@/lib/actions/admin";
+import { buttonClass, controlClass } from "@/components/ui/button";
+import StatusBadge from "@/components/ui/StatusBadge";
 
 const initialState: ReviewActionState = { status: "idle" };
 
 /**
  * Approve / reject with an optional comment, for a change item or a
  * document. The decision is executed by the existing database workflow
- * functions; this form only carries the reviewer's input and shows the
- * outcome. The buttons disable while the action runs, so a decision cannot
- * be submitted twice.
+ * functions; this form only carries the reviewer's input and reports the
+ * outcome. Buttons disable while the action runs, so a decision cannot be
+ * submitted twice.
  */
 export default function ReviewDecisionForm({
   kind,
@@ -38,15 +40,19 @@ export default function ReviewDecisionForm({
     return (
       <p
         role="status"
-        className="rounded-lg bg-gray-100 px-3 py-2 text-sm text-gray-700"
+        className="flex items-center gap-2 rounded-md border border-hairline bg-ink-50 px-3 py-2 text-sm text-ink-700"
       >
+        <StatusBadge
+          status={state.decision === "approved" ? "approved" : "rejected"}
+          size="sm"
+        />
         {state.decision === "approved" ? t("doneApproved") : t("doneRejected")}
       </p>
     );
   }
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form action={formAction} className="flex flex-wrap items-end gap-3">
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name={idField} value={id} />
       {candidateId && (
@@ -54,14 +60,17 @@ export default function ReviewDecisionForm({
       )}
 
       {state.status === "error" && (
-        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+        <p
+          role="alert"
+          className="w-full rounded-md border border-critical/25 bg-critical-soft px-3 py-2 text-sm text-critical"
+        >
           {t("error")}
         </p>
       )}
 
-      <div>
+      <div className="min-w-0 flex-1 basis-56">
         <label
-          className="mb-1 block text-xs font-medium text-gray-600"
+          className="t-label mb-1.5 block"
           htmlFor={`${commentField}-${id}`}
         >
           {t("comment")}
@@ -71,17 +80,17 @@ export default function ReviewDecisionForm({
           type="text"
           name={commentField}
           maxLength={500}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-base sm:text-sm"
+          className={controlClass}
         />
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2">
         <button
           type="submit"
           name="decision"
           value="approve"
           disabled={pending}
-          className="flex-1 rounded-lg bg-green-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+          className={buttonClass("positive", "md")}
         >
           {pending ? t("working") : t("approve")}
         </button>
@@ -90,7 +99,7 @@ export default function ReviewDecisionForm({
           name="decision"
           value="reject"
           disabled={pending}
-          className="flex-1 rounded-lg bg-red-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+          className={buttonClass("critical", "md")}
         >
           {pending ? t("working") : t("reject")}
         </button>

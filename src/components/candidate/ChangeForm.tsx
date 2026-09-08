@@ -13,12 +13,12 @@ import {
   type CandidateFieldDef,
 } from "@/lib/candidate-fields";
 import { germanLevels, localeCodes, type CandidateType } from "@/lib/domain";
+import { buttonClass, controlClass } from "@/components/ui/button";
+import StatusBadge from "@/components/ui/StatusBadge";
 
 const initialState: CandidateFormState = { status: "idle" };
 
-const inputClass =
-  "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-base text-gray-900 " +
-  "focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 sm:text-sm";
+const inputClass = controlClass;
 
 function defaultFor(value: unknown, field: CandidateFieldDef): string {
   if (value === null || value === undefined) return "";
@@ -51,7 +51,6 @@ export default function ChangeForm({
   const tFields = useTranslations("fields");
   const tSections = useTranslations("candidate.sections");
   const tEnums = useTranslations("enums");
-  const tStatus = useTranslations("status");
   const [state, formAction, pending] = useActionState(
     submitChangesAction,
     initialState
@@ -69,10 +68,7 @@ export default function ChangeForm({
 
     return (
       <div key={field.key}>
-        <label
-          className="mb-1 block text-sm font-medium text-gray-700"
-          htmlFor={field.key}
-        >
+        <label className="t-label mb-1.5 block" htmlFor={field.key}>
           {label}
         </label>
 
@@ -142,15 +138,14 @@ export default function ChangeForm({
         )}
 
         {field.input === "list" && (
-          <p className="mt-1 text-xs text-gray-500">
-            {field.key === "target_occupations"
-              ? t("orderHint")
-              : t("listHint")}
+          <p className="t-meta mt-1.5">
+            {field.key === "target_occupations" ? t("orderHint") : t("listHint")}
           </p>
         )}
         {isPending && (
-          <p className="mt-1 text-xs text-amber-800">
-            {tStatus("pending")} — {t("alreadyPending")}
+          <p className="mt-1.5 flex flex-wrap items-center gap-2">
+            <StatusBadge status="pending" size="sm" />
+            <span className="t-meta">{t("alreadyPending")}</span>
           </p>
         )}
       </div>
@@ -164,7 +159,7 @@ export default function ChangeForm({
       {state.status === "success" && (
         <p
           role="status"
-          className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800"
+          className="rounded-md border border-positive/25 bg-positive-soft px-4 py-3 text-sm text-positive"
         >
           {t("submitted", { count: state.submittedCount ?? 0 })}
         </p>
@@ -172,7 +167,7 @@ export default function ChangeForm({
       {state.status === "error" && (
         <p
           role="alert"
-          className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800"
+          className="rounded-md border border-critical/25 bg-critical-soft px-4 py-3 text-sm text-critical"
         >
           {state.reason === "unchanged"
             ? t("errorUnchanged")
@@ -189,9 +184,9 @@ export default function ChangeForm({
         return (
           <fieldset
             key={section}
-            className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5"
+            className="rounded-lg border border-hairline bg-surface p-5 shadow-panel"
           >
-            <legend className="px-1 text-sm font-semibold text-gray-900">
+            <legend className="t-section-title px-1">
               {tSections(section)}
             </legend>
             <div className="mt-2 grid gap-4 sm:grid-cols-2">
@@ -208,10 +203,7 @@ export default function ChangeForm({
 
               {section === "experience" && hasFreeText && (
                 <div className="sm:col-span-2">
-                  <label
-                    className="mb-1 block text-sm font-medium text-gray-700"
-                    htmlFor="source_language"
-                  >
+                  <label className="t-label mb-1.5 block" htmlFor="source_language">
                     {t("sourceLanguage")}
                   </label>
                   <select
@@ -226,9 +218,7 @@ export default function ChangeForm({
                       </option>
                     ))}
                   </select>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {t("sourceLanguageHint")}
-                  </p>
+                  <p className="t-meta mt-1.5">{t("sourceLanguageHint")}</p>
                 </div>
               )}
             </div>
@@ -236,15 +226,15 @@ export default function ChangeForm({
         );
       })}
 
-      <div className="sticky bottom-0 -mx-4 border-t border-gray-200 bg-white/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-lg sm:border sm:px-5">
+      <div className="sticky bottom-0 -mx-4 border-t border-hairline bg-surface/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-lg sm:border sm:px-5 sm:shadow-panel">
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          className={buttonClass("primary", "md", "w-full sm:w-auto")}
         >
           {pending ? t("submitting") : t("submit")}
         </button>
-        <p className="mt-2 text-xs text-gray-500">{t("reviewNote")}</p>
+        <p className="t-meta mt-2">{t("reviewNote")}</p>
       </div>
     </form>
   );

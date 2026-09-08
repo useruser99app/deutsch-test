@@ -3,17 +3,20 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { requireRole } from "@/lib/auth";
 import {
-  approvedValue,
   loadCandidateSnapshot,
   loadChangeItems,
   loadDocuments,
 } from "@/lib/candidate-data";
 import { fieldSections, fieldsForSection } from "@/lib/candidate-fields";
-import StatusBadge from "@/components/StatusBadge";
-import SectionCard from "@/components/candidate/SectionCard";
-import FieldValue from "@/components/candidate/FieldValue";
-import ValueCompare from "@/components/admin/ValueCompare";
+import PageHeader from "@/components/ui/PageHeader";
+import Panel from "@/components/ui/Panel";
+import StatusBadge from "@/components/ui/StatusBadge";
+import EmptyState from "@/components/ui/EmptyState";
+import ValueComparison from "@/components/ui/ValueComparison";
+import { trackClass } from "@/components/ui/CandidateIdentity";
+import ProfileFields from "@/components/candidate/ProfileFields";
 import ReviewDecisionForm from "@/components/admin/ReviewDecisionForm";
+import DocumentRow from "@/components/admin/DocumentRow";
 
 export default async function AdminCandidateDetailPage({
   params,
@@ -55,94 +58,81 @@ export default async function AdminCandidateDetailPage({
     (doc) => doc.verification_status === "pending_review"
   );
   const documentsById = new Map(documents.map((doc) => [doc.id, doc]));
-  const isApprenticeship = snapshot.isApprenticeship;
 
   return (
-    <div className="space-y-6">
-      <Link
-        href="/admin/candidates"
-        className="inline-block text-sm text-blue-700 underline"
-      >
-        {t("backToList")}
-      </Link>
+    <>
+      <PageHeader
+        title={`${candidate.first_name} ${candidate.last_name}`}
+        breadcrumb={
+          <Link
+            href="/admin/candidates"
+            className="t-meta hover:text-accent hover:underline"
+          >
+            {t("backToList")}
+          </Link>
+        }
+      />
 
-      {/* Header */}
-      <section className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="font-mono text-lg font-semibold text-gray-900">
-              {candidate.candidate_code}
-            </p>
-            <p className="mt-0.5 text-xl font-semibold text-gray-900">
-              {candidate.first_name} {candidate.last_name}
-            </p>
-            <p className="mt-0.5 break-all text-sm text-gray-600">
-              {candidate.email}
-            </p>
-          </div>
+      {/* Identity and state at a glance */}
+      <section className="rounded-lg border border-hairline bg-surface p-5 shadow-panel">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span className="font-mono text-sm font-medium text-ink-600">
+            {candidate.candidate_code}
+          </span>
           <span
-            className={`rounded-full px-3 py-1 text-sm font-medium ${
-              isApprenticeship
-                ? "bg-indigo-100 text-indigo-800"
-                : "bg-teal-100 text-teal-800"
-            }`}
+            className={`rounded px-2 py-0.5 text-xs font-medium ${trackClass(
+              candidate.candidate_type
+            )}`}
           >
             {tEnums(`candidateType.${candidate.candidate_type}`)}
           </span>
+          <span className="t-meta break-all">{candidate.email}</span>
         </div>
 
-        <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+        <dl className="mt-5 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <dt className="text-xs uppercase tracking-wide text-gray-500">
-              {tFields("german_level")}
-            </dt>
-            <dd className="font-medium text-gray-900">
+            <dt className="t-label">{tFields("german_level")}</dt>
+            <dd className="mt-1 text-lg font-semibold text-ink-900">
               {candidate.german_level}
             </dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-gray-500">
-              {tFields("profile_status")}
-            </dt>
-            <dd className="mt-0.5">
+            <dt className="t-label">{tFields("profile_status")}</dt>
+            <dd className="mt-1.5">
               {snapshot.profile ? (
                 <StatusBadge status={snapshot.profile.profile_status} />
               ) : (
-                <span className="text-gray-500">—</span>
+                <span className="t-meta">—</span>
               )}
             </dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-gray-500">
-              {tCandidates("accountStatus")}
-            </dt>
-            <dd className="mt-0.5">
+            <dt className="t-label">{tCandidates("accountStatus")}</dt>
+            <dd className="mt-1.5">
               {accountStatus ? (
                 <StatusBadge status={accountStatus} />
               ) : (
-                <span className="text-gray-500">—</span>
+                <span className="t-meta">—</span>
               )}
             </dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-gray-500">
-              {tFields("status")}
-            </dt>
-            <dd className="mt-0.5">
+            <dt className="t-label">{tFields("status")}</dt>
+            <dd className="mt-1.5">
               <StatusBadge status={candidate.status} />
             </dd>
           </div>
         </dl>
 
-        {/* Open work for this candidate, with direct jumps (§8). */}
-        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg bg-gray-50 px-4 py-3 text-sm">
-          <span className="font-medium text-gray-900">{t("openWork")}:</span>
+        {/* Open work with direct jumps (§8) */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-hairline pt-4">
+          <span className="t-label">{t("openWork")}</span>
           <a
             href="#pending-changes"
             className={
               pending.length > 0
-                ? "font-medium text-amber-800 underline"
-                : "text-gray-600"
+                ? "text-sm font-semibold text-attention hover:underline"
+                : "t-meta"
             }
           >
             {t("pendingChanges", { count: pending.length })}
@@ -151,8 +141,8 @@ export default async function AdminCandidateDetailPage({
             href="#documents"
             className={
               pendingDocuments.length > 0
-                ? "font-medium text-amber-800 underline"
-                : "text-gray-600"
+                ? "text-sm font-semibold text-attention hover:underline"
+                : "t-meta"
             }
           >
             {t("pendingDocuments", { count: pendingDocuments.length })}
@@ -160,105 +150,53 @@ export default async function AdminCandidateDetailPage({
         </div>
       </section>
 
-      {/* Private candidate profile — admin view (§7) */}
-      {fieldSections.map((section) => {
-        const fields = fieldsForSection(candidate.candidate_type, section);
-        if (fields.length === 0) return null;
+      {/* Private profile — admin view (§7) */}
+      <div className="mt-6 space-y-6">
+        {fieldSections.map((section) => {
+          if (fieldsForSection(candidate.candidate_type, section).length === 0) {
+            return null;
+          }
+          return (
+            <Panel key={section} title={tSections(section)}>
+              <ProfileFields snapshot={snapshot} section={section} />
+            </Panel>
+          );
+        })}
+      </div>
 
-        return (
-          <SectionCard key={section} title={tSections(section)}>
-            {section === "occupation" &&
-              isApprenticeship &&
-              snapshot.occupations.length > 0 && (
-                <div className="border-b border-gray-100 py-2.5">
-                  <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                    {tFields("target_occupations")}
-                  </dt>
-                  <dd className="mt-1">
-                    <ol className="space-y-1">
-                      {snapshot.occupations.map((entry) => (
-                        <li
-                          key={entry.occupation}
-                          className="flex flex-wrap items-center gap-2 text-sm"
-                        >
-                          <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-medium text-gray-700">
-                            {entry.rank}
-                          </span>
-                          <span className="font-medium text-gray-900">
-                            {entry.occupation}
-                          </span>
-                          {entry.rank === 1 && (
-                            <span className="rounded-full bg-gray-900 px-2 py-0.5 text-xs text-white">
-                              {t("primaryOccupation")}
-                            </span>
-                          )}
-                        </li>
-                      ))}
-                    </ol>
-                  </dd>
-                </div>
-              )}
-
-            <dl>
-              {fields.map((field) => {
-                if (
-                  field.key === "target_occupations" &&
-                  snapshot.occupations.length > 0
-                ) {
-                  return null;
-                }
-                return (
-                  <FieldValue
-                    key={field.key}
-                    label={
-                      tFields.has(field.key) ? tFields(field.key) : field.key
-                    }
-                    value={approvedValue(snapshot, field.key)}
-                    input={field.input}
-                  />
-                );
-              })}
-              {section === "profile" && (
-                <FieldValue label={tFields("email")} value={candidate.email} />
-              )}
-            </dl>
-          </SectionCard>
-        );
-      })}
-
-      {/* Pending changes with inline decisions */}
-      <div id="pending-changes" className="scroll-mt-24">
-        <SectionCard
+      {/* Pending changes — the actionable part of this page */}
+      <div id="pending-changes" className="mt-6 scroll-mt-6">
+        <Panel
           title={tReview("pendingTitle")}
           description={tReview("pendingDescription")}
         >
           {pending.length === 0 ? (
-            <p className="py-2 text-sm text-gray-600">{tReview("noPending")}</p>
+            <EmptyState message={tReview("noPending")} compact />
           ) : (
-            <ul className="space-y-4 py-1">
+            <ul className="space-y-4">
               {pending.map((item) => (
                 <li
                   key={item.id}
-                  className="rounded-lg border border-gray-200 p-4"
+                  className="rounded-md border border-attention/30 bg-attention-soft/40 p-4"
                 >
-                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-gray-900">
+                  <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                    <span className="t-entity text-[15px]">
                       {tFields.has(item.field_key)
                         ? tFields(item.field_key)
                         : item.field_key}
                     </span>
-                    <span className="text-xs text-gray-500">
+                    <span className="t-meta">
                       {tReview("submittedAt")}: {item.created_at.slice(0, 10)}
                       {item.source_language
                         ? ` · ${tReview("sourceLanguage")}: ${item.source_language}`
                         : ""}
                     </span>
                   </div>
-                  <ValueCompare
+                  <ValueComparison
                     currentValue={item.current_value}
                     proposedValue={item.proposed_value}
                   />
-                  <div className="mt-3">
+                  <div className="mt-4">
                     <ReviewDecisionForm
                       kind="change"
                       id={item.id}
@@ -269,142 +207,83 @@ export default async function AdminCandidateDetailPage({
               ))}
             </ul>
           )}
-        </SectionCard>
+        </Panel>
       </div>
 
       {/* Documents */}
-      <div id="documents" className="scroll-mt-24">
-        <SectionCard title={tDocs("title")}>
+      <div id="documents" className="mt-6 scroll-mt-6">
+        <Panel title={tDocs("title")} bleed>
           {documents.length === 0 ? (
-            <p className="py-2 text-sm text-gray-600">{tDocs("noDocuments")}</p>
+            <div className="p-5">
+              <EmptyState message={tDocs("noDocuments")} compact />
+            </div>
           ) : (
-            <ul className="space-y-4 py-1">
-              {documents.map((doc) => {
-                const replaced = doc.replaces_document_id
-                  ? documentsById.get(doc.replaces_document_id)
-                  : null;
-                const isPending =
-                  doc.verification_status === "pending_review";
-
-                return (
-                  <li
-                    key={doc.id}
-                    className="rounded-lg border border-gray-200 p-4"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-gray-900">
-                          {tEnums(`documentType.${doc.document_type}`)}
-                        </p>
-                        <p className="mt-0.5 break-all text-xs text-gray-500">
-                          {doc.original_filename}
-                        </p>
-                      </div>
-                      <StatusBadge status={doc.verification_status} />
-                    </div>
-
-                    <dl className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-500">
-                      <div className="flex gap-1">
-                        <dt>{tDocs("uploadedAt")}:</dt>
-                        <dd>{doc.uploaded_at.slice(0, 10)}</dd>
-                      </div>
-                      {doc.reviewed_at && (
-                        <div className="flex gap-1">
-                          <dt>{tDocs("reviewedAt")}:</dt>
-                          <dd>{doc.reviewed_at.slice(0, 10)}</dd>
-                        </div>
-                      )}
-                      {replaced && (
-                        <div className="flex gap-1">
-                          <dt>{tDocs("replaces")}:</dt>
-                          <dd className="break-all">
-                            {replaced.original_filename}
-                          </dd>
-                        </div>
-                      )}
-                    </dl>
-
-                    {doc.review_note && (
-                      <p className="mt-2 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">
-                        <span className="font-medium">
-                          {tDocs("reviewNote")}:{" "}
-                        </span>
-                        {doc.review_note}
-                      </p>
-                    )}
-
-                    <div className="mt-3 flex flex-wrap items-center gap-3">
-                      <a
-                        href={`/api/documents/view?id=${doc.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm font-medium text-blue-700 underline"
-                      >
-                        {tDocs("view")}
-                      </a>
-                    </div>
-
-                    {isPending && (
-                      <div className="mt-3">
-                        <ReviewDecisionForm
-                          kind="document"
-                          id={doc.id}
-                          candidateId={candidateId}
-                        />
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
+            <ul className="divide-y divide-hairline">
+              {documents.map((doc) => (
+                <DocumentRow
+                  key={doc.id}
+                  document={doc}
+                  replacedFilename={
+                    doc.replaces_document_id
+                      ? documentsById.get(doc.replaces_document_id)
+                          ?.original_filename
+                      : undefined
+                  }
+                  candidateId={candidateId}
+                  actionable={doc.verification_status === "pending_review"}
+                />
+              ))}
             </ul>
           )}
-        </SectionCard>
+        </Panel>
       </div>
 
-      {/* Decided history for this candidate */}
-      <SectionCard
-        title={tReview("historyTitle")}
-        description={tReview("historyDescription")}
-      >
-        {history.length === 0 ? (
-          <p className="py-2 text-sm text-gray-600">{tReview("noHistory")}</p>
-        ) : (
-          <ul className="space-y-3 py-1">
-            {history.map((item) => (
-              <li
-                key={item.id}
-                className="rounded-lg border border-gray-200 p-4"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-sm font-semibold text-gray-900">
-                    {tFields.has(item.field_key)
-                      ? tFields(item.field_key)
-                      : item.field_key}
-                  </span>
-                  <StatusBadge status={item.status} />
-                </div>
-                <div className="mt-2">
-                  <ValueCompare
+      {/* Decided history — deliberately quieter than open work */}
+      <div className="mt-6">
+        <Panel
+          title={tReview("historyTitle")}
+          description={tReview("historyDescription")}
+        >
+          {history.length === 0 ? (
+            <EmptyState message={tReview("noHistory")} compact />
+          ) : (
+            <ul className="space-y-4">
+              {history.map((item) => (
+                <li
+                  key={item.id}
+                  className="rounded-md border border-hairline p-4"
+                >
+                  <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                    <span className="text-sm font-semibold text-ink-800">
+                      {tFields.has(item.field_key)
+                        ? tFields(item.field_key)
+                        : item.field_key}
+                    </span>
+                    <span className="flex items-center gap-3">
+                      <span className="t-meta">
+                        {tReview("reviewedAt")}:{" "}
+                        {item.reviewed_at?.slice(0, 10) ?? "—"}
+                      </span>
+                      <StatusBadge status={item.status} size="sm" />
+                    </span>
+                  </div>
+                  <ValueComparison
                     currentValue={item.current_value}
                     proposedValue={item.proposed_value}
+                    muted
                   />
-                </div>
-                <p className="mt-2 text-xs text-gray-500">
-                  {tReview("reviewedAt")}:{" "}
-                  {item.reviewed_at?.slice(0, 10) ?? "—"}
-                  {item.reviewed_by ? ` · ${tReview("reviewer")}` : ""}
-                </p>
-                {item.review_comment && (
-                  <p className="mt-2 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700">
-                    <span className="font-medium">{tReview("comment")}: </span>
-                    {item.review_comment}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </SectionCard>
-    </div>
+                  {item.review_comment && (
+                    <p className="t-body mt-3 rounded-md bg-ink-50 px-3 py-2">
+                      <span className="font-medium">{tReview("comment")}: </span>
+                      {item.review_comment}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+      </div>
+    </>
   );
 }

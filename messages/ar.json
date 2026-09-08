@@ -56,7 +56,12 @@
     "adminDocuments": "مراجعة المستندات",
     "candidates": "المرشحون",
     "companies": "الشركات",
-    "reviews": "حالة المراجعة"
+    "reviews": "حالة المراجعة",
+    "adminWorkspace": "الإدارة",
+    "candidatePortal": "بوابة المرشح",
+    "employerPortal": "منطقة صاحب العمل",
+    "groupOperations": "المراجعة",
+    "groupManagement": "البيانات"
   },
   "status": {
     "pending": "قيد الانتظار",
@@ -239,7 +244,10 @@
       "recentChanges": "أحدث التعديلات المُرسلة",
       "recentDocuments": "أحدث المستندات المرفوعة",
       "noRecentChanges": "لم تُرسل أي تعديلات بعد.",
-      "noRecentDocuments": "لم تُرفع أي مستندات بعد."
+      "noRecentDocuments": "لم تُرفع أي مستندات بعد.",
+      "needsAttention": "يتطلب انتباهًا",
+      "needsAttentionDescription": "مرشحون لديهم تعديلات أو مستندات مفتوحة.",
+      "noAttention": "لا يوجد شيء بانتظار المراجعة حاليًا."
     },
     "review": {
       "title": "مراجعة التعديلات",
@@ -326,7 +334,9 @@
       "pendingSummary": "مفتوح: {changes} تعديلات، {documents} مستندات",
       "resultCount": "النتائج: {count}",
       "noResults": "لا يوجد مرشحون مطابقون لهذه المرشحات.",
-      "truncated": "يتم عرض النتائج الأولى فقط. يرجى تضييق البحث أو المرشحات."
+      "truncated": "يتم عرض النتائج الأولى فقط. يرجى تضييق البحث أو المرشحات.",
+      "pendingChangesShort": "{count} تعديلات",
+      "pendingDocumentsShort": "{count} مستندات"
     },
     "companies": {
       "title": "الشركات",

@@ -1,6 +1,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireRole } from "@/lib/auth";
 import { createCompany } from "@/lib/actions/admin";
+import PageHeader from "@/components/ui/PageHeader";
+import Panel from "@/components/ui/Panel";
+import EmptyState from "@/components/ui/EmptyState";
+import { buttonClass, controlClass } from "@/components/ui/button";
 import CreateEmployerForm from "@/components/CreateEmployerForm";
 
 interface CompanyRow {
@@ -29,132 +33,136 @@ export default async function AdminCompaniesPage({
   const { data: companies } = await supabase
     .from("companies")
     .select("id, name, city, country, industry, status")
-    .order("created_at", { ascending: false });
+    .order("name");
 
   const rows = (companies ?? []) as CompanyRow[];
-  const inputClass = "w-full rounded-md border border-gray-300 px-3 py-2";
-  const labelClass = "mb-1 block text-sm text-gray-700";
+  const labelClass = "t-label mb-1.5 block";
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-2xl font-semibold">{t("title")}</h1>
+    <>
+      <PageHeader title={t("title")} />
 
       {created && (
-        <p className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
+        <p
+          role="status"
+          className="mb-4 rounded-md border border-positive/25 bg-positive-soft px-4 py-2.5 text-sm text-positive"
+        >
           {t("created")}
         </p>
       )}
       {error && (
-        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mb-4 rounded-md border border-critical/25 bg-critical-soft px-4 py-2.5 text-sm text-critical"
+        >
           {t("error")}
         </p>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <form
-          action={createCompany}
-          className="space-y-4 rounded-lg border border-gray-200 bg-white p-6"
-        >
-          <input type="hidden" name="locale" value={locale} />
-          <h2 className="text-lg font-semibold">{t("create")}</h2>
-          <div>
-            <label className={labelClass} htmlFor="name">
-              {t("name")}
-            </label>
-            <input
-              id="name"
-              type="text"
-              name="name"
-              required
-              className={inputClass}
-            />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className={labelClass} htmlFor="website">
-                {t("website")}
-              </label>
-              <input
-                id="website"
-                type="text"
-                name="website"
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="industry">
-                {t("industry")}
-              </label>
-              <input
-                id="industry"
-                type="text"
-                name="industry"
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="country">
-                {t("country")}
-              </label>
-              <input
-                id="country"
-                type="text"
-                name="country"
-                defaultValue="DE"
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="city">
-                {t("city")}
-              </label>
-              <input id="city" type="text" name="city" className={inputClass} />
-            </div>
-          </div>
-          <button
-            type="submit"
-            className="rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-700"
-          >
-            {t("submit")}
-          </button>
-        </form>
-
-        <CreateEmployerForm
-          companies={rows.map((company) => ({
-            id: company.id,
-            name: company.name,
-          }))}
-        />
-      </div>
-
-      <section>
+      <Panel bleed>
         {rows.length === 0 ? (
-          <p className="text-sm text-gray-600">{t("noCompanies")}</p>
-        ) : (
-          <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-gray-600">
-                <tr>
-                  <th className="px-3 py-2 text-start">{t("name")}</th>
-                  <th className="px-3 py-2 text-start">{t("city")}</th>
-                  <th className="px-3 py-2 text-start">{t("country")}</th>
-                  <th className="px-3 py-2 text-start">{t("industry")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((company) => (
-                  <tr key={company.id} className="border-t border-gray-100">
-                    <td className="px-3 py-2 font-medium">{company.name}</td>
-                    <td className="px-3 py-2">{company.city ?? "—"}</td>
-                    <td className="px-3 py-2">{company.country}</td>
-                    <td className="px-3 py-2">{company.industry ?? "—"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="p-5">
+            <EmptyState message={t("noCompanies")} compact />
           </div>
+        ) : (
+          <ul className="divide-y divide-hairline">
+            {rows.map((company) => (
+              <li
+                key={company.id}
+                className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+              >
+                <div className="min-w-0">
+                  <p className="t-entity text-[15px]">{company.name}</p>
+                  <p className="t-meta mt-0.5">
+                    {[company.city, company.country, company.industry]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
         )}
-      </section>
-    </div>
+      </Panel>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Panel title={t("create")}>
+          <form action={createCompany} className="space-y-4">
+            <input type="hidden" name="locale" value={locale} />
+            <div>
+              <label className={labelClass} htmlFor="name">
+                {t("name")}
+              </label>
+              <input
+                id="name"
+                type="text"
+                name="name"
+                required
+                className={controlClass}
+              />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelClass} htmlFor="website">
+                  {t("website")}
+                </label>
+                <input
+                  id="website"
+                  type="text"
+                  name="website"
+                  className={controlClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="industry">
+                  {t("industry")}
+                </label>
+                <input
+                  id="industry"
+                  type="text"
+                  name="industry"
+                  className={controlClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="country">
+                  {t("country")}
+                </label>
+                <input
+                  id="country"
+                  type="text"
+                  name="country"
+                  defaultValue="DE"
+                  className={controlClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass} htmlFor="city">
+                  {t("city")}
+                </label>
+                <input
+                  id="city"
+                  type="text"
+                  name="city"
+                  className={controlClass}
+                />
+              </div>
+            </div>
+            <button type="submit" className={buttonClass("primary", "md")}>
+              {t("submit")}
+            </button>
+          </form>
+        </Panel>
+
+        <Panel>
+          <CreateEmployerForm
+            companies={rows.map((company) => ({
+              id: company.id,
+              name: company.name,
+            }))}
+          />
+        </Panel>
+      </div>
+    </>
   );
 }

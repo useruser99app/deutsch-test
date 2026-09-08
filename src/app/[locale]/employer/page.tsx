@@ -1,5 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireRole } from "@/lib/auth";
+import PageHeader from "@/components/ui/PageHeader";
+import Panel from "@/components/ui/Panel";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default async function EmployerDashboard({
   params,
@@ -16,29 +19,29 @@ export default async function EmployerDashboard({
     .select("name, city, country");
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">{t("title")}</h1>
-      <p className="text-gray-700">{t("welcome")}</p>
+    <>
+      <PageHeader title={t("title")} description={t("welcome")} />
 
-      <section className="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 className="mb-2 text-lg font-semibold">{t("company")}</h2>
+      <Panel title={t("company")}>
         {(companies ?? []).length === 0 ? (
-          <p className="text-sm text-gray-600">{t("noCompany")}</p>
+          <EmptyState message={t("noCompany")} compact />
         ) : (
           <ul className="space-y-1 text-sm">
             {(companies ?? []).map(
               (company: { name: string; city: string | null; country: string }) => (
-                <li key={company.name}>
-                  <span className="font-medium">{company.name}</span>
+                <li key={company.name} className="t-value">
+                  <span className="font-semibold text-ink-900">
+                    {company.name}
+                  </span>
                   {company.city ? ` · ${company.city}` : ""} · {company.country}
                 </li>
               )
             )}
           </ul>
         )}
-      </section>
+      </Panel>
 
-      <p className="text-sm text-gray-500">{t("comingSoon")}</p>
-    </div>
+      <p className="t-meta mt-4">{t("comingSoon")}</p>
+    </>
   );
 }
