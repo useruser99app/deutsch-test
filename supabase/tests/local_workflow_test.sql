@@ -550,5 +550,309 @@ begin
   raise notice 'PASS: authenticated user cannot raise own or foreign role/status';
 end $$;
 
+
+-- ---------------------------------------------------------------
+-- 10. Employer Marketplace & introduction workflow (Prompt 03 §23)
+--
+-- A second company with its own employer is created here so that
+-- cross-company isolation can be proven, not just asserted.
+-- ---------------------------------------------------------------
+reset role;
+
+insert into auth.users (id, email, raw_app_meta_data) values
+  ('00000000-0000-0000-0000-0000000000e2', 'emp-b@test',
+   '{"norav_role":"employer","norav_account_status":"active"}');
+insert into public.companies (id, name, country, city)
+values ('30000000-0000-0000-0000-000000000002', 'WF Konkurrenz GmbH', 'DE', 'Hamburg');
+insert into public.company_members (company_id, user_id, member_role)
+values ('30000000-0000-0000-0000-000000000002',
+        '00000000-0000-0000-0000-0000000000e2', 'owner');
+
+-- Start from a clean publication state so the assertions below are exact.
+update public.candidate_profiles
+set profile_status = 'draft', published_at = null;
+delete from public.interest_requests;
+
+set role authenticated;
+
+-- (A) An unpublished candidate is invisible to the employer.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+begin
+  if exists (select 1 from public.employer_candidate_profiles) then
+    raise exception 'FAIL: employer sees an unpublished candidate';
+  end if;
+  raise notice 'PASS: unpublished candidate invisible in the marketplace';
+end $$;
+
+-- (G) A candidate cannot publish themselves.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000c1';
+do $$
+declare v_status public.profile_status;
+begin
+  begin
+    perform public.publish_candidate_profile(
+      '20000000-0000-0000-0000-0000000000a1', true);
+    raise exception 'FAIL: candidate published its own profile';
+  exception when others then
+    if sqlerrm like 'FAIL:%' then raise; end if;
+  end;
+  -- and not by writing the column directly either
+  update public.candidate_profiles set profile_status = 'published';
+  select profile_status into v_status from public.candidate_profiles
+  where candidate_id = '20000000-0000-0000-0000-0000000000a1';
+  if v_status = 'published' then
+    raise exception 'FAIL: candidate published itself via direct update';
+  end if;
+  raise notice 'PASS: candidate cannot publish itself (RPC and direct write)';
+end $$;
+
+-- (H) The admin publishes.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+do $$
+declare v public.candidate_profiles;
+begin
+  v := public.publish_candidate_profile(
+    '20000000-0000-0000-0000-0000000000a1', true);
+  if v.profile_status <> 'published' or v.published_at is null then
+    raise exception 'FAIL: admin publish did not take effect';
+  end if;
+  raise notice 'PASS: admin published the employer-facing profile';
+end $$;
+
+-- (B) The published candidate becomes visible through employer-safe data.
+-- (C) …and carries no identity, contact data, documents or pending changes.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+declare r record; n int; col text;
+begin
+  select count(*) into n from public.employer_candidate_profiles;
+  if n <> 1 then
+    raise exception 'FAIL: expected exactly 1 published profile, got %', n;
+  end if;
+
+  select * into r from public.employer_candidate_profiles;
+  if r.candidate_code is null or r.german_level is null then
+    raise exception 'FAIL: employer-safe professional data missing';
+  end if;
+  if r.primary_occupation is null then
+    raise exception 'FAIL: target occupation not published';
+  end if;
+
+  -- The whitelist is structural: these columns must not exist at all.
+  for col in
+    select unnest(array['first_name','last_name','email','phone',
+                        'date_of_birth','user_id','candidate_id',
+                        'storage_path','review_comment'])
+  loop
+    if exists (
+      select 1 from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'employer_candidate_profiles'
+        and column_name = col
+    ) then
+      raise exception 'FAIL: employer view exposes private column %', col;
+    end if;
+  end loop;
+
+  -- and the private tables themselves stay closed.
+  if exists (select 1 from public.candidates) then
+    raise exception 'FAIL: employer reads candidate identities';
+  end if;
+  if exists (select 1 from public.candidate_documents) then
+    raise exception 'FAIL: employer reads documents';
+  end if;
+  if exists (select 1 from public.candidate_change_items) then
+    raise exception 'FAIL: employer reads change items';
+  end if;
+  if exists (select 1 from public.apprenticeship_details) then
+    raise exception 'FAIL: employer reads private apprenticeship details';
+  end if;
+  raise notice 'PASS: published profile visible; no identity, contact, documents or pending changes';
+end $$;
+
+-- (E) The employer creates a valid introduction request.
+-- (F) A duplicate active request is prevented.
+do $$
+declare v_pid uuid;
+begin
+  select profile_id into v_pid from public.employer_candidate_profiles;
+
+  insert into public.interest_requests
+    (company_id, candidate_profile_id, requested_by, message)
+  values ('30000000-0000-0000-0000-000000000001', v_pid,
+          '00000000-0000-0000-0000-0000000000e1', 'Vorstellung bitte');
+  raise notice 'PASS: employer created an introduction request';
+
+  begin
+    insert into public.interest_requests
+      (company_id, candidate_profile_id, requested_by)
+    values ('30000000-0000-0000-0000-000000000001', v_pid,
+            '00000000-0000-0000-0000-0000000000e1');
+    raise exception 'FAIL: duplicate active request was allowed';
+  exception when unique_violation then
+    raise notice 'PASS: duplicate active request blocked by the database';
+  end;
+end $$;
+
+-- (D) Employer B cannot read company A's requests, and cannot file one in
+-- company A's name.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e2';
+do $$
+declare v_pid uuid; n int;
+begin
+  if exists (select 1 from public.interest_requests) then
+    raise exception 'FAIL: employer B reads company A requests';
+  end if;
+  if exists (select 1 from public.companies
+             where id = '30000000-0000-0000-0000-000000000001') then
+    raise exception 'FAIL: employer B reads company A';
+  end if;
+
+  select profile_id into v_pid from public.employer_candidate_profiles;
+  begin
+    insert into public.interest_requests
+      (company_id, candidate_profile_id, requested_by)
+    values ('30000000-0000-0000-0000-000000000001', v_pid,
+            '00000000-0000-0000-0000-0000000000e2');
+    raise exception 'FAIL: employer B filed a request as company A';
+  exception when insufficient_privilege then null;
+  end;
+
+  -- Its own request against the same candidate is legitimate.
+  insert into public.interest_requests
+    (company_id, candidate_profile_id, requested_by)
+  values ('30000000-0000-0000-0000-000000000002', v_pid,
+          '00000000-0000-0000-0000-0000000000e2');
+  select count(*) into n from public.interest_requests;
+  if n <> 1 then
+    raise exception 'FAIL: employer B should see only its own request, sees %', n;
+  end if;
+  raise notice 'PASS: cross-company request isolation holds in both directions';
+end $$;
+
+-- (J) Approval does not expose private candidate contact data.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+update public.interest_requests set status = 'approved',
+  reviewed_by = '00000000-0000-0000-0000-0000000000a1', reviewed_at = now();
+
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+declare r record;
+begin
+  select * into r from public.interest_requests;
+  if r.status <> 'approved' then
+    raise exception 'FAIL: employer should see the approved status';
+  end if;
+  if exists (select 1 from public.candidates) then
+    raise exception 'FAIL: approval exposed candidate identity';
+  end if;
+  if exists (select 1 from public.candidate_documents) then
+    raise exception 'FAIL: approval exposed candidate documents';
+  end if;
+  if (select count(*) from public.employer_candidate_profiles) <> 1 then
+    raise exception 'FAIL: approval changed marketplace visibility';
+  end if;
+  raise notice 'PASS: approval releases no private candidate contact data';
+end $$;
+
+-- The whole workflow to 'introduced' stays admin-driven and still reveals
+-- nothing new.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+update public.interest_requests set status = 'introduced' where status = 'approved';
+
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+begin
+  if not exists (select 1 from public.interest_requests where status = 'introduced') then
+    raise exception 'FAIL: employer cannot see the introduced status';
+  end if;
+  if exists (select 1 from public.candidates) then
+    raise exception 'FAIL: introduction exposed candidate identity';
+  end if;
+  raise notice 'PASS: introduced status visible, identity still closed';
+end $$;
+
+-- (I) Unpublishing removes the candidate from discovery WITHOUT deleting
+-- candidate data or the audit trail.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+do $$
+begin
+  perform public.publish_candidate_profile(
+    '20000000-0000-0000-0000-0000000000a1', false);
+end $$;
+
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+begin
+  if exists (select 1 from public.employer_candidate_profiles) then
+    raise exception 'FAIL: unpublished candidate still discoverable';
+  end if;
+  if not exists (select 1 from public.interest_requests where status = 'introduced') then
+    raise exception 'FAIL: unpublishing destroyed the request record';
+  end if;
+  raise notice 'PASS: unpublish removes discovery, request record survives';
+end $$;
+
+reset role;
+do $$
+begin
+  if not exists (select 1 from public.candidates
+                 where id = '20000000-0000-0000-0000-0000000000a1') then
+    raise exception 'FAIL: unpublishing deleted candidate data';
+  end if;
+  if not exists (select 1 from public.candidate_profiles
+                 where candidate_id = '20000000-0000-0000-0000-0000000000a1'
+                   and profile_status = 'unpublished') then
+    raise exception 'FAIL: profile row lost on unpublish';
+  end if;
+  raise notice 'PASS: candidate and profile data intact after unpublish';
+end $$;
+
+-- Publication prerequisites are reported, not bypassed (§5).
+set role authenticated;
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+do $$
+declare v_cid uuid;
+begin
+  select id into v_cid from public.candidates where email = 'candb@test';
+  reset role;
+  update public.skilled_worker_details set profession = null where candidate_id = v_cid;
+  set role authenticated;
+  set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+  begin
+    perform public.publish_candidate_profile(v_cid, true);
+    raise exception 'FAIL: profile without a professional target was published';
+  exception when others then
+    if sqlerrm like 'FAIL:%' then raise; end if;
+    if sqlerrm not like '%PUBLISH_BLOCKED_NO_TARGET%' then
+      raise exception 'FAIL: unexpected publish error %', sqlerrm;
+    end if;
+  end;
+  raise notice 'PASS: publication blocked with a clear reason when the target is missing';
+end $$;
+
+-- Neither a candidate nor an anonymous visitor may read the employer view.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000c1';
+do $$
+begin
+  if exists (select 1 from public.employer_candidate_profiles) then
+    raise exception 'FAIL: candidate reads the employer marketplace view';
+  end if;
+  raise notice 'PASS: candidates cannot read the employer marketplace view';
+end $$;
+
+reset role;
+set role anon;
+do $$
+begin
+  if exists (select 1 from public.employer_candidate_profiles) then
+    raise exception 'FAIL: anonymous visitor reads the employer marketplace view';
+  end if;
+  raise notice 'PASS: anonymous visitors cannot read the employer marketplace view';
+exception when insufficient_privilege then
+  raise notice 'PASS: anonymous visitors have no grant on the employer view';
+end $$;
+
 reset role;
 select 'ALL LOCAL WORKFLOW TESTS PASSED' as result;

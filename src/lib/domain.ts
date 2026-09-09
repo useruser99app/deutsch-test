@@ -59,6 +59,27 @@ export type DocumentStatus = (typeof documentStatuses)[number];
 export const profileStatuses = ["draft", "published", "unpublished"] as const;
 export type ProfileStatus = (typeof profileStatuses)[number];
 
+/**
+ * Introduction request lifecycle (§16/§17). NORAV facilitates the actual
+ * introduction operationally; 'introduced' records that this happened. No
+ * status change ever releases candidate contact data to the employer (§18).
+ */
+export const interestRequestStatuses = [
+  "new",
+  "reviewing",
+  "approved",
+  "rejected",
+  "introduced",
+] as const;
+export type InterestRequestStatus = (typeof interestRequestStatuses)[number];
+
+/** Statuses that count as an open request for duplicate protection (§15). */
+export const activeInterestRequestStatuses: readonly InterestRequestStatus[] = [
+  "new",
+  "reviewing",
+  "approved",
+];
+
 export const localeCodes = ["de", "en", "fr", "ar"] as const;
 export type LocaleCode = (typeof localeCodes)[number];
 
@@ -116,6 +137,20 @@ export interface InviteActionState {
   status: "idle" | "success" | "error";
   candidateCode?: string;
   inviteLink?: string | null;
+}
+
+/** Result state for the employer's "request introduction" form. */
+export interface IntroductionActionState {
+  status: "idle" | "success" | "error" | "duplicate";
+  requestStatus?: InterestRequestStatus;
+}
+
+/** Result state for the admin publish / unpublish control. */
+export interface PublishActionState {
+  status: "idle" | "success" | "error";
+  profileStatus?: ProfileStatus;
+  /** Canonical reason code when publication prerequisites are unmet (§5). */
+  reason?: string;
 }
 
 export interface AppUser {

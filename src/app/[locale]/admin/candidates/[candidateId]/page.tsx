@@ -15,6 +15,7 @@ import ValueComparison from "@/components/ui/ValueComparison";
 import { trackClass } from "@/components/ui/CandidateIdentity";
 import ProfileFields from "@/components/candidate/ProfileFields";
 import ReviewDecisionForm from "@/components/admin/ReviewDecisionForm";
+import PublicationControl from "@/components/admin/PublicationControl";
 import DocumentRow from "@/components/admin/DocumentRow";
 
 export default async function AdminCandidateDetailPage({
@@ -33,6 +34,7 @@ export default async function AdminCandidateDetailPage({
   const tDocs = await getTranslations("admin.documents");
   const tCandidates = await getTranslations("admin.candidates");
   const tCommon = await getTranslations("common");
+  const tPublication = await getTranslations("admin.publication");
 
   const snapshot = await loadCandidateSnapshot(supabase, candidateId);
   if (!snapshot) notFound();
@@ -217,6 +219,16 @@ export default async function AdminCandidateDetailPage({
           )}
         </div>
       </section>
+
+      {/* Employer publication — prominent, directly under the header (§5) */}
+      <div className="mt-6">
+        <Panel title={tPublication("title")} description={tPublication("description")}>
+          <PublicationControl
+            candidateId={candidateId}
+            profileStatus={snapshot.profile?.profile_status ?? "draft"}
+          />
+        </Panel>
+      </div>
 
       {/* Whole private profile as one surface (§7) */}
       <div className="mt-6">

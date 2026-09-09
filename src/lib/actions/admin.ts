@@ -6,8 +6,12 @@ import { requireRole } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   candidateTypes,
+  interestRequestStatuses,
   localeCodes,
+  type InterestRequestStatus,
   type InviteActionState,
+  type ProfileStatus,
+  type PublishActionState,
 } from "@/lib/domain";
 import { provisionAccount, ProvisioningError } from "@/lib/provisioning";
 
@@ -332,5 +336,91 @@ export async function reviewDocumentAction(
     status: "success",
     decision: approve ? "approved" : "rejected",
     itemId: documentId,
+  };
+}
+
+/**
+ * Publish / unpublish an employer-facing profile (§5).
+ *
+ * The decision is executed by publish_candidate_profile() in the database,
+ * which owns the prerequisite checks. Unmet prerequisites come back as a
+ * canonical reason code that the UI turns into a clear sentence — the
+ * action never bypasses the validation to force a publication through.
+ */
+export async function publishProfileAction(
+  _prev: PublishActionState,
+  formData: FormData
+): Promise<PublishActionState> {
+  const locale = text(formData, "locale");
+  const { supabase } = await requireRole(locale, "admin");
+
+  const candidateId = text(formData, "candidate_id");
+  const publish = text(formData, "decision") === "publish";
+  if (!candidateId) return { status: "error" };
+
+  const { data, error } = await supabase.rpc("publish_candidate_profile", {
+    p_candidate_id: candidateId,
+    p_publish: publish,
+  });
+
+  if (error) {
+    const reason = /PUBLISH_BLOCKED_[A-Z_]+/.exec(error.message)?.[0];
+    return { status: "error", reason };
+  }
+
+  revalidatePath(`/${locale}/admin/candidates/${candidateId}`);
+  revalidatePath(`/${locale}/admin/candidates`);
+  return {
+    status: "success",
+    profileStatus: (data as { profile_status: ProfileStatus } | null)
+      ?.profile_status,
+  };
+}
+
+/**
+ * Move an introduction request through the workflow (§17).
+ *
+ * Approval records that NORAV will facilitate the introduction. It does NOT
+ * release candidate identity or contact data to the employer — that stays an
+ * operational step, and no status here unlocks a private field (§18).
+ */
+export async function reviewInterestRequestAction(
+  _prev: ReviewActionState,
+  formData: FormData
+): Promise<ReviewActionState> {
+  const locale = text(formData, "locale");
+  const { supabase } = await requireRole(locale, "admin");
+
+  const requestId = text(formData, "request_id");
+  const raw = text(formData, "next_status");
+  if (!requestId) return { status: "error" };
+  if (!(interestRequestStatuses as readonly string[]).includes(raw)) {
+    return { status: "error", itemId: requestId };
+  }
+  const nextStatus = raw as InterestRequestStatus;
+  const comment = text(formData, "comment") || null;
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase
+    .from("interest_requests")
+    .update({
+      status: nextStatus,
+      reviewed_by: user?.id ?? null,
+      reviewed_at: new Date().toISOString(),
+      ...(comment ? { review_comment: comment } : {}),
+    })
+    .eq("id", requestId);
+
+  if (error) return { status: "error", itemId: requestId };
+
+  revalidatePath(`/${locale}/admin/requests`);
+  revalidatePath(`/${locale}/admin`);
+  return {
+    status: "success",
+    decision: nextStatus === "rejected" ? "rejected" : "approved",
+    itemId: requestId,
   };
 }

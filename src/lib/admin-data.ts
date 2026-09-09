@@ -213,6 +213,7 @@ export async function loadDecidedDocuments(
 export interface AdminOverview {
   pendingChanges: number;
   pendingDocuments: number;
+  newRequests: number;
   candidates: number;
   companies: number;
   candidatesByType: Record<string, number>;
@@ -229,6 +230,7 @@ export async function loadAdminOverview(
     documents,
     candidates,
     companies,
+    newRequests,
     apprenticeships,
     skilled,
     recentChanges,
@@ -244,6 +246,10 @@ export async function loadAdminOverview(
       .eq("verification_status", "pending_review"),
     supabase.from("candidates").select("id", { count: "exact", head: true }),
     supabase.from("companies").select("id", { count: "exact", head: true }),
+    supabase
+      .from("interest_requests")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "new"),
     supabase
       .from("candidates")
       .select("id", { count: "exact", head: true })
@@ -267,6 +273,7 @@ export async function loadAdminOverview(
   return {
     pendingChanges: changes.count ?? 0,
     pendingDocuments: documents.count ?? 0,
+    newRequests: newRequests.count ?? 0,
     candidates: candidates.count ?? 0,
     companies: companies.count ?? 0,
     candidatesByType: {
@@ -276,4 +283,91 @@ export async function loadAdminOverview(
     recentChanges: (recentChanges.data ?? []) as unknown as ChangeItemWithCandidate[],
     recentDocuments: (recentDocuments.data ?? []) as unknown as DocumentWithCandidate[],
   };
+}
+
+// ---------------------------------------------------------------------------
+// Introduction requests (§17)
+// ---------------------------------------------------------------------------
+
+export interface InterestRequestRow {
+  id: string;
+  status: string;
+  message: string | null;
+  review_comment: string | null;
+  created_at: string;
+  reviewed_at: string | null;
+  candidate_profile_id: string;
+  companies: { name: string; city: string | null } | null;
+  requester: { email: string } | null;
+  jobs: { title: string } | null;
+  candidate_profiles: {
+    candidate_id: string;
+    profile_status: string;
+    candidates: {
+      candidate_code: string;
+      candidate_type: string;
+      german_level: string;
+      candidate_target_occupations: { occupation: string; rank: number }[];
+      skilled_worker_details: { profession: string | null } | null;
+    } | null;
+  } | null;
+}
+
+/**
+ * The admin queue. Two foreign keys point at app_users, so the requesting
+ * user is selected through an explicit constraint hint.
+ *
+ * The professional target is read from the canonical model rather than from
+ * the employer view, so the queue stays readable after a profile has been
+ * unpublished — the request record must survive publication changes (§I).
+ */
+const REQUEST_SELECT = `
+  id, status, message, review_comment, created_at, reviewed_at,
+  candidate_profile_id,
+  companies(name, city),
+  requester:app_users!interest_requests_requested_by_fkey(email),
+  jobs(title),
+  candidate_profiles(
+    candidate_id, profile_status,
+    candidates(
+      candidate_code, candidate_type, german_level,
+      candidate_target_occupations(occupation, rank),
+      skilled_worker_details(profession)
+    )
+  )
+`;
+
+export async function loadInterestRequests(
+  supabase: SupabaseClient,
+  filters: { status?: string } = {}
+): Promise<InterestRequestRow[]> {
+  let query = supabase.from("interest_requests").select(REQUEST_SELECT);
+  if (filters.status) query = query.eq("status", filters.status);
+
+  const { data } = await query.order("created_at", { ascending: false }).limit(200);
+  return (data ?? []) as unknown as InterestRequestRow[];
+}
+
+/** The one professional fact that identifies what was requested. */
+export function requestOccupation(row: InterestRequestRow): string | null {
+  const candidate = row.candidate_profiles?.candidates;
+  if (!candidate) return null;
+  if (candidate.candidate_type === "apprenticeship_candidate") {
+    const ranked = [...candidate.candidate_target_occupations].sort(
+      (a, b) => a.rank - b.rank
+    );
+    return ranked[0]?.occupation ?? null;
+  }
+  return candidate.skilled_worker_details?.profession ?? null;
+}
+
+/** Count of requests still waiting for a first admin decision. */
+export async function countNewInterestRequests(
+  supabase: SupabaseClient
+): Promise<number> {
+  const { count } = await supabase
+    .from("interest_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "new");
+  return count ?? 0;
 }

@@ -19,7 +19,11 @@ export default async function EmployerLayout({
       locale={locale}
       email={profile.email}
       workspaceLabel={t("employerPortal")}
-      nav={[{ href: "/employer", label: t("dashboard") }]}
+      nav={[
+        { href: "/employer", label: t("dashboard") },
+        { href: "/employer/candidates", label: t("candidates") },
+        { href: "/employer/requests", label: t("employerRequests") },
+      ]}
     >
       {children}
     </PortalShell>

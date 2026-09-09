@@ -15,7 +15,7 @@ export default async function AdminLayout({
   const t = await getTranslations("nav");
 
   // Open work is visible from every admin page, not just the dashboard.
-  const [changes, documents] = await Promise.all([
+  const [changes, documents, requests] = await Promise.all([
     supabase
       .from("candidate_change_items")
       .select("id", { count: "exact", head: true })
@@ -24,6 +24,10 @@ export default async function AdminLayout({
       .from("candidate_documents")
       .select("id", { count: "exact", head: true })
       .eq("verification_status", "pending_review"),
+    supabase
+      .from("interest_requests")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "new"),
   ]);
 
   return (
@@ -45,6 +49,11 @@ export default async function AdminLayout({
               href: "/admin/documents",
               label: t("adminDocuments"),
               badge: documents.count ?? 0,
+            },
+            {
+              href: "/admin/requests",
+              label: t("adminRequests"),
+              badge: requests.count ?? 0,
             },
           ],
         },

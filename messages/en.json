@@ -62,7 +62,9 @@
     "candidatePortal": "Candidate portal",
     "employerPortal": "Employer area",
     "groupOperations": "Review",
-    "groupManagement": "Records"
+    "groupManagement": "Records",
+    "employerRequests": "Requests",
+    "adminRequests": "Introduction requests"
   },
   "status": {
     "pending": "Pending",
@@ -78,7 +80,10 @@
     "suspended": "Suspended",
     "pending_verification": "Pending verification",
     "inactive": "Inactive",
-    "archived": "Archived"
+    "archived": "Archived",
+    "new": "New",
+    "reviewing": "In review",
+    "introduced": "Introduced"
   },
   "enums": {
     "candidateType": {
@@ -248,7 +253,8 @@
       "noRecentDocuments": "No documents uploaded yet.",
       "needsAttention": "Needs attention",
       "needsAttentionDescription": "Candidates with open changes or documents.",
-      "noAttention": "Nothing is waiting for review right now."
+      "noAttention": "Nothing is waiting for review right now.",
+      "newRequests": "Introduction requests"
     },
     "review": {
       "title": "Change review",
@@ -367,6 +373,44 @@
       "primaryTarget": "Primary target occupation",
       "noOpenReviews": "No open reviews",
       "profileTitle": "Candidate profile"
+    },
+    "publication": {
+      "title": "Publication",
+      "description": "Controls whether this profile is visible to employers in the marketplace.",
+      "label": "Status",
+      "publish": "Publish profile",
+      "unpublish": "Withdraw publication",
+      "working": "Saving …",
+      "publishedHint": "Employers see this profile anonymized in the marketplace.",
+      "unpublishedHint": "Employers cannot see this profile.",
+      "failed": "The publication state could not be changed.",
+      "blocked": {
+        "PUBLISH_BLOCKED_CANDIDATE_INACTIVE": "This candidate is inactive or archived and cannot be published.",
+        "PUBLISH_BLOCKED_NO_GERMAN_LEVEL": "No German level is recorded yet. The profile cannot be published without it.",
+        "PUBLISH_BLOCKED_NO_TARGET": "The professional target is missing: a first-choice occupation for apprenticeship candidates, a profession for skilled workers."
+      }
+    },
+    "requests": {
+      "title": "Introduction requests",
+      "description": "Requests from employers who want to meet a candidate.",
+      "all": "All",
+      "empty": "There are no requests.",
+      "noneForFilter": "No requests with this status.",
+      "submitted": "Received",
+      "job": "Job",
+      "internalNote": "Internal note",
+      "candidateUnpublished": "Profile no longer published",
+      "closed": "Closed.",
+      "commentLabel": "Internal note",
+      "commentPlaceholder": "Internal note (optional, visible to NORAV only)",
+      "failed": "The status could not be changed.",
+      "contactNote": "NORAV makes the introduction itself. Approving a request does not release the candidate's contact details to the employer.",
+      "moveTo": {
+        "reviewing": "Start review",
+        "approved": "Approve",
+        "rejected": "Reject",
+        "introduced": "Mark as introduced"
+      }
     }
   },
   "employer": {
@@ -374,6 +418,71 @@
     "welcome": "Welcome to NORAV.",
     "company": "Your company",
     "noCompany": "No company is assigned to your account yet.",
-    "comingSoon": "The candidate marketplace follows in a later milestone."
+    "marketplace": {
+      "title": "Candidates",
+      "description": "Anonymized profiles NORAV has published for employers.",
+      "filters": "Filters",
+      "apply": "Apply filters",
+      "reset": "Reset filters",
+      "results": "{count} candidates",
+      "truncated": "Only the first 100 matches are shown.",
+      "noMatches": "No candidates match these filters.",
+      "noApprenticeships": "No apprenticeship candidates are published at the moment.",
+      "noSkilled": "No skilled workers are published at the moment.",
+      "viewProfile": "View profile",
+      "noOccupation": "No target occupation recorded",
+      "yes": "Yes",
+      "no": "No",
+      "years": "{count} years",
+      "practicalExperience": "Practical experience",
+      "location": "Country",
+      "anyLevel": "Any",
+      "preferredLocation": "Preferred location",
+      "locationPlaceholder": "e.g. Berlin",
+      "occupationPlaceholder": "e.g. Pflegefachmann",
+      "professionPlaceholder": "e.g. Elektriker",
+      "startFrom": "Training start from",
+      "minExperience": "Experience from (years)",
+      "availableFrom": "Available no later than"
+    },
+    "candidate": {
+      "backToList": "Back to candidates",
+      "profileTitle": "Profile",
+      "anonymousNote": "Anonymized profile. NORAV shares the name and contact details only after an introduction.",
+      "goalTitle": "Professional goal",
+      "qualificationTitle": "Qualification",
+      "availabilityTitle": "Availability and mobility",
+      "narrativeTitle": "Description",
+      "noNarrative": "No approved description is available in your language for this profile yet.",
+      "summary": "Summary",
+      "education": "Education",
+      "experience": "Experience",
+      "motivation": "Motivation",
+      "practicalExperience": "Practical experience",
+      "skills": "Skills",
+      "region": "Country"
+    },
+    "introduction": {
+      "title": "Request an introduction",
+      "description": "NORAV reviews your request and makes the introduction. This does not give you the candidate's contact details.",
+      "cta": "Request introduction",
+      "sending": "Sending …",
+      "alreadySent": "NORAV has received your request.",
+      "noContactRelease": "No candidate contact details are released.",
+      "messageLabel": "Message to NORAV",
+      "messagePlaceholder": "What exactly are you looking for? (optional)",
+      "jobLabel": "Job (optional)",
+      "noJob": "No specific job",
+      "failed": "The request could not be sent."
+    },
+    "requests": {
+      "title": "Requests",
+      "description": "Your introduction requests and their status.",
+      "empty": "You have not requested an introduction yet.",
+      "submitted": "Submitted",
+      "openProfile": "View profile",
+      "candidateWithdrawn": "Profile withdrawn",
+      "processNote": "NORAV reviews every request and makes the introduction itself. Candidate contact details are never released through the marketplace."
+    }
   }
 }

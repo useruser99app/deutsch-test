@@ -62,7 +62,9 @@
     "candidatePortal": "Espace candidat",
     "employerPortal": "Espace employeur",
     "groupOperations": "Vérification",
-    "groupManagement": "Données"
+    "groupManagement": "Données",
+    "employerRequests": "Demandes",
+    "adminRequests": "Demandes de présentation"
   },
   "status": {
     "pending": "En attente",
@@ -78,7 +80,10 @@
     "suspended": "Suspendu",
     "pending_verification": "Vérification en attente",
     "inactive": "Inactif",
-    "archived": "Archivé"
+    "archived": "Archivé",
+    "new": "Nouvelle",
+    "reviewing": "En cours d'examen",
+    "introduced": "Présenté"
   },
   "enums": {
     "candidateType": {
@@ -248,7 +253,8 @@
       "noRecentDocuments": "Aucun document téléversé pour le moment.",
       "needsAttention": "Requiert une attention",
       "needsAttentionDescription": "Candidats avec des modifications ou documents en attente.",
-      "noAttention": "Rien n'attend de vérification actuellement."
+      "noAttention": "Rien n'attend de vérification actuellement.",
+      "newRequests": "Demandes de présentation"
     },
     "review": {
       "title": "Revue des modifications",
@@ -367,6 +373,44 @@
       "primaryTarget": "Métier principal souhaité",
       "noOpenReviews": "Aucune vérification en attente",
       "profileTitle": "Profil du candidat"
+    },
+    "publication": {
+      "title": "Publication",
+      "description": "Détermine si ce profil est visible par les employeurs sur la place de marché.",
+      "label": "Statut",
+      "publish": "Publier le profil",
+      "unpublish": "Retirer la publication",
+      "working": "Enregistrement …",
+      "publishedHint": "Les employeurs voient ce profil de façon anonymisée.",
+      "unpublishedHint": "Les employeurs ne peuvent pas voir ce profil.",
+      "failed": "La publication n'a pas pu être modifiée.",
+      "blocked": {
+        "PUBLISH_BLOCKED_CANDIDATE_INACTIVE": "Ce candidat est inactif ou archivé et ne peut pas être publié.",
+        "PUBLISH_BLOCKED_NO_GERMAN_LEVEL": "Aucun niveau d'allemand n'est enregistré. Le profil ne peut pas être publié sans cette information.",
+        "PUBLISH_BLOCKED_NO_TARGET": "L'objectif professionnel manque : un métier souhaité en premier choix pour les candidats en formation, un métier pour les travailleurs qualifiés."
+      }
+    },
+    "requests": {
+      "title": "Demandes de présentation",
+      "description": "Demandes d'employeurs souhaitant rencontrer un candidat.",
+      "all": "Toutes",
+      "empty": "Aucune demande.",
+      "noneForFilter": "Aucune demande avec ce statut.",
+      "submitted": "Reçue le",
+      "job": "Poste",
+      "internalNote": "Note interne",
+      "candidateUnpublished": "Profil non publié",
+      "closed": "Clôturée.",
+      "commentLabel": "Note interne",
+      "commentPlaceholder": "Note interne (facultatif, visible par NORAV uniquement)",
+      "failed": "Le statut n'a pas pu être modifié.",
+      "contactNote": "NORAV établit le contact lui-même. Une validation ne transmet aucune coordonnée du candidat à l'employeur.",
+      "moveTo": {
+        "reviewing": "Mettre en examen",
+        "approved": "Valider",
+        "rejected": "Refuser",
+        "introduced": "Marquer comme présenté"
+      }
     }
   },
   "employer": {
@@ -374,6 +418,71 @@
     "welcome": "Bienvenue chez NORAV.",
     "company": "Votre entreprise",
     "noCompany": "Aucune entreprise n'est encore associée à votre compte.",
-    "comingSoon": "La place de marché des candidats suivra dans une étape ultérieure."
+    "marketplace": {
+      "title": "Candidats",
+      "description": "Profils anonymisés publiés par NORAV pour les employeurs.",
+      "filters": "Filtres",
+      "apply": "Appliquer les filtres",
+      "reset": "Réinitialiser",
+      "results": "{count} candidats",
+      "truncated": "Seuls les 100 premiers résultats sont affichés.",
+      "noMatches": "Aucun candidat ne correspond à ces filtres.",
+      "noApprenticeships": "Aucun candidat en formation n'est publié actuellement.",
+      "noSkilled": "Aucun travailleur qualifié n'est publié actuellement.",
+      "viewProfile": "Voir le profil",
+      "noOccupation": "Objectif professionnel non renseigné",
+      "yes": "Oui",
+      "no": "Non",
+      "years": "{count} ans",
+      "practicalExperience": "Expérience pratique",
+      "location": "Pays",
+      "anyLevel": "Indifférent",
+      "preferredLocation": "Lieu souhaité",
+      "locationPlaceholder": "p. ex. Berlin",
+      "occupationPlaceholder": "p. ex. Pflegefachmann",
+      "professionPlaceholder": "p. ex. Elektriker",
+      "startFrom": "Début de formation à partir du",
+      "minExperience": "Expérience à partir de (années)",
+      "availableFrom": "Disponible au plus tard le"
+    },
+    "candidate": {
+      "backToList": "Retour aux candidats",
+      "profileTitle": "Profil",
+      "anonymousNote": "Profil anonymisé. NORAV ne communique le nom et les coordonnées qu'après une présentation.",
+      "goalTitle": "Objectif professionnel",
+      "qualificationTitle": "Qualification",
+      "availabilityTitle": "Disponibilité et mobilité",
+      "narrativeTitle": "Description",
+      "noNarrative": "Aucune description approuvée n'est encore disponible dans votre langue pour ce profil.",
+      "summary": "Profil en bref",
+      "education": "Formation",
+      "experience": "Expérience",
+      "motivation": "Motivation",
+      "practicalExperience": "Expérience pratique",
+      "skills": "Compétences",
+      "region": "Pays"
+    },
+    "introduction": {
+      "title": "Demander une présentation",
+      "description": "NORAV examine votre demande et établit le contact. Cela ne vous donne pas les coordonnées du candidat.",
+      "cta": "Demander une présentation",
+      "sending": "Envoi …",
+      "alreadySent": "NORAV a bien reçu votre demande.",
+      "noContactRelease": "Aucune coordonnée du candidat n'est transmise.",
+      "messageLabel": "Message à NORAV",
+      "messagePlaceholder": "Que recherchez-vous précisément ? (facultatif)",
+      "jobLabel": "Poste (facultatif)",
+      "noJob": "Sans poste précis",
+      "failed": "La demande n'a pas pu être envoyée."
+    },
+    "requests": {
+      "title": "Demandes",
+      "description": "Vos demandes de présentation et leur statut.",
+      "empty": "Vous n'avez encore demandé aucune présentation.",
+      "submitted": "Envoyée le",
+      "openProfile": "Voir le profil",
+      "candidateWithdrawn": "Profil retiré",
+      "processNote": "NORAV examine chaque demande et établit le contact lui-même. Les coordonnées des candidats ne sont jamais transmises via la place de marché."
+    }
   }
 }

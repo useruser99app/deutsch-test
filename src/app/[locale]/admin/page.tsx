@@ -28,7 +28,8 @@ export default async function AdminDashboard({
     loadCandidateList(supabase, { pendingOnly: true }),
   ]);
 
-  const queueTotal = overview.pendingChanges + overview.pendingDocuments;
+  const queueTotal =
+    overview.pendingChanges + overview.pendingDocuments + overview.newRequests;
 
   return (
     <>
@@ -39,7 +40,7 @@ export default async function AdminDashboard({
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <StatCard
           label={t("pendingChanges")}
           value={overview.pendingChanges}
@@ -51,6 +52,13 @@ export default async function AdminDashboard({
           label={t("pendingDocuments")}
           value={overview.pendingDocuments}
           href="/admin/documents"
+          actionLabel={t("openQueue")}
+          emphasis
+        />
+        <StatCard
+          label={t("newRequests")}
+          value={overview.newRequests}
+          href="/admin/requests"
           actionLabel={t("openQueue")}
           emphasis
         />

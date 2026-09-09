@@ -1,5 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireRole } from "@/lib/auth";
+import { Link } from "@/i18n/navigation";
+import { buttonClass } from "@/components/ui/button";
 import PageHeader from "@/components/ui/PageHeader";
 import Panel from "@/components/ui/Panel";
 import EmptyState from "@/components/ui/EmptyState";
@@ -13,6 +15,7 @@ export default async function EmployerDashboard({
   setRequestLocale(locale);
   const { supabase } = await requireRole(locale, "employer");
   const t = await getTranslations("employer");
+  const tMarketplace = await getTranslations("employer.marketplace");
 
   const { data: companies } = await supabase
     .from("companies")
@@ -20,7 +23,18 @@ export default async function EmployerDashboard({
 
   return (
     <>
-      <PageHeader title={t("title")} description={t("welcome")} />
+      <PageHeader
+        title={t("title")}
+        description={t("welcome")}
+        actions={
+          <Link
+            href="/employer/candidates"
+            className={buttonClass("primary", "sm")}
+          >
+            {tMarketplace("title")}
+          </Link>
+        }
+      />
 
       <Panel title={t("company")}>
         {(companies ?? []).length === 0 ? (
@@ -41,7 +55,6 @@ export default async function EmployerDashboard({
         )}
       </Panel>
 
-      <p className="t-meta mt-4">{t("comingSoon")}</p>
     </>
   );
 }

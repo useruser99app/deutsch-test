@@ -62,7 +62,9 @@
     "candidatePortal": "بوابة المرشح",
     "employerPortal": "منطقة صاحب العمل",
     "groupOperations": "المراجعة",
-    "groupManagement": "البيانات"
+    "groupManagement": "البيانات",
+    "employerRequests": "الطلبات",
+    "adminRequests": "طلبات التعارف"
   },
   "status": {
     "pending": "قيد الانتظار",
@@ -78,7 +80,10 @@
     "suspended": "موقوف",
     "pending_verification": "بانتظار التحقق",
     "inactive": "غير نشط",
-    "archived": "مؤرشف"
+    "archived": "مؤرشف",
+    "new": "جديد",
+    "reviewing": "قيد المراجعة",
+    "introduced": "تم التعارف"
   },
   "enums": {
     "candidateType": {
@@ -248,7 +253,8 @@
       "noRecentDocuments": "لم تُرفع أي مستندات بعد.",
       "needsAttention": "يتطلب انتباهًا",
       "needsAttentionDescription": "مرشحون لديهم تعديلات أو مستندات مفتوحة.",
-      "noAttention": "لا يوجد شيء بانتظار المراجعة حاليًا."
+      "noAttention": "لا يوجد شيء بانتظار المراجعة حاليًا.",
+      "newRequests": "طلبات التعارف"
     },
     "review": {
       "title": "مراجعة التعديلات",
@@ -367,6 +373,44 @@
       "primaryTarget": "المهنة المرغوبة الرئيسية",
       "noOpenReviews": "لا توجد مراجعات مفتوحة",
       "profileTitle": "ملف المرشح"
+    },
+    "publication": {
+      "title": "النشر",
+      "description": "يحدد ما إذا كان هذا الملف مرئيًا لأصحاب العمل في السوق.",
+      "label": "الحالة",
+      "publish": "نشر الملف",
+      "unpublish": "سحب النشر",
+      "working": "جارٍ الحفظ …",
+      "publishedHint": "يرى أصحاب العمل هذا الملف بصيغة مجهولة الهوية.",
+      "unpublishedHint": "لا يمكن لأصحاب العمل رؤية هذا الملف.",
+      "failed": "تعذّر تغيير حالة النشر.",
+      "blocked": {
+        "PUBLISH_BLOCKED_CANDIDATE_INACTIVE": "هذا المرشح غير نشط أو مؤرشف ولا يمكن نشره.",
+        "PUBLISH_BLOCKED_NO_GERMAN_LEVEL": "لم يُسجَّل مستوى اللغة الألمانية بعد، ولا يمكن نشر الملف بدونه.",
+        "PUBLISH_BLOCKED_NO_TARGET": "الهدف المهني ناقص: مهنة مرغوبة في المرتبة الأولى للمتدربين، أو مهنة للكوادر المتخصصة."
+      }
+    },
+    "requests": {
+      "title": "طلبات التعارف",
+      "description": "طلبات من أصحاب العمل الراغبين في التعرف على مرشح.",
+      "all": "الكل",
+      "empty": "لا توجد طلبات.",
+      "noneForFilter": "لا توجد طلبات بهذه الحالة.",
+      "submitted": "وردت في",
+      "job": "الوظيفة",
+      "internalNote": "ملاحظة داخلية",
+      "candidateUnpublished": "الملف لم يعد منشورًا",
+      "closed": "مُغلق.",
+      "commentLabel": "ملاحظة داخلية",
+      "commentPlaceholder": "ملاحظة داخلية (اختياري، تظهر لـ NORAV فقط)",
+      "failed": "تعذّر تغيير الحالة.",
+      "contactNote": "تتولى NORAV إجراء التعارف بنفسها. الموافقة لا تكشف بيانات اتصال المرشح لصاحب العمل.",
+      "moveTo": {
+        "reviewing": "بدء المراجعة",
+        "approved": "الموافقة",
+        "rejected": "الرفض",
+        "introduced": "تعليم كتم التعارف"
+      }
     }
   },
   "employer": {
@@ -374,6 +418,71 @@
     "welcome": "مرحبًا بكم في NORAV.",
     "company": "شركتكم",
     "noCompany": "لم يتم ربط أي شركة بحسابكم بعد.",
-    "comingSoon": "سيتوفر سوق المرشحين في مرحلة لاحقة."
+    "marketplace": {
+      "title": "المرشحون",
+      "description": "ملفات مجهولة الهوية نشرتها NORAV لأصحاب العمل.",
+      "filters": "عوامل التصفية",
+      "apply": "تطبيق التصفية",
+      "reset": "إعادة التعيين",
+      "results": "{count} مرشحين",
+      "truncated": "تُعرض أول 100 نتيجة فقط.",
+      "noMatches": "لا يوجد مرشحون مطابقون لهذه التصفية.",
+      "noApprenticeships": "لا يوجد متدربون منشورون حاليًا.",
+      "noSkilled": "لا توجد كوادر متخصصة منشورة حاليًا.",
+      "viewProfile": "عرض الملف",
+      "noOccupation": "الهدف المهني غير محدد",
+      "yes": "نعم",
+      "no": "لا",
+      "years": "{count} سنوات",
+      "practicalExperience": "خبرة عملية",
+      "location": "البلد",
+      "anyLevel": "أي مستوى",
+      "preferredLocation": "المكان المفضل",
+      "locationPlaceholder": "مثال: Berlin",
+      "occupationPlaceholder": "مثال: Pflegefachmann",
+      "professionPlaceholder": "مثال: Elektriker",
+      "startFrom": "بداية التدريب اعتبارًا من",
+      "minExperience": "الخبرة اعتبارًا من (سنوات)",
+      "availableFrom": "متاح في موعد أقصاه"
+    },
+    "candidate": {
+      "backToList": "العودة إلى المرشحين",
+      "profileTitle": "الملف",
+      "anonymousNote": "ملف مجهول الهوية. لا تشارك NORAV الاسم وبيانات الاتصال إلا بعد التعارف.",
+      "goalTitle": "الهدف المهني",
+      "qualificationTitle": "المؤهل",
+      "availabilityTitle": "التوفر والتنقل",
+      "narrativeTitle": "الوصف",
+      "noNarrative": "لا يتوفر بعد وصف معتمد بلغتك لهذا الملف.",
+      "summary": "نبذة",
+      "education": "التعليم",
+      "experience": "الخبرة",
+      "motivation": "الدافع",
+      "practicalExperience": "خبرة عملية",
+      "skills": "المهارات",
+      "region": "البلد"
+    },
+    "introduction": {
+      "title": "طلب التعارف",
+      "description": "تراجع NORAV طلبك وتتولى إجراء التعارف. هذا لا يمنحك بيانات اتصال المرشح.",
+      "cta": "طلب التعارف",
+      "sending": "جارٍ الإرسال …",
+      "alreadySent": "استلمت NORAV طلبك.",
+      "noContactRelease": "لا يتم كشف أي بيانات اتصال للمرشح.",
+      "messageLabel": "رسالة إلى NORAV",
+      "messagePlaceholder": "عمّا تبحث تحديدًا؟ (اختياري)",
+      "jobLabel": "الوظيفة (اختياري)",
+      "noJob": "دون ربط بوظيفة",
+      "failed": "تعذّر إرسال الطلب."
+    },
+    "requests": {
+      "title": "الطلبات",
+      "description": "طلبات التعارف الخاصة بك وحالتها.",
+      "empty": "لم تطلب أي تعارف بعد.",
+      "submitted": "أُرسل في",
+      "openProfile": "عرض الملف",
+      "candidateWithdrawn": "تم سحب الملف",
+      "processNote": "تراجع NORAV كل طلب وتتولى التعارف بنفسها. لا يتم أبدًا كشف بيانات اتصال المرشحين عبر السوق."
+    }
   }
 }

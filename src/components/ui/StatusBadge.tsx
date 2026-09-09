@@ -11,6 +11,10 @@ const tones: Record<string, Tone> = {
   pending_review: "attention",
   pending_verification: "attention",
   invited: "accent",
+  // Introduction request lifecycle (§16).
+  new: "attention",
+  reviewing: "accent",
+  introduced: "positive",
   rejected: "critical",
   suspended: "critical",
   superseded: "neutral",

@@ -77,6 +77,26 @@ export function useValueFormatter() {
  * ISO 3166-1 alpha-2 → localized country name. Anything that is not a plain
  * two-letter code is passed through unchanged, so free-text entries survive.
  */
+/**
+ * Date-only values, formatted for the reader's locale. Pinned to UTC: a
+ * plain `new Date("2027-09-01")` is midnight UTC and would render as the
+ * previous day for anyone west of Greenwich.
+ */
+export function formatDateValue(
+  value: string | null | undefined,
+  locale: string
+): string | null {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}
+
 export function countryName(code: string, locale: string): string {
   const trimmed = code.trim();
   if (!/^[A-Za-z]{2}$/.test(trimmed)) return code;
