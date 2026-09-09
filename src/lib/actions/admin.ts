@@ -14,6 +14,7 @@ import {
   type PublishActionState,
 } from "@/lib/domain";
 import { provisionAccount, ProvisioningError } from "@/lib/provisioning";
+import { dispatchNotificationEmails } from "@/lib/email/notify";
 
 function text(formData: FormData, key: string): string {
   return String(formData.get(key) ?? "").trim();
@@ -415,6 +416,11 @@ export async function reviewInterestRequestAction(
     .eq("id", requestId);
 
   if (error) return { status: "error", itemId: requestId };
+
+  // The status change is committed and a trigger has recorded the employer
+  // event. E-mail is dispatched afterwards and best effort: a provider
+  // failure is recorded on the event, never rolled back into the workflow.
+  await dispatchNotificationEmails(supabase, requestId);
 
   revalidatePath(`/${locale}/admin/requests`);
   revalidatePath(`/${locale}/admin`);

@@ -482,7 +482,34 @@
       "submitted": "Envoyée le",
       "openProfile": "Voir le profil",
       "candidateWithdrawn": "Profil retiré",
-      "processNote": "NORAV examine chaque demande et établit le contact lui-même. Les coordonnées des candidats ne sont jamais transmises via la place de marché."
+      "processNote": "NORAV examine chaque demande et établit le contact lui-même. Les coordonnées des candidats ne sont jamais transmises via la place de marché.",
+      "markAllRead": "Tout marquer comme lu",
+      "markRead": "Marquer comme lu",
+      "updated": "{count} nouveauté(s)"
+    },
+    "dashboard": {
+      "welcome": "Votre aperçu des candidats disponibles et des demandes en cours.",
+      "discover": "Découvrir les candidats",
+      "open": "Ouvrir",
+      "kpiAvailable": "Candidats disponibles",
+      "kpiActive": "Demandes en cours",
+      "kpiUnread": "Nouveautés",
+      "kpiIntroduced": "Présentés",
+      "needsAttention": "Nouveautés",
+      "needsAttentionDescription": "Demandes ayant évolué depuis votre dernière visite.",
+      "noUpdates": "Aucune nouveauté.",
+      "activity": "Activité récente",
+      "noActivity": "Aucune activité pour le moment.",
+      "newCandidates": "Nouveau sur la place de marché",
+      "newCandidatesHint": "Profils publiés le plus récemment.",
+      "nextActions": "Prochaines étapes",
+      "reviewUpdates": "Examiner {count} demandes",
+      "event": {
+        "request_reviewing": "Demande en cours d'examen",
+        "request_approved": "Demande validée",
+        "request_rejected": "Demande refusée",
+        "request_introduced": "Candidat présenté"
+      }
     }
   }
 }

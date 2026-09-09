@@ -65,3 +65,34 @@ export async function requestIntroductionAction(
   revalidatePath(`/${locale}/employer/requests`);
   return { status: "success", requestStatus: "new" };
 }
+
+/**
+ * Marks the notification events of one request as read (§6).
+ *
+ * Explicit and user-initiated: nothing is marked read merely because the
+ * employer logged in or a page rendered. RLS scopes the write to the
+ * employer's own company, and a column grant limits it to read_at/read_by,
+ * so no other field can be touched from a browser session.
+ */
+export async function markRequestReadAction(formData: FormData) {
+  const locale = text(formData, "locale");
+  const { supabase } = await requireRole(locale, "employer");
+
+  const requestId = text(formData, "request_id");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let query = supabase
+    .from("employer_notifications")
+    .update({ read_at: new Date().toISOString(), read_by: user?.id ?? null })
+    .is("read_at", null);
+
+  // Without a request id this is the explicit "mark all as read" action.
+  if (requestId) query = query.eq("interest_request_id", requestId);
+
+  await query;
+
+  revalidatePath(`/${locale}/employer/requests`);
+  revalidatePath(`/${locale}/employer`);
+}

@@ -482,7 +482,34 @@
       "submitted": "Eingereicht",
       "openProfile": "Profil ansehen",
       "candidateWithdrawn": "Profil zurückgezogen",
-      "processNote": "NORAV prüft jede Anfrage und stellt den Kontakt selbst her. Kontaktdaten der Kandidaten werden über den Marktplatz nicht freigegeben."
+      "processNote": "NORAV prüft jede Anfrage und stellt den Kontakt selbst her. Kontaktdaten der Kandidaten werden über den Marktplatz nicht freigegeben.",
+      "markAllRead": "Alle als gelesen markieren",
+      "markRead": "Als gelesen markieren",
+      "updated": "{count} Update(s)"
+    },
+    "dashboard": {
+      "welcome": "Ihr Überblick über verfügbare Kandidaten und laufende Anfragen.",
+      "discover": "Kandidaten entdecken",
+      "open": "Öffnen",
+      "kpiAvailable": "Verfügbare Kandidaten",
+      "kpiActive": "Laufende Anfragen",
+      "kpiUnread": "Neue Updates",
+      "kpiIntroduced": "Vorgestellt",
+      "needsAttention": "Neue Updates",
+      "needsAttentionDescription": "Anfragen, bei denen sich seit Ihrem letzten Blick etwas geändert hat.",
+      "noUpdates": "Keine neuen Updates.",
+      "activity": "Letzte Aktivitäten",
+      "noActivity": "Noch keine Aktivitäten.",
+      "newCandidates": "Neu im Marktplatz",
+      "newCandidatesHint": "Zuletzt veröffentlichte Profile.",
+      "nextActions": "Nächste Schritte",
+      "reviewUpdates": "{count} Anfragen prüfen",
+      "event": {
+        "request_reviewing": "Anfrage wird geprüft",
+        "request_approved": "Anfrage freigegeben",
+        "request_rejected": "Anfrage abgelehnt",
+        "request_introduced": "Kandidat vorgestellt"
+      }
     }
   }
 }

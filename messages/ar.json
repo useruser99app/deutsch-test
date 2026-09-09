@@ -409,7 +409,7 @@
         "reviewing": "بدء المراجعة",
         "approved": "الموافقة",
         "rejected": "الرفض",
-        "introduced": "تعليم كتم التعارف"
+        "introduced": "تسجيل التعارف"
       }
     }
   },
@@ -482,7 +482,34 @@
       "submitted": "أُرسل في",
       "openProfile": "عرض الملف",
       "candidateWithdrawn": "تم سحب الملف",
-      "processNote": "تراجع NORAV كل طلب وتتولى التعارف بنفسها. لا يتم أبدًا كشف بيانات اتصال المرشحين عبر السوق."
+      "processNote": "تراجع NORAV كل طلب وتتولى التعارف بنفسها. لا يتم أبدًا كشف بيانات اتصال المرشحين عبر السوق.",
+      "markAllRead": "تعليم الكل كمقروء",
+      "markRead": "تعليم كمقروء",
+      "updated": "{count} تحديث"
+    },
+    "dashboard": {
+      "welcome": "نظرة عامة على المرشحين المتاحين والطلبات الجارية.",
+      "discover": "اكتشاف المرشحين",
+      "open": "فتح",
+      "kpiAvailable": "المرشحون المتاحون",
+      "kpiActive": "الطلبات الجارية",
+      "kpiUnread": "تحديثات جديدة",
+      "kpiIntroduced": "تم التعارف",
+      "needsAttention": "تحديثات جديدة",
+      "needsAttentionDescription": "طلبات تغيّرت منذ آخر اطّلاع لك.",
+      "noUpdates": "لا توجد تحديثات جديدة.",
+      "activity": "آخر الأنشطة",
+      "noActivity": "لا توجد أنشطة بعد.",
+      "newCandidates": "جديد في السوق",
+      "newCandidatesHint": "أحدث الملفات المنشورة.",
+      "nextActions": "الخطوات التالية",
+      "reviewUpdates": "مراجعة {count} طلبات",
+      "event": {
+        "request_reviewing": "الطلب قيد المراجعة",
+        "request_approved": "تمت الموافقة على الطلب",
+        "request_rejected": "تم رفض الطلب",
+        "request_introduced": "تم تعارف المرشح"
+      }
     }
   }
 }

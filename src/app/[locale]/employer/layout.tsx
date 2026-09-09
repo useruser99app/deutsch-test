@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import PortalShell from "@/components/shell/PortalShell";
 import { requireRole } from "@/lib/auth";
+import { countUnreadNotifications } from "@/lib/notifications";
 
 export default async function EmployerLayout({
   children,
@@ -11,8 +12,11 @@ export default async function EmployerLayout({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { profile } = await requireRole(locale, "employer");
+  const { supabase, profile } = await requireRole(locale, "employer");
   const t = await getTranslations("nav");
+
+  // The badge counts UNSEEN UPDATES, not the total number of requests.
+  const unread = await countUnreadNotifications(supabase);
 
   return (
     <PortalShell
@@ -22,7 +26,11 @@ export default async function EmployerLayout({
       nav={[
         { href: "/employer", label: t("dashboard") },
         { href: "/employer/candidates", label: t("candidates") },
-        { href: "/employer/requests", label: t("employerRequests") },
+        {
+          href: "/employer/requests",
+          label: t("employerRequests"),
+          badge: unread,
+        },
       ]}
     >
       {children}

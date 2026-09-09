@@ -854,5 +854,215 @@ exception when insufficient_privilege then
   raise notice 'PASS: anonymous visitors have no grant on the employer view';
 end $$;
 
+
+-- ---------------------------------------------------------------
+-- 11. Employer notifications (Prompt 03B §27)
+--
+-- Continues from section 10: company A has an 'introduced' request, the
+-- profile has been unpublished again. Publication is restored so the
+-- employer-facing labels resolve, and the request is reset to 'new'.
+-- ---------------------------------------------------------------
+reset role;
+delete from public.employer_notifications;
+update public.candidate_profiles
+set profile_status = 'published', published_at = now()
+where candidate_id = '20000000-0000-0000-0000-0000000000a1';
+delete from public.interest_requests
+where company_id = '30000000-0000-0000-0000-000000000002';
+update public.interest_requests set status = 'new';
+
+do $$
+begin
+  if exists (select 1 from public.employer_notifications) then
+    raise exception 'FAIL: a request in state new produced a notification';
+  end if;
+  raise notice 'PASS: the employer''s own request creates no notification';
+end $$;
+
+set role authenticated;
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+
+-- (A) one transition creates exactly one event
+-- (B) repeating the same transition creates no second event or e-mail intent
+do $$
+declare n int; v_status public.email_delivery_status;
+begin
+  update public.interest_requests set status = 'reviewing';
+  update public.interest_requests set status = 'reviewing';
+
+  select count(*) into n from public.employer_notifications;
+  if n <> 1 then
+    raise exception 'FAIL: expected exactly 1 event, got %', n;
+  end if;
+
+  select email_status into v_status from public.employer_notifications;
+  if v_status <> 'pending' then
+    raise exception 'FAIL: a new event should start as pending, is %', v_status;
+  end if;
+  raise notice 'PASS: one event per transition; a repeated transition adds none';
+end $$;
+
+-- (K) (L) introduced and rejected produce their own correct events
+do $$
+declare n int;
+begin
+  update public.interest_requests set status = 'approved';
+  update public.interest_requests set status = 'introduced';
+
+  select count(*) into n from public.employer_notifications;
+  if n <> 3 then
+    raise exception 'FAIL: expected 3 events, got %', n;
+  end if;
+  if not exists (select 1 from public.employer_notifications
+                 where type = 'request_introduced') then
+    raise exception 'FAIL: introduced produced no matching event';
+  end if;
+
+  update public.interest_requests set status = 'rejected';
+  if not exists (select 1 from public.employer_notifications
+                 where type = 'request_rejected') then
+    raise exception 'FAIL: rejected produced no matching event';
+  end if;
+  raise notice 'PASS: reviewing/approved/introduced/rejected each map to their own event';
+end $$;
+
+-- (J) a failed e-mail must never roll back the business status
+do $$
+declare v_status public.interest_request_status; v_mail public.email_delivery_status;
+begin
+  perform public.record_notification_email(
+    (select id from public.employer_notifications where type = 'request_approved'),
+    'failed', 'provider responded 500');
+
+  select status into v_status from public.interest_requests;
+  if v_status <> 'rejected' then
+    raise exception 'FAIL: recording a mail failure changed the request status';
+  end if;
+  select email_status into v_mail from public.employer_notifications
+  where type = 'request_approved';
+  if v_mail <> 'failed' then
+    raise exception 'FAIL: delivery failure not recorded';
+  end if;
+  raise notice 'PASS: an e-mail failure is recorded and leaves the workflow untouched';
+end $$;
+
+-- (C) (D) unread count is correct and scoped to the own company
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+declare n int;
+begin
+  select count(*) into n from public.employer_notifications where read_at is null;
+  if n <> 4 then
+    raise exception 'FAIL: employer should have 4 unread events, has %', n;
+  end if;
+  raise notice 'PASS: unread count is correct for the own company';
+end $$;
+
+-- (I) the employer-facing payload carries no private candidate data.
+-- The e-mail is built from candidate_code and the published occupation
+-- only; both are employer-safe, and the private tables stay unreadable.
+do $$
+declare r record;
+begin
+  select candidate_code, headline_occupation into r
+  from public.employer_candidate_profiles limit 1;
+  if r.candidate_code is null then
+    raise exception 'FAIL: no employer-safe label available for the e-mail';
+  end if;
+  if exists (select 1 from public.candidates) then
+    raise exception 'FAIL: employer session can reach candidate identity';
+  end if;
+  raise notice 'PASS: e-mail payload sources (%) contain no private identity', r.candidate_code;
+end $$;
+
+-- (G) marking read updates the unread count
+do $$
+declare n int;
+begin
+  update public.employer_notifications
+  set read_at = now(), read_by = auth.uid()
+  where read_at is null
+    and interest_request_id = (select id from public.interest_requests limit 1);
+
+  select count(*) into n from public.employer_notifications where read_at is null;
+  if n <> 0 then
+    raise exception 'FAIL: unread should be 0 after marking read, is %', n;
+  end if;
+  raise notice 'PASS: marking read clears the unread count';
+end $$;
+
+-- The employer may only ever write the read columns.
+do $$
+begin
+  begin
+    update public.employer_notifications set email_status = 'sent';
+    raise exception 'FAIL: employer wrote the delivery state';
+  exception when insufficient_privilege then
+    raise notice 'PASS: employer cannot write type or delivery state';
+  end;
+end $$;
+
+-- (E) another company sees nothing
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e2';
+do $$
+begin
+  if exists (select 1 from public.employer_notifications) then
+    raise exception 'FAIL: employer B reads company A notifications';
+  end if;
+  raise notice 'PASS: employer B cannot read company A notifications';
+end $$;
+
+-- (F) a candidate sees nothing, and cannot record delivery state
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000c1';
+do $$
+begin
+  if exists (select 1 from public.employer_notifications) then
+    raise exception 'FAIL: candidate reads employer notifications';
+  end if;
+  begin
+    perform public.record_notification_email(gen_random_uuid(), 'sent', null);
+    raise exception 'FAIL: candidate recorded delivery state';
+  exception when others then
+    if sqlerrm like 'FAIL:%' then raise; end if;
+  end;
+  raise notice 'PASS: candidate cannot read employer notifications or record delivery';
+end $$;
+
+-- (H) the request lifecycle still exposes nothing private, and
+-- (M) the dashboard KPI definitions produce the expected counts.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+declare v_active int; v_introduced int; v_unread int; v_available int;
+begin
+  if exists (select 1 from public.candidates)
+     or exists (select 1 from public.candidate_documents)
+     or exists (select 1 from public.apprenticeship_details) then
+    raise exception 'FAIL: employer reached private candidate data';
+  end if;
+
+  select count(*) into v_active from public.interest_requests
+   where status in ('new', 'reviewing', 'approved');
+  select count(*) into v_introduced from public.interest_requests
+   where status = 'introduced';
+  select count(*) into v_unread from public.employer_notifications
+   where read_at is null;
+  select count(*) into v_available from public.employer_candidate_profiles;
+
+  -- The request currently sits in 'rejected', which is NOT active (§22).
+  if v_active <> 0 then
+    raise exception 'FAIL: rejected must not count as an active request (got %)', v_active;
+  end if;
+  if v_introduced <> 0 then
+    raise exception 'FAIL: introduced KPI wrong (got %)', v_introduced;
+  end if;
+  if v_unread <> 0 then
+    raise exception 'FAIL: unread KPI wrong (got %)', v_unread;
+  end if;
+  if v_available <> 1 then
+    raise exception 'FAIL: available candidates KPI wrong (got %)', v_available;
+  end if;
+  raise notice 'PASS: KPI definitions correct; rejected excluded from active';
+end $$;
+
 reset role;
 select 'ALL LOCAL WORKFLOW TESTS PASSED' as result;

@@ -17,7 +17,7 @@ export default async function PortalShell({
   locale: string;
   email: string;
   workspaceLabel: string;
-  nav: { href: string; label: string }[];
+  nav: { href: string; label: string; badge?: number }[];
   children: React.ReactNode;
 }) {
   return (
@@ -34,7 +34,12 @@ export default async function PortalShell({
           <ul className="flex gap-6 whitespace-nowrap">
             {nav.map((item) => (
               <li key={item.href}>
-                <NavLink href={item.href} label={item.label} variant="topbar" />
+                <NavLink
+                href={item.href}
+                label={item.label}
+                badge={item.badge}
+                variant="topbar"
+              />
               </li>
             ))}
           </ul>

@@ -482,7 +482,34 @@
       "submitted": "Submitted",
       "openProfile": "View profile",
       "candidateWithdrawn": "Profile withdrawn",
-      "processNote": "NORAV reviews every request and makes the introduction itself. Candidate contact details are never released through the marketplace."
+      "processNote": "NORAV reviews every request and makes the introduction itself. Candidate contact details are never released through the marketplace.",
+      "markAllRead": "Mark all as read",
+      "markRead": "Mark as read",
+      "updated": "{count} update(s)"
+    },
+    "dashboard": {
+      "welcome": "Your overview of available candidates and open requests.",
+      "discover": "Discover candidates",
+      "open": "Open",
+      "kpiAvailable": "Available candidates",
+      "kpiActive": "Open requests",
+      "kpiUnread": "New updates",
+      "kpiIntroduced": "Introduced",
+      "needsAttention": "New updates",
+      "needsAttentionDescription": "Requests that changed since you last looked.",
+      "noUpdates": "No new updates.",
+      "activity": "Recent activity",
+      "noActivity": "No activity yet.",
+      "newCandidates": "New in the marketplace",
+      "newCandidatesHint": "Most recently published profiles.",
+      "nextActions": "Next steps",
+      "reviewUpdates": "Review {count} requests",
+      "event": {
+        "request_reviewing": "Request under review",
+        "request_approved": "Request approved",
+        "request_rejected": "Request declined",
+        "request_introduced": "Candidate introduced"
+      }
     }
   }
 }
