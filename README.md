@@ -68,6 +68,8 @@ Introduction“-Aktion bleibt authentifizierungspflichtig
    - Sign-ups deaktivieren („Allow new users to sign up“ = off) — Konten
      werden ausschließlich vom Admin angelegt (§3A).
    - Site URL + Redirect URL: `NEXT_PUBLIC_SITE_URL` + `/auth/callback`.
+     Die Anwendung nutzt genau einen Redirect-Pfad (`/auth/callback`); die
+     Sprache steckt nur im `next`-Query-Parameter.
    - Für E-Mail-Einladungen: SMTP konfigurieren. Ohne SMTP im Admin-UI die
      Option „Einladungslink erzeugen“ verwenden oder `npm run seed:dev`.
 4. **Environment**: `.env.example` nach `.env.local` kopieren und Werte
@@ -120,4 +122,35 @@ Supabase-Dashboard einen User mit `app_metadata`
 | `NEXT_PUBLIC_SUPABASE_URL` | Client | Supabase-Projekt-URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client | Anon-Key (RLS-geschützt) |
 | `SUPABASE_SERVICE_ROLE_KEY` | **nur Server** | Kontoerstellung/Skripte |
-| `NEXT_PUBLIC_SITE_URL` | Client | Basis-URL für Auth-Redirects |
+| `NEXT_PUBLIC_SITE_URL` | Client | Basis-URL für Auth-Redirects und E-Mail-Links |
+| `RESEND_API_KEY` | **nur Server** | Transaktions-E-Mail (optional) |
+| `ALLEMARO_EMAIL_FROM` | **nur Server** | Absender der Benachrichtigungs-E-Mails |
+| `NORAV_EMAIL_FROM` | **nur Server** | Nur noch Fallback aus der Zeit vor dem Rebrand |
+
+### Umgebungen
+
+`NEXT_PUBLIC_SITE_URL` ist die einzige Stelle, an der die Domain konfiguriert
+wird. Einladungs-, Passwort-Reset- und Benachrichtigungslinks werden daraus
+abgeleitet; im Code steht keine Domain fest verdrahtet.
+
+| | Entwicklung | Produktion |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://allemaro.com` |
+| `ALLEMARO_EMAIL_FROM` | leer lassen (kein Versand) | verifizierter Absender unter `@allemaro.com` |
+
+Jeder gesetzte Wert von `NEXT_PUBLIC_SITE_URL` muss in Supabase unter
+Authentication → URL Configuration als erlaubte Redirect-URL hinterlegt sein,
+sonst weist Supabase den Auth-Link ab.
+
+### E-Mail-Absender
+
+Der Absender wird in dieser Reihenfolge aufgelöst:
+
+1. `ALLEMARO_EMAIL_FROM`
+2. `NORAV_EMAIL_FROM` — Übergangs-Fallback für Umgebungen, die noch aus der
+   Zeit vor dem Rebrand stammen
+
+Ist keine der beiden Variablen gesetzt (oder fehlt `RESEND_API_KEY`), wird
+nicht versendet: die Benachrichtigung entsteht trotzdem und wird als
+`skipped` vermerkt. Der Fallback wird entfernt, sobald alle Deployments auf
+`ALLEMARO_EMAIL_FROM` umgestellt sind.

@@ -61,7 +61,12 @@ async function sendViaResend(
  */
 export async function sendEmail(message: EmailMessage): Promise<EmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.NORAV_EMAIL_FROM;
+  // ALLEMARO_EMAIL_FROM is the current variable. NORAV_EMAIL_FROM is still
+  // accepted so an environment that predates the rebrand keeps sending
+  // instead of silently degrading to "skipped"; it will be dropped once
+  // every deployment has been switched over.
+  const from =
+    process.env.ALLEMARO_EMAIL_FROM ?? process.env.NORAV_EMAIL_FROM;
 
   if (!apiKey || !from) {
     return { status: "skipped", reason: "no provider configured" };
