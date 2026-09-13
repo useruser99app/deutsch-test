@@ -219,17 +219,24 @@ export async function loadEmployerRequests(
  * The company's currently open request for one candidate, if any. Drives
  * the "already requested" state instead of offering a second primary CTA.
  */
+export interface ActiveRequest {
+  id: string;
+  status: InterestRequestStatus;
+  job_id: string | null;
+  jobs: { title: string } | null;
+}
+
 export async function loadActiveRequest(
   supabase: SupabaseClient,
   profileId: string
-): Promise<{ id: string; status: InterestRequestStatus } | null> {
+): Promise<ActiveRequest | null> {
   const { data } = await supabase
     .from("interest_requests")
-    .select("id, status")
+    .select("id, status, job_id, jobs(title)")
     .eq("candidate_profile_id", profileId)
     .in("status", activeInterestRequestStatuses as unknown as string[])
     .maybeSingle();
-  return (data as { id: string; status: InterestRequestStatus } | null) ?? null;
+  return (data as unknown as ActiveRequest | null) ?? null;
 }
 
 /** Jobs the employer may optionally attach to a request (§14). */

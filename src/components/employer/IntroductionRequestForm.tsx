@@ -21,11 +21,17 @@ const initialState: IntroductionActionState = { status: "idle" };
 export default function IntroductionRequestForm({
   profileId,
   existingStatus,
+  existingJobTitle,
   jobs,
+  preselectedJobId,
 }: {
   profileId: string;
   existingStatus?: string;
+  /** Which vacancy the open request belongs to, if any. */
+  existingJobTitle?: string | null;
   jobs: { id: string; title: string }[];
+  /** Set when the employer arrived from a specific vacancy. */
+  preselectedJobId?: string;
 }) {
   const locale = useLocale();
   const t = useTranslations("employer.introduction");
@@ -47,6 +53,11 @@ export default function IntroductionRequestForm({
           <StatusBadge status={settled} />
           <p className="t-body font-medium text-ink-800">{t("alreadySent")}</p>
         </div>
+        {existingJobTitle && (
+          <p className="t-meta mt-1.5">
+            {t("forJob")}: <bdi>{existingJobTitle}</bdi>
+          </p>
+        )}
         <p className="t-meta mt-2">{t("noContactRelease")}</p>
       </div>
     );
@@ -68,7 +79,12 @@ export default function IntroductionRequestForm({
           <label className="t-label mb-1.5 block" htmlFor="job_id">
             {t("jobLabel")}
           </label>
-          <select id="job_id" name="job_id" className={controlClass}>
+          <select
+            id="job_id"
+            name="job_id"
+            defaultValue={preselectedJobId ?? ""}
+            className={controlClass}
+          >
             <option value="">{t("noJob")}</option>
             {jobs.map((job) => (
               <option key={job.id} value={job.id}>

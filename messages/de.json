@@ -64,7 +64,8 @@
     "groupOperations": "Prüfung",
     "groupManagement": "Stammdaten",
     "employerRequests": "Anfragen",
-    "adminRequests": "Vorstellungsanfragen"
+    "adminRequests": "Vorstellungsanfragen",
+    "jobs": "Stellen"
   },
   "status": {
     "pending": "Ausstehend",
@@ -83,7 +84,9 @@
     "archived": "Archiviert",
     "new": "Neu",
     "reviewing": "In Prüfung",
-    "introduced": "Vorgestellt"
+    "introduced": "Vorgestellt",
+    "open": "Aktiv",
+    "closed": "Geschlossen"
   },
   "enums": {
     "candidateType": {
@@ -109,6 +112,20 @@
       "planned": "Geplant",
       "registered": "Angemeldet",
       "obtained": "Erworben"
+    },
+    "jobType": {
+      "apprenticeship": "Ausbildungsplatz",
+      "skilled_position": "Fachkraftstelle"
+    },
+    "jobStatus": {
+      "draft": "Entwurf",
+      "open": "Aktiv",
+      "closed": "Geschlossen",
+      "archived": "Archiviert"
+    },
+    "employmentType": {
+      "full_time": "Vollzeit",
+      "part_time": "Teilzeit"
     }
   },
   "fields": {
@@ -413,6 +430,13 @@
         "rejected": "Ablehnen",
         "introduced": "Als vorgestellt markieren"
       }
+    },
+    "jobs": {
+      "title": "Stellen",
+      "description": "Alle Vakanzen der Unternehmen, zur operativen Übersicht.",
+      "company": "Unternehmen",
+      "empty": "Es wurden noch keine Stellen angelegt.",
+      "ownershipNote": "Die Stelle gehört dem Unternehmen. ALLEMARO sieht sie hier nur zur Übersicht und bearbeitet sie nicht."
     }
   },
   "employer": {
@@ -475,7 +499,8 @@
       "messagePlaceholder": "Wonach suchen Sie konkret? (optional)",
       "jobLabel": "Stelle (optional)",
       "noJob": "Ohne Stellenbezug",
-      "failed": "Die Anfrage konnte nicht gesendet werden."
+      "failed": "Die Anfrage konnte nicht gesendet werden.",
+      "forJob": "Für die Stelle"
     },
     "requests": {
       "title": "Anfragen",
@@ -511,6 +536,86 @@
         "request_approved": "Anfrage freigegeben",
         "request_rejected": "Anfrage abgelehnt",
         "request_introduced": "Kandidat vorgestellt"
+      }
+    },
+    "jobs": {
+      "title": "Stellen",
+      "description": "Ihre Ausbildungsplätze und Fachkraftstellen.",
+      "create": "Stelle anlegen",
+      "createTitle": "Neue Stelle",
+      "createDescription": "Beschreiben Sie die Vakanz. Danach zeigt ALLEMARO passende veröffentlichte Kandidaten.",
+      "backToList": "Zurück zu den Stellen",
+      "openJob": "Öffnen",
+      "edit": "Bearbeiten",
+      "cancelEdit": "Bearbeitung abbrechen",
+      "save": "Änderungen speichern",
+      "saved": "Gespeichert.",
+      "saving": "Wird gespeichert …",
+      "saveFailed": "Die Stelle konnte nicht gespeichert werden.",
+      "basics": "Eckdaten",
+      "jobTitle": "Bezeichnung",
+      "jobType": "Art der Stelle",
+      "targetOccupation": "Ausbildungsberuf",
+      "occupationPlaceholder": "z. B. Pflegefachmann/-frau",
+      "professionPlaceholder": "z. B. Elektriker",
+      "location": "Ort",
+      "country": "Land",
+      "requiredGerman": "Gefordertes Deutschniveau",
+      "noRequirement": "Keine Anforderung",
+      "trainingStart": "Ausbildungsbeginn",
+      "entryDate": "Gewünschter Eintritt",
+      "minExperience": "Mindestens Berufserfahrung (Jahre)",
+      "employmentType": "Beschäftigungsart",
+      "notSpecified": "Keine Angabe",
+      "status": "Status",
+      "created": "Angelegt",
+      "linkedRequests": "Anfragen",
+      "requirements": "Anforderungen",
+      "suitableCandidates": "Passende Kandidaten",
+      "noCandidates": "Zurzeit sind keine passenden Kandidaten veröffentlicht.",
+      "all": "Alle",
+      "empty": "Sie haben noch keine Stelle angelegt.",
+      "noneForFilter": "Keine Stellen mit dieser Auswahl.",
+      "descriptionLabel": "Beschreibung"
+    },
+    "fit": {
+      "explanation": "Die Übereinstimmung wird deterministisch aus den veröffentlichten Angaben berechnet. Keine KI, keine Bewertung der Person.",
+      "score": "{score} von 100",
+      "strengths": "Passt",
+      "gaps": "Lücken",
+      "missing": "Nicht angegeben",
+      "level": {
+        "strong": "Sehr gute Übereinstimmung",
+        "good": "Gute Übereinstimmung",
+        "partial": "Teilweise Übereinstimmung",
+        "weak": "Geringe Übereinstimmung"
+      },
+      "reason": {
+        "occupationPrimary": "Wunschberuf auf Platz 1 passt: {candidate}",
+        "occupationSecondary": "Beruf steht als weiterer Wunsch im Profil: {candidate}",
+        "occupationMismatch": "Berufsziel weicht ab: gesucht {job}, im Profil {candidate}",
+        "occupation": "Kein Berufsziel im veröffentlichten Profil",
+        "professionMatch": "Beruf passt: {candidate}",
+        "professionMismatch": "Beruf weicht ab: gesucht {job}, im Profil {candidate}",
+        "profession": "Kein Beruf im veröffentlichten Profil",
+        "germanMeets": "Deutsch {actual} erfüllt die Anforderung {required}",
+        "germanBelow": "Deutsch {actual} liegt unter der Anforderung {required}",
+        "german": "Deutschniveau nicht im veröffentlichten Profil",
+        "trainingStartFits": "Gewünschter Ausbildungsbeginn passt ({candidate})",
+        "trainingStartLate": "Gewünschter Beginn {candidate} liegt nach {job}",
+        "trainingStart": "Gewünschter Ausbildungsbeginn nicht angegeben",
+        "availabilityFits": "Verfügbar ab {candidate}, rechtzeitig zum {job}",
+        "availabilityLate": "Verfügbar erst ab {candidate}, gesucht zum {job}",
+        "availability": "Verfügbarkeit nicht angegeben",
+        "experienceMeets": "{actual} Jahre Erfahrung erfüllen die geforderten {required}",
+        "experienceBelow": "{actual} Jahre Erfahrung unter den geforderten {required}",
+        "experience": "Berufserfahrung nicht angegeben",
+        "locationMatch": "Wunschort passt zu {job}",
+        "locationElsewhere": "Wunschorte weichen ab: {candidate}",
+        "location": "Keine Wunschorte im veröffentlichten Profil",
+        "relocationReady": "Umzugsbereit",
+        "relocationNo": "Nicht umzugsbereit",
+        "relocation": "Umzugsbereitschaft nicht angegeben"
       }
     }
   }

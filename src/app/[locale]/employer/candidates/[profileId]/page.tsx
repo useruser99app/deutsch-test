@@ -20,12 +20,17 @@ import IntroductionRequestForm from "@/components/employer/IntroductionRequestFo
 
 export default async function EmployerCandidateDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; profileId: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { locale, profileId } = await params;
   setRequestLocale(locale);
   const { supabase } = await requireRole(locale, "employer");
+  const sp = await searchParams;
+  // Set when the employer came here from one of their vacancies.
+  const fromJob = (Array.isArray(sp.job) ? sp.job[0] : sp.job)?.trim();
 
   // Returns null for anything not published — an unpublished candidate is a
   // 404 for employers, not a hidden page.
@@ -251,7 +256,9 @@ export default async function EmployerCandidateDetailPage({
         <IntroductionRequestForm
           profileId={profileId}
           existingStatus={activeRequest?.status}
+          existingJobTitle={activeRequest?.jobs?.title ?? null}
           jobs={jobs}
+          preselectedJobId={fromJob}
         />
       </div>
     </>

@@ -64,7 +64,8 @@
     "groupOperations": "Review",
     "groupManagement": "Records",
     "employerRequests": "Requests",
-    "adminRequests": "Introduction requests"
+    "adminRequests": "Introduction requests",
+    "jobs": "Jobs"
   },
   "status": {
     "pending": "Pending",
@@ -83,7 +84,9 @@
     "archived": "Archived",
     "new": "New",
     "reviewing": "In review",
-    "introduced": "Introduced"
+    "introduced": "Introduced",
+    "open": "Active",
+    "closed": "Closed"
   },
   "enums": {
     "candidateType": {
@@ -109,6 +112,20 @@
       "planned": "Planned",
       "registered": "Registered",
       "obtained": "Obtained"
+    },
+    "jobType": {
+      "apprenticeship": "Apprenticeship",
+      "skilled_position": "Skilled position"
+    },
+    "jobStatus": {
+      "draft": "Draft",
+      "open": "Active",
+      "closed": "Closed",
+      "archived": "Archived"
+    },
+    "employmentType": {
+      "full_time": "Full time",
+      "part_time": "Part time"
     }
   },
   "fields": {
@@ -413,6 +430,13 @@
         "rejected": "Reject",
         "introduced": "Mark as introduced"
       }
+    },
+    "jobs": {
+      "title": "Jobs",
+      "description": "All company vacancies, for operational oversight.",
+      "company": "Company",
+      "empty": "No jobs have been created yet.",
+      "ownershipNote": "The vacancy belongs to the company. ALLEMARO only views it here and does not edit it."
     }
   },
   "employer": {
@@ -475,7 +499,8 @@
       "messagePlaceholder": "What exactly are you looking for? (optional)",
       "jobLabel": "Job (optional)",
       "noJob": "No specific job",
-      "failed": "The request could not be sent."
+      "failed": "The request could not be sent.",
+      "forJob": "For the job"
     },
     "requests": {
       "title": "Requests",
@@ -511,6 +536,86 @@
         "request_approved": "Request approved",
         "request_rejected": "Request declined",
         "request_introduced": "Candidate introduced"
+      }
+    },
+    "jobs": {
+      "title": "Jobs",
+      "description": "Your apprenticeships and skilled positions.",
+      "create": "Create job",
+      "createTitle": "New job",
+      "createDescription": "Describe the vacancy. ALLEMARO then shows suitable published candidates.",
+      "backToList": "Back to jobs",
+      "openJob": "Open",
+      "edit": "Edit",
+      "cancelEdit": "Cancel editing",
+      "save": "Save changes",
+      "saved": "Saved.",
+      "saving": "Saving …",
+      "saveFailed": "The job could not be saved.",
+      "basics": "Basics",
+      "jobTitle": "Title",
+      "jobType": "Job type",
+      "targetOccupation": "Training occupation",
+      "occupationPlaceholder": "e.g. Pflegefachmann/-frau",
+      "professionPlaceholder": "e.g. Elektriker",
+      "location": "Location",
+      "country": "Country",
+      "requiredGerman": "Required German level",
+      "noRequirement": "No requirement",
+      "trainingStart": "Training start",
+      "entryDate": "Desired start",
+      "minExperience": "Minimum experience (years)",
+      "employmentType": "Employment type",
+      "notSpecified": "Not specified",
+      "status": "Status",
+      "created": "Created",
+      "linkedRequests": "Requests",
+      "requirements": "Requirements",
+      "suitableCandidates": "Suitable candidates",
+      "noCandidates": "No suitable candidates are published at the moment.",
+      "all": "All",
+      "empty": "You have not created a job yet.",
+      "noneForFilter": "No jobs for this selection.",
+      "descriptionLabel": "Description"
+    },
+    "fit": {
+      "explanation": "The fit is calculated deterministically from published information. No AI, and no judgement about the person.",
+      "score": "{score} of 100",
+      "strengths": "Fits",
+      "gaps": "Gaps",
+      "missing": "Not provided",
+      "level": {
+        "strong": "Very good fit",
+        "good": "Good fit",
+        "partial": "Partial fit",
+        "weak": "Limited fit"
+      },
+      "reason": {
+        "occupationPrimary": "First-choice occupation matches: {candidate}",
+        "occupationSecondary": "Listed as a further target occupation: {candidate}",
+        "occupationMismatch": "Different target: looking for {job}, profile says {candidate}",
+        "occupation": "No target occupation in the published profile",
+        "professionMatch": "Profession matches: {candidate}",
+        "professionMismatch": "Different profession: looking for {job}, profile says {candidate}",
+        "profession": "No profession in the published profile",
+        "germanMeets": "German {actual} meets the {required} requirement",
+        "germanBelow": "German {actual} is below the {required} requirement",
+        "german": "German level not in the published profile",
+        "trainingStartFits": "Desired training start fits ({candidate})",
+        "trainingStartLate": "Desired start {candidate} is after {job}",
+        "trainingStart": "Desired training start not provided",
+        "availabilityFits": "Available from {candidate}, in time for {job}",
+        "availabilityLate": "Available only from {candidate}, needed by {job}",
+        "availability": "Availability not provided",
+        "experienceMeets": "{actual} years of experience meet the required {required}",
+        "experienceBelow": "{actual} years of experience below the required {required}",
+        "experience": "Years of experience not provided",
+        "locationMatch": "Preferred location matches {job}",
+        "locationElsewhere": "Preferred locations differ: {candidate}",
+        "location": "No preferred locations in the published profile",
+        "relocationReady": "Ready to relocate",
+        "relocationNo": "Not ready to relocate",
+        "relocation": "Relocation readiness not provided"
       }
     }
   }

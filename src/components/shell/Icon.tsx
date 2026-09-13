@@ -14,6 +14,7 @@ export type IconName =
   | "discover"
   | "profile"
   | "changes"
+  | "jobs"
   | "menu"
   | "close";
 
@@ -74,6 +75,13 @@ const paths: Record<IconName, React.ReactNode> = {
     <>
       <path d="M4 7h11m0 0-3-3m3 3-3 3" />
       <path d="M20 17H9m0 0 3-3m-3 3 3 3" />
+    </>
+  ),
+  jobs: (
+    <>
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7" />
+      <path d="M3 12h18" />
     </>
   ),
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,

@@ -64,7 +64,8 @@
     "groupOperations": "Vérification",
     "groupManagement": "Données",
     "employerRequests": "Demandes",
-    "adminRequests": "Demandes de présentation"
+    "adminRequests": "Demandes de présentation",
+    "jobs": "Postes"
   },
   "status": {
     "pending": "En attente",
@@ -83,7 +84,9 @@
     "archived": "Archivé",
     "new": "Nouvelle",
     "reviewing": "En cours d'examen",
-    "introduced": "Présenté"
+    "introduced": "Présenté",
+    "open": "Actif",
+    "closed": "Clôturé"
   },
   "enums": {
     "candidateType": {
@@ -109,6 +112,20 @@
       "planned": "Prévu",
       "registered": "Inscrit",
       "obtained": "Obtenu"
+    },
+    "jobType": {
+      "apprenticeship": "Place d'apprentissage",
+      "skilled_position": "Poste qualifié"
+    },
+    "jobStatus": {
+      "draft": "Brouillon",
+      "open": "Actif",
+      "closed": "Clôturé",
+      "archived": "Archivé"
+    },
+    "employmentType": {
+      "full_time": "Temps plein",
+      "part_time": "Temps partiel"
     }
   },
   "fields": {
@@ -413,6 +430,13 @@
         "rejected": "Refuser",
         "introduced": "Marquer comme présenté"
       }
+    },
+    "jobs": {
+      "title": "Postes",
+      "description": "Toutes les vacances des entreprises, pour le suivi opérationnel.",
+      "company": "Entreprise",
+      "empty": "Aucun poste n'a encore été créé.",
+      "ownershipNote": "Le poste appartient à l'entreprise. ALLEMARO le consulte ici sans le modifier."
     }
   },
   "employer": {
@@ -475,7 +499,8 @@
       "messagePlaceholder": "Que recherchez-vous précisément ? (facultatif)",
       "jobLabel": "Poste (facultatif)",
       "noJob": "Sans poste précis",
-      "failed": "La demande n'a pas pu être envoyée."
+      "failed": "La demande n'a pas pu être envoyée.",
+      "forJob": "Pour le poste"
     },
     "requests": {
       "title": "Demandes",
@@ -511,6 +536,86 @@
         "request_approved": "Demande validée",
         "request_rejected": "Demande refusée",
         "request_introduced": "Candidat présenté"
+      }
+    },
+    "jobs": {
+      "title": "Postes",
+      "description": "Vos places d'apprentissage et postes qualifiés.",
+      "create": "Créer un poste",
+      "createTitle": "Nouveau poste",
+      "createDescription": "Décrivez la vacance. ALLEMARO affiche ensuite les candidats publiés correspondants.",
+      "backToList": "Retour aux postes",
+      "openJob": "Ouvrir",
+      "edit": "Modifier",
+      "cancelEdit": "Annuler la modification",
+      "save": "Enregistrer",
+      "saved": "Enregistré.",
+      "saving": "Enregistrement …",
+      "saveFailed": "Le poste n'a pas pu être enregistré.",
+      "basics": "Informations",
+      "jobTitle": "Intitulé",
+      "jobType": "Type de poste",
+      "targetOccupation": "Métier de formation",
+      "occupationPlaceholder": "p. ex. Pflegefachmann/-frau",
+      "professionPlaceholder": "p. ex. Elektriker",
+      "location": "Lieu",
+      "country": "Pays",
+      "requiredGerman": "Niveau d'allemand requis",
+      "noRequirement": "Aucune exigence",
+      "trainingStart": "Début de la formation",
+      "entryDate": "Entrée souhaitée",
+      "minExperience": "Expérience minimale (années)",
+      "employmentType": "Type de contrat",
+      "notSpecified": "Non précisé",
+      "status": "Statut",
+      "created": "Créé le",
+      "linkedRequests": "Demandes",
+      "requirements": "Exigences",
+      "suitableCandidates": "Candidats correspondants",
+      "noCandidates": "Aucun candidat correspondant n'est publié actuellement.",
+      "all": "Tous",
+      "empty": "Vous n'avez pas encore créé de poste.",
+      "noneForFilter": "Aucun poste pour cette sélection.",
+      "descriptionLabel": "Description"
+    },
+    "fit": {
+      "explanation": "La correspondance est calculée de façon déterministe à partir des informations publiées. Sans IA et sans jugement sur la personne.",
+      "score": "{score} sur 100",
+      "strengths": "Correspond",
+      "gaps": "Écarts",
+      "missing": "Non renseigné",
+      "level": {
+        "strong": "Très bonne correspondance",
+        "good": "Bonne correspondance",
+        "partial": "Correspondance partielle",
+        "weak": "Correspondance faible"
+      },
+      "reason": {
+        "occupationPrimary": "Métier souhaité en premier choix : {candidate}",
+        "occupationSecondary": "Figure comme autre métier souhaité : {candidate}",
+        "occupationMismatch": "Objectif différent : recherché {job}, profil {candidate}",
+        "occupation": "Aucun métier souhaité dans le profil publié",
+        "professionMatch": "Métier correspondant : {candidate}",
+        "professionMismatch": "Métier différent : recherché {job}, profil {candidate}",
+        "profession": "Aucun métier dans le profil publié",
+        "germanMeets": "Allemand {actual} satisfait l'exigence {required}",
+        "germanBelow": "Allemand {actual} en dessous de l'exigence {required}",
+        "german": "Niveau d'allemand absent du profil publié",
+        "trainingStartFits": "Début de formation souhaité compatible ({candidate})",
+        "trainingStartLate": "Début souhaité {candidate} postérieur au {job}",
+        "trainingStart": "Début de formation souhaité non renseigné",
+        "availabilityFits": "Disponible à partir du {candidate}, à temps pour le {job}",
+        "availabilityLate": "Disponible seulement à partir du {candidate}, recherché pour le {job}",
+        "availability": "Disponibilité non renseignée",
+        "experienceMeets": "{actual} ans d'expérience satisfont les {required} requis",
+        "experienceBelow": "{actual} ans d'expérience en dessous des {required} requis",
+        "experience": "Expérience non renseignée",
+        "locationMatch": "Lieu souhaité correspond à {job}",
+        "locationElsewhere": "Lieux souhaités différents : {candidate}",
+        "location": "Aucun lieu souhaité dans le profil publié",
+        "relocationReady": "Prêt à déménager",
+        "relocationNo": "Pas prêt à déménager",
+        "relocation": "Disposition au déménagement non renseignée"
       }
     }
   }

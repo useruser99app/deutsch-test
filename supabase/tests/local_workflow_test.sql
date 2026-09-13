@@ -1064,5 +1064,160 @@ begin
   raise notice 'PASS: KPI definitions correct; rejected excluded from active';
 end $$;
 
+
+-- ---------------------------------------------------------------
+-- 12. Employer vacancies (Prompt 04 §29)
+--
+-- The jobs table and its policies already existed; this section proves the
+-- authorization they promise, now that the employer UI actually uses them.
+-- ---------------------------------------------------------------
+set role authenticated;
+
+-- (1) Employer A creates a vacancy for its OWN company.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+declare n int;
+begin
+  insert into public.jobs
+    (company_id, job_type, title, profession_or_training_occupation,
+     required_german_level, training_start_date, location, status)
+  values
+    ('30000000-0000-0000-0000-000000000001', 'apprenticeship',
+     'Ausbildungsplatz Pflegefachmann/-frau', 'Pflegefachmann/-frau',
+     'B1', '2027-09-01', 'Berlin', 'open');
+
+  select count(*) into n from public.jobs;
+  if n <> 1 then raise exception 'FAIL: employer should see its 1 job, sees %', n; end if;
+  raise notice 'PASS: employer creates a vacancy for its own company';
+end $$;
+
+-- (2) Employer A cannot file a vacancy under another company.
+do $$
+begin
+  begin
+    insert into public.jobs (company_id, job_type, title)
+    values ('30000000-0000-0000-0000-000000000002', 'skilled_position', 'Fremd');
+    raise exception 'FAIL: employer created a job for a foreign company';
+  exception when insufficient_privilege then
+    raise notice 'PASS: employer cannot create a job for another company';
+  end;
+end $$;
+
+-- (3) Employer B sees nothing of company A, and cannot edit it.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e2';
+do $$
+declare n int;
+begin
+  if exists (select 1 from public.jobs) then
+    raise exception 'FAIL: employer B reads company A vacancies';
+  end if;
+  update public.jobs set title = 'gekapert';
+  get diagnostics n = row_count;
+  if n <> 0 then raise exception 'FAIL: employer B edited a foreign job'; end if;
+  raise notice 'PASS: employer B can neither read nor edit company A vacancies';
+end $$;
+
+-- (5) A candidate has no access to employer vacancies at all.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000c1';
+do $$
+declare n int;
+begin
+  if exists (select 1 from public.jobs) then
+    raise exception 'FAIL: candidate reads employer vacancies';
+  end if;
+  begin
+    insert into public.jobs (company_id, job_type, title)
+    values ('30000000-0000-0000-0000-000000000001', 'apprenticeship', 'Kandidat');
+    raise exception 'FAIL: candidate created a vacancy';
+  exception when insufficient_privilege then null;
+  end;
+  raise notice 'PASS: candidate can neither read nor create vacancies';
+end $$;
+
+-- (4) Admin may inspect all vacancies operationally.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+do $$
+declare n int;
+begin
+  select count(*) into n from public.jobs;
+  if n <> 1 then raise exception 'FAIL: admin should inspect 1 job, sees %', n; end if;
+  raise notice 'PASS: admin inspects employer vacancies';
+end $$;
+
+-- (12) A job-linked introduction request keeps its job context, and (13)
+-- linking a job exposes no candidate identity to the employer.
+reset role;
+update public.candidate_profiles
+set profile_status = 'published', published_at = now()
+where candidate_id = '20000000-0000-0000-0000-0000000000a1';
+delete from public.interest_requests;
+delete from public.employer_notifications;
+
+set role authenticated;
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+declare v_pid uuid; v_job uuid; r record;
+begin
+  select profile_id into v_pid from public.employer_candidate_profiles;
+  select id into v_job from public.jobs;
+
+  insert into public.interest_requests
+    (company_id, candidate_profile_id, job_id, requested_by)
+  values ('30000000-0000-0000-0000-000000000001', v_pid, v_job,
+          '00000000-0000-0000-0000-0000000000e1');
+
+  select * into r from public.interest_requests;
+  if r.job_id is distinct from v_job then
+    raise exception 'FAIL: the request lost its job context';
+  end if;
+  if exists (select 1 from public.candidates)
+     or exists (select 1 from public.candidate_documents) then
+    raise exception 'FAIL: a job-linked request exposed candidate identity';
+  end if;
+  raise notice 'PASS: job-linked request keeps its job and reveals no identity';
+end $$;
+
+-- (§21) The existing duplicate protection is per company + candidate and
+-- does NOT include job_id. Pinned here so the behaviour cannot drift
+-- unnoticed: a second open request for the same candidate is refused even
+-- for a different vacancy.
+do $$
+declare v_pid uuid; v_job2 uuid;
+begin
+  select profile_id into v_pid from public.employer_candidate_profiles;
+  insert into public.jobs
+    (company_id, job_type, title, profession_or_training_occupation, status)
+  values ('30000000-0000-0000-0000-000000000001', 'apprenticeship',
+          'Ausbildungsplatz Hotelfachmann/-frau', 'Hotelfachmann/-frau', 'open')
+  returning id into v_job2;
+
+  begin
+    insert into public.interest_requests
+      (company_id, candidate_profile_id, job_id, requested_by)
+    values ('30000000-0000-0000-0000-000000000001', v_pid, v_job2,
+            '00000000-0000-0000-0000-0000000000e1');
+    raise exception 'FAIL: duplicate protection no longer covers a second vacancy';
+  exception when unique_violation then
+    raise notice 'PASS: one open request per company and candidate, across vacancies';
+  end;
+end $$;
+
+-- (6)(7) Only published, employer-safe profiles can enter matching.
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+do $$
+begin
+  perform public.publish_candidate_profile(
+    '20000000-0000-0000-0000-0000000000a1', false);
+end $$;
+
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000e1';
+do $$
+begin
+  if exists (select 1 from public.employer_candidate_profiles) then
+    raise exception 'FAIL: an unpublished candidate is still matchable';
+  end if;
+  raise notice 'PASS: unpublishing removes the candidate from matching input';
+end $$;
+
 reset role;
 select 'ALL LOCAL WORKFLOW TESTS PASSED' as result;

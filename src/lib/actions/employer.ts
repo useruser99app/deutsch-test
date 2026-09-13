@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { loadActiveRequest, loadOwnCompany } from "@/lib/employer-data";
 import type { IntroductionActionState } from "@/lib/domain";
@@ -95,4 +96,91 @@ export async function markRequestReadAction(formData: FormData) {
 
   revalidatePath(`/${locale}/employer/requests`);
   revalidatePath(`/${locale}/employer`);
+}
+
+/** Result state for the vacancy form. */
+export interface JobActionState {
+  status: "idle" | "success" | "error";
+  jobId?: string;
+}
+
+function optionalText(formData: FormData, key: string): string | null {
+  return String(formData.get(key) ?? "").trim() || null;
+}
+
+/**
+ * Create or update a vacancy (§6, §7).
+ *
+ * The company is resolved SERVER-SIDE from the caller's own membership and
+ * is never read from the form, so an employer cannot file a vacancy under
+ * another company even by editing the request. The RLS insert/update policy
+ * on `jobs` is the second, authoritative check.
+ */
+export async function saveJobAction(
+  _prev: JobActionState,
+  formData: FormData
+): Promise<JobActionState> {
+  const locale = text(formData, "locale");
+  const { supabase } = await requireRole(locale, "employer");
+
+  const jobId = text(formData, "job_id");
+  const title = text(formData, "title");
+  const jobType =
+    text(formData, "job_type") === "skilled_position"
+      ? "skilled_position"
+      : "apprenticeship";
+  const status = (["draft", "open", "closed"] as const).includes(
+    text(formData, "status") as "draft"
+  )
+    ? (text(formData, "status") as "draft" | "open" | "closed")
+    : "draft";
+
+  if (!title) return { status: "error" };
+
+  const rawGerman = text(formData, "required_german_level");
+  const rawExperience = text(formData, "minimum_experience_years");
+  const experience = rawExperience === "" ? null : Number(rawExperience);
+
+  const payload = {
+    job_type: jobType,
+    title,
+    description: optionalText(formData, "description"),
+    profession_or_training_occupation: optionalText(formData, "occupation"),
+    location: optionalText(formData, "location"),
+    country: text(formData, "country") || "DE",
+    required_german_level: rawGerman || null,
+    // An apprenticeship never stores a minimum years-of-experience
+    // requirement: it is not a meaningful demand on a school leaver.
+    minimum_experience_years:
+      jobType === "skilled_position" && experience !== null && !Number.isNaN(experience)
+        ? experience
+        : null,
+    training_start_date: optionalText(formData, "training_start_date"),
+    employment_type:
+      jobType === "skilled_position"
+        ? optionalText(formData, "employment_type")
+        : null,
+    status,
+  };
+
+  if (jobId) {
+    const { error } = await supabase.from("jobs").update(payload).eq("id", jobId);
+    if (error) return { status: "error", jobId };
+    revalidatePath(`/${locale}/employer/jobs`);
+    revalidatePath(`/${locale}/employer/jobs/${jobId}`);
+    return { status: "success", jobId };
+  }
+
+  const company = await loadOwnCompany(supabase);
+  if (!company) return { status: "error" };
+
+  const { data, error } = await supabase
+    .from("jobs")
+    .insert({ ...payload, company_id: company.id })
+    .select("id")
+    .single();
+  if (error || !data) return { status: "error" };
+
+  revalidatePath(`/${locale}/employer/jobs`);
+  redirect(`/${locale}/employer/jobs/${(data as { id: string }).id}`);
 }

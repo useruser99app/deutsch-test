@@ -64,7 +64,8 @@
     "groupOperations": "المراجعة",
     "groupManagement": "البيانات",
     "employerRequests": "الطلبات",
-    "adminRequests": "طلبات التعارف"
+    "adminRequests": "طلبات التعارف",
+    "jobs": "الوظائف"
   },
   "status": {
     "pending": "قيد الانتظار",
@@ -83,7 +84,9 @@
     "archived": "مؤرشف",
     "new": "جديد",
     "reviewing": "قيد المراجعة",
-    "introduced": "تم التعارف"
+    "introduced": "تم التعارف",
+    "open": "نشطة",
+    "closed": "مغلقة"
   },
   "enums": {
     "candidateType": {
@@ -109,6 +112,20 @@
       "planned": "مخطط له",
       "registered": "مسجَّل",
       "obtained": "تم الحصول عليها"
+    },
+    "jobType": {
+      "apprenticeship": "مكان تدريب مهني",
+      "skilled_position": "وظيفة لكادر متخصص"
+    },
+    "jobStatus": {
+      "draft": "مسودة",
+      "open": "نشطة",
+      "closed": "مغلقة",
+      "archived": "مؤرشفة"
+    },
+    "employmentType": {
+      "full_time": "دوام كامل",
+      "part_time": "دوام جزئي"
     }
   },
   "fields": {
@@ -413,6 +430,13 @@
         "rejected": "الرفض",
         "introduced": "تسجيل التعارف"
       }
+    },
+    "jobs": {
+      "title": "الوظائف",
+      "description": "جميع شواغر الشركات، للمتابعة التشغيلية.",
+      "company": "الشركة",
+      "empty": "لم تُنشأ أي وظيفة بعد.",
+      "ownershipNote": "الوظيفة ملك للشركة. تطّلع عليها ALLEMARO هنا فقط ولا تعدّلها."
     }
   },
   "employer": {
@@ -475,7 +499,8 @@
       "messagePlaceholder": "عمّا تبحث تحديدًا؟ (اختياري)",
       "jobLabel": "الوظيفة (اختياري)",
       "noJob": "دون ربط بوظيفة",
-      "failed": "تعذّر إرسال الطلب."
+      "failed": "تعذّر إرسال الطلب.",
+      "forJob": "للوظيفة"
     },
     "requests": {
       "title": "الطلبات",
@@ -511,6 +536,86 @@
         "request_approved": "تمت الموافقة على الطلب",
         "request_rejected": "تم رفض الطلب",
         "request_introduced": "تم تعارف المرشح"
+      }
+    },
+    "jobs": {
+      "title": "الوظائف",
+      "description": "أماكن التدريب المهني والوظائف المتخصصة لديك.",
+      "create": "إنشاء وظيفة",
+      "createTitle": "وظيفة جديدة",
+      "createDescription": "صف الشاغر، ثم تعرض ALLEMARO المرشحين المنشورين المناسبين.",
+      "backToList": "العودة إلى الوظائف",
+      "openJob": "فتح",
+      "edit": "تعديل",
+      "cancelEdit": "إلغاء التعديل",
+      "save": "حفظ التغييرات",
+      "saved": "تم الحفظ.",
+      "saving": "جارٍ الحفظ …",
+      "saveFailed": "تعذّر حفظ الوظيفة.",
+      "basics": "البيانات الأساسية",
+      "jobTitle": "المسمى",
+      "jobType": "نوع الوظيفة",
+      "targetOccupation": "مهنة التدريب",
+      "occupationPlaceholder": "مثال: Pflegefachmann/-frau",
+      "professionPlaceholder": "مثال: Elektriker",
+      "location": "المكان",
+      "country": "البلد",
+      "requiredGerman": "مستوى الألمانية المطلوب",
+      "noRequirement": "بدون اشتراط",
+      "trainingStart": "بداية التدريب",
+      "entryDate": "موعد الالتحاق المرغوب",
+      "minExperience": "أقل خبرة مطلوبة (سنوات)",
+      "employmentType": "نوع التعاقد",
+      "notSpecified": "غير محدد",
+      "status": "الحالة",
+      "created": "أُنشئت في",
+      "linkedRequests": "الطلبات",
+      "requirements": "المتطلبات",
+      "suitableCandidates": "المرشحون المناسبون",
+      "noCandidates": "لا يوجد مرشحون مناسبون منشورون حاليًا.",
+      "all": "الكل",
+      "empty": "لم تنشئ أي وظيفة بعد.",
+      "noneForFilter": "لا توجد وظائف بهذا الاختيار.",
+      "descriptionLabel": "الوصف"
+    },
+    "fit": {
+      "explanation": "تُحسب المطابقة بشكل حتمي من البيانات المنشورة. بدون ذكاء اصطناعي وبدون حكم على الشخص.",
+      "score": "{score} من 100",
+      "strengths": "مطابق",
+      "gaps": "فجوات",
+      "missing": "غير محدد",
+      "level": {
+        "strong": "مطابقة ممتازة",
+        "good": "مطابقة جيدة",
+        "partial": "مطابقة جزئية",
+        "weak": "مطابقة ضعيفة"
+      },
+      "reason": {
+        "occupationPrimary": "المهنة المرغوبة في المرتبة الأولى مطابقة: {candidate}",
+        "occupationSecondary": "مدرجة كمهنة مرغوبة أخرى: {candidate}",
+        "occupationMismatch": "الهدف المهني مختلف: المطلوب {job}، وفي الملف {candidate}",
+        "occupation": "لا يوجد هدف مهني في الملف المنشور",
+        "professionMatch": "المهنة مطابقة: {candidate}",
+        "professionMismatch": "المهنة مختلفة: المطلوب {job}، وفي الملف {candidate}",
+        "profession": "لا توجد مهنة في الملف المنشور",
+        "germanMeets": "الألمانية {actual} تستوفي المطلوب {required}",
+        "germanBelow": "الألمانية {actual} دون المطلوب {required}",
+        "german": "مستوى الألمانية غير مذكور في الملف المنشور",
+        "trainingStartFits": "بداية التدريب المرغوبة مناسبة ({candidate})",
+        "trainingStartLate": "البداية المرغوبة {candidate} بعد {job}",
+        "trainingStart": "بداية التدريب المرغوبة غير محددة",
+        "availabilityFits": "متاح اعتبارًا من {candidate}، في الوقت المناسب لـ {job}",
+        "availabilityLate": "متاح فقط اعتبارًا من {candidate}، والمطلوب {job}",
+        "availability": "التوفر غير محدد",
+        "experienceMeets": "{actual} سنوات خبرة تستوفي المطلوب {required}",
+        "experienceBelow": "{actual} سنوات خبرة دون المطلوب {required}",
+        "experience": "سنوات الخبرة غير محددة",
+        "locationMatch": "المكان المفضل يطابق {job}",
+        "locationElsewhere": "الأماكن المفضلة مختلفة: {candidate}",
+        "location": "لا توجد أماكن مفضلة في الملف المنشور",
+        "relocationReady": "مستعد للانتقال",
+        "relocationNo": "غير مستعد للانتقال",
+        "relocation": "الاستعداد للانتقال غير محدد"
       }
     }
   }

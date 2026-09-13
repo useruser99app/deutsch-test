@@ -78,6 +78,11 @@ export default async function AdminLayout({
               label: t("companies"),
               icon: "companies" as const,
             },
+            {
+              href: "/admin/jobs",
+              label: t("jobs"),
+              icon: "jobs" as const,
+            },
           ],
         },
       ]}

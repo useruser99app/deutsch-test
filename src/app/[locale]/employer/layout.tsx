@@ -29,6 +29,7 @@ export default async function EmployerLayout({
           items: [
             { href: "/employer", label: t("dashboard"), icon: "overview", exact: true },
             { href: "/employer/candidates", label: t("candidates"), icon: "discover" },
+            { href: "/employer/jobs", label: t("jobs"), icon: "jobs" },
             {
               href: "/employer/requests",
               label: t("employerRequests"),
