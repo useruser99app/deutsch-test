@@ -55,39 +55,39 @@ const explanation: Record<
   Record<EmployerNotificationType, string>
 > = {
   de: {
-    request_reviewing: "NORAV prüft Ihre Anfrage und meldet sich mit dem Ergebnis.",
+    request_reviewing: "ALLEMARO prüft Ihre Anfrage und meldet sich mit dem Ergebnis.",
     request_approved:
-      "NORAV stellt den Kontakt her und meldet sich mit den nächsten Schritten.",
+      "ALLEMARO stellt den Kontakt her und meldet sich mit den nächsten Schritten.",
     request_rejected:
       "Der Kandidat steht für diese Anfrage nicht zur Verfügung. Im Marktplatz finden Sie weitere Profile.",
     request_introduced:
-      "NORAV hat den Kontakt hergestellt. Die weiteren Schritte stimmen wir direkt mit Ihnen ab.",
+      "ALLEMARO hat den Kontakt hergestellt. Die weiteren Schritte stimmen wir direkt mit Ihnen ab.",
   },
   en: {
-    request_reviewing: "NORAV is reviewing your request and will report back.",
+    request_reviewing: "ALLEMARO is reviewing your request and will report back.",
     request_approved:
-      "NORAV is arranging the introduction and will be in touch with the next steps.",
+      "ALLEMARO is arranging the introduction and will be in touch with the next steps.",
     request_rejected:
       "This candidate is not available for your request. You will find further profiles in the marketplace.",
     request_introduced:
-      "NORAV has made the introduction. We will agree the next steps with you directly.",
+      "ALLEMARO has made the introduction. We will agree the next steps with you directly.",
   },
   fr: {
-    request_reviewing: "NORAV examine votre demande et vous informera du résultat.",
+    request_reviewing: "ALLEMARO examine votre demande et vous informera du résultat.",
     request_approved:
-      "NORAV organise la mise en relation et vous contactera pour la suite.",
+      "ALLEMARO organise la mise en relation et vous contactera pour la suite.",
     request_rejected:
       "Ce candidat n'est pas disponible pour cette demande. D'autres profils vous attendent sur la place de marché.",
     request_introduced:
-      "NORAV a établi le contact. Nous convenons des prochaines étapes directement avec vous.",
+      "ALLEMARO a établi le contact. Nous convenons des prochaines étapes directement avec vous.",
   },
   ar: {
-    request_reviewing: "تراجع NORAV طلبك وستوافيك بالنتيجة.",
-    request_approved: "تُرتّب NORAV التعارف وستتواصل معك بشأن الخطوات التالية.",
+    request_reviewing: "تراجع ALLEMARO طلبك وستوافيك بالنتيجة.",
+    request_approved: "تُرتّب ALLEMARO التعارف وستتواصل معك بشأن الخطوات التالية.",
     request_rejected:
       "هذا المرشح غير متاح لهذا الطلب. تجد ملفات أخرى في السوق.",
     request_introduced:
-      "أجرت NORAV التعارف. سنتفق معك مباشرةً على الخطوات التالية.",
+      "أجرت ALLEMARO التعارف. سنتفق معك مباشرةً على الخطوات التالية.",
   },
 };
 
@@ -104,40 +104,40 @@ const frame: Record<
   }
 > = {
   de: {
-    subjectPrefix: "NORAV – Ihre Anfrage zu",
+    subjectPrefix: "ALLEMARO – Ihre Anfrage zu",
     request: "Ihre Vorstellungsanfrage",
     candidate: "Kandidat",
     occupation: "Berufsziel",
     link: "Ihre Anfragen im Arbeitgeberbereich:",
     greeting: "Guten Tag,",
-    signature: "Ihr NORAV-Team",
+    signature: "Ihr ALLEMARO-Team",
   },
   en: {
-    subjectPrefix: "NORAV – your request for",
+    subjectPrefix: "ALLEMARO – your request for",
     request: "Your introduction request",
     candidate: "Candidate",
     occupation: "Target occupation",
     link: "Your requests in the employer portal:",
     greeting: "Hello,",
-    signature: "Your NORAV team",
+    signature: "Your ALLEMARO team",
   },
   fr: {
-    subjectPrefix: "NORAV – votre demande concernant",
+    subjectPrefix: "ALLEMARO – votre demande concernant",
     request: "Votre demande de présentation",
     candidate: "Candidat",
     occupation: "Objectif professionnel",
     link: "Vos demandes dans l'espace employeur :",
     greeting: "Bonjour,",
-    signature: "Votre équipe NORAV",
+    signature: "Votre équipe ALLEMARO",
   },
   ar: {
-    subjectPrefix: "NORAV – طلبك بخصوص",
+    subjectPrefix: "ALLEMARO – طلبك بخصوص",
     request: "طلب التعارف الخاص بك",
     candidate: "المرشح",
     occupation: "الهدف المهني",
     link: "طلباتك في بوابة أصحاب العمل:",
     greeting: "مرحبًا،",
-    signature: "فريق NORAV",
+    signature: "فريق ALLEMARO",
   },
 };
 

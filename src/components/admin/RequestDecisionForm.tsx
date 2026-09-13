@@ -17,7 +17,7 @@ const initialState: ReviewActionState = { status: "idle" };
  * queue cannot be walked backwards by accident.
  *
  * None of these buttons releases candidate contact data (§18): "introduced"
- * records that NORAV facilitated the contact operationally.
+ * records that ALLEMARO facilitated the contact operationally.
  */
 const nextStates: Record<string, InterestRequestStatus[]> = {
   new: ["reviewing", "approved", "rejected"],

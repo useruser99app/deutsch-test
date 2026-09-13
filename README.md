@@ -1,4 +1,4 @@
-# NORAV V0.1 — Foundation
+# ALLEMARO V0.1 — Foundation
 
 KI-first internationale Rekrutierungsplattform: verbindet internationale
 Kandidat/innen (ca. 80 % Ausbildung, 20 % Fachkräfte) mit Arbeitgebern in

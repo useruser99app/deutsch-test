@@ -1,4 +1,4 @@
-/* NORAV V0.1 — Dev seed (NOT for production).
+/* ALLEMARO V0.1 — Dev seed (NOT for production).
  *
  * Creates test accounts without needing SMTP (the admin-based test-user
  * mechanism for development):

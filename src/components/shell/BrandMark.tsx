@@ -1,5 +1,5 @@
 /**
- * NORAV wordmark. Typographic rather than illustrative — no logo asset is
+ * ALLEMARO wordmark. Typographic rather than illustrative — no logo asset is
  * invented here.
  */
 export default function BrandMark({
@@ -16,7 +16,7 @@ export default function BrandMark({
           tone === "light" ? "text-white" : "text-ink-900"
         }`}
       >
-        NORAV
+        ALLEMARO
       </span>
       {subtitle && (
         <span

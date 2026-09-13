@@ -6,7 +6,7 @@ import { routing, directionFor } from "@/i18n/routing";
 import "../globals.css";
 
 export const metadata: Metadata = {
-  title: "NORAV",
+  title: "ALLEMARO",
   description: "International recruiting platform",
 };
 

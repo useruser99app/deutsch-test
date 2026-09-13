@@ -10,7 +10,7 @@ import StatusBadge from "@/components/ui/StatusBadge";
 const initialState: IntroductionActionState = { status: "idle" };
 
 /**
- * "Vorstellung anfragen" (§13). NORAV handles the introduction itself, so
+ * "Vorstellung anfragen" (§13). ALLEMARO handles the introduction itself, so
  * this form never asks for or reveals candidate contact data — it only
  * records that this company is interested.
  *

@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "NORAV",
+    "appName": "ALLEMARO",
     "logout": "Se déconnecter",
     "language": "Langue",
     "submit": "Envoyer",
@@ -14,7 +14,7 @@
     "notProvided": "Non renseigné"
   },
   "home": {
-    "title": "NORAV",
+    "title": "ALLEMARO",
     "subtitle": "Recrutement international pour la formation professionnelle (Ausbildung) et l'emploi qualifié en Allemagne",
     "login": "Se connecter"
   },
@@ -42,11 +42,11 @@
     },
     "setPassword": {
       "title": "Activer votre compte",
-      "description": "Veuillez définir un mot de passe pour activer votre compte NORAV."
+      "description": "Veuillez définir un mot de passe pour activer votre compte ALLEMARO."
     },
     "inactive": {
       "title": "Compte non actif",
-      "description": "Votre compte n'est pas actif actuellement. Veuillez contacter l'équipe NORAV."
+      "description": "Votre compte n'est pas actif actuellement. Veuillez contacter l'équipe ALLEMARO."
     }
   },
   "nav": {
@@ -160,9 +160,9 @@
       "reviewComment": "Commentaire",
       "profileStatus": "Statut du profil",
       "noProfile": "Aucun profil de publication créé pour le moment.",
-      "approvalNote": "Les modifications ne prennent effet qu'après validation par l'équipe NORAV. Jusque-là, les valeurs actuelles restent valables.",
+      "approvalNote": "Les modifications ne prennent effet qu'après validation par l'équipe ALLEMARO. Jusque-là, les valeurs actuelles restent valables.",
       "greeting": "Bon retour, {name}.",
-      "noRecord": "Aucun profil de candidat n'est encore associé à votre compte. Veuillez contacter l'équipe NORAV.",
+      "noRecord": "Aucun profil de candidat n'est encore associé à votre compte. Veuillez contacter l'équipe ALLEMARO.",
       "accountStatus": "Statut du compte",
       "primaryOccupation": "Premier choix",
       "openSection": "Tout afficher",
@@ -173,7 +173,7 @@
     },
     "changes": {
       "title": "Proposer des modifications",
-      "description": "Vos propositions sont vérifiées par l'équipe NORAV. Les valeurs actuelles restent valables et visibles jusqu'à leur validation.",
+      "description": "Vos propositions sont vérifiées par l'équipe ALLEMARO. Les valeurs actuelles restent valables et visibles jusqu'à leur validation.",
       "sourceLanguage": "Langue de saisie",
       "listHint": "Séparez plusieurs valeurs par des virgules.",
       "submit": "Soumettre pour vérification",
@@ -187,7 +187,7 @@
       "errorEmpty": "Veuillez modifier au moins un champ.",
       "errorUnchanged": "Aucune modification détectée — les valeurs saisies correspondent aux données approuvées.",
       "errorFailed": "Échec de l'envoi. Veuillez réessayer plus tard.",
-      "reviewNote": "Vos propositions ne prennent effet qu'après validation par l'équipe NORAV."
+      "reviewNote": "Vos propositions ne prennent effet qu'après validation par l'équipe ALLEMARO."
     },
     "documents": {
       "title": "Mes documents",
@@ -200,7 +200,7 @@
       "uploadedAt": "Téléversé le",
       "reviewNote": "Note de vérification",
       "noDocuments": "Aucun document pour le moment.",
-      "description": "Téléversez vos justificatifs. Chaque document est vérifié par l'équipe NORAV.",
+      "description": "Téléversez vos justificatifs. Chaque document est vérifié par l'équipe ALLEMARO.",
       "listTitle": "Vos documents",
       "uploading": "Téléversement …",
       "errorNoFile": "Veuillez choisir un fichier.",
@@ -222,7 +222,7 @@
       "title": "Statut de vérification",
       "description": "Consultez ce qui est en cours de vérification et les décisions sur vos propositions précédentes.",
       "pendingTitle": "Modifications en cours de vérification",
-      "pendingDescription": "Ces propositions sont chez l'équipe NORAV. La valeur approuvée reste valable jusqu'à leur acceptation.",
+      "pendingDescription": "Ces propositions sont chez l'équipe ALLEMARO. La valeur approuvée reste valable jusqu'à leur acceptation.",
       "noPending": "Rien n'est en cours de vérification actuellement.",
       "historyTitle": "Historique des vérifications",
       "historyDescription": "Propositions précédentes et leur résultat — approuvées ou refusées.",
@@ -279,7 +279,7 @@
       "historyDescription": "Vérifications terminées avec résultat et commentaire.",
       "noHistory": "Aucune décision pour le moment.",
       "reviewedAt": "Vérifié",
-      "reviewer": "vérifié par l'équipe NORAV",
+      "reviewer": "vérifié par l'équipe ALLEMARO",
       "working": "Enregistrement …",
       "doneApproved": "Approuvé.",
       "doneRejected": "Refusé."
@@ -402,9 +402,9 @@
       "candidateUnpublished": "Profil non publié",
       "closed": "Clôturée.",
       "commentLabel": "Note interne",
-      "commentPlaceholder": "Note interne (facultatif, visible par NORAV uniquement)",
+      "commentPlaceholder": "Note interne (facultatif, visible par ALLEMARO uniquement)",
       "failed": "Le statut n'a pas pu être modifié.",
-      "contactNote": "NORAV établit le contact lui-même. Une validation ne transmet aucune coordonnée du candidat à l'employeur.",
+      "contactNote": "ALLEMARO établit le contact lui-même. Une validation ne transmet aucune coordonnée du candidat à l'employeur.",
       "moveTo": {
         "reviewing": "Mettre en examen",
         "approved": "Valider",
@@ -415,12 +415,12 @@
   },
   "employer": {
     "title": "Espace employeur",
-    "welcome": "Bienvenue chez NORAV.",
+    "welcome": "Bienvenue chez ALLEMARO.",
     "company": "Votre entreprise",
     "noCompany": "Aucune entreprise n'est encore associée à votre compte.",
     "marketplace": {
       "title": "Candidats",
-      "description": "Profils anonymisés publiés par NORAV pour les employeurs.",
+      "description": "Profils anonymisés publiés par ALLEMARO pour les employeurs.",
       "filters": "Filtres",
       "apply": "Appliquer les filtres",
       "reset": "Réinitialiser",
@@ -448,7 +448,7 @@
     "candidate": {
       "backToList": "Retour aux candidats",
       "profileTitle": "Profil",
-      "anonymousNote": "Profil anonymisé. NORAV ne communique le nom et les coordonnées qu'après une présentation.",
+      "anonymousNote": "Profil anonymisé. ALLEMARO ne communique le nom et les coordonnées qu'après une présentation.",
       "goalTitle": "Objectif professionnel",
       "qualificationTitle": "Qualification",
       "availabilityTitle": "Disponibilité et mobilité",
@@ -464,12 +464,12 @@
     },
     "introduction": {
       "title": "Demander une présentation",
-      "description": "NORAV examine votre demande et établit le contact. Cela ne vous donne pas les coordonnées du candidat.",
+      "description": "ALLEMARO examine votre demande et établit le contact. Cela ne vous donne pas les coordonnées du candidat.",
       "cta": "Demander une présentation",
       "sending": "Envoi …",
-      "alreadySent": "NORAV a bien reçu votre demande.",
+      "alreadySent": "ALLEMARO a bien reçu votre demande.",
       "noContactRelease": "Aucune coordonnée du candidat n'est transmise.",
-      "messageLabel": "Message à NORAV",
+      "messageLabel": "Message à ALLEMARO",
       "messagePlaceholder": "Que recherchez-vous précisément ? (facultatif)",
       "jobLabel": "Poste (facultatif)",
       "noJob": "Sans poste précis",
@@ -482,7 +482,7 @@
       "submitted": "Envoyée le",
       "openProfile": "Voir le profil",
       "candidateWithdrawn": "Profil retiré",
-      "processNote": "NORAV examine chaque demande et établit le contact lui-même. Les coordonnées des candidats ne sont jamais transmises via la place de marché.",
+      "processNote": "ALLEMARO examine chaque demande et établit le contact lui-même. Les coordonnées des candidats ne sont jamais transmises via la place de marché.",
       "markAllRead": "Tout marquer comme lu",
       "markRead": "Marquer comme lu",
       "updated": "{count} nouveauté(s)"

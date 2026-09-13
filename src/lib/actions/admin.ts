@@ -381,7 +381,7 @@ export async function publishProfileAction(
 /**
  * Move an introduction request through the workflow (§17).
  *
- * Approval records that NORAV will facilitate the introduction. It does NOT
+ * Approval records that ALLEMARO will facilitate the introduction. It does NOT
  * release candidate identity or contact data to the employer — that stays an
  * operational step, and no status here unlocks a private field (§18).
  */

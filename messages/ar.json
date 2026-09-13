@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "NORAV",
+    "appName": "ALLEMARO",
     "logout": "تسجيل الخروج",
     "language": "اللغة",
     "submit": "إرسال",
@@ -14,7 +14,7 @@
     "notProvided": "غير محدد"
   },
   "home": {
-    "title": "NORAV",
+    "title": "ALLEMARO",
     "subtitle": "توظيف دولي للتدريب المهني (Ausbildung) والعمل المؤهَّل في ألمانيا",
     "login": "تسجيل الدخول"
   },
@@ -42,11 +42,11 @@
     },
     "setPassword": {
       "title": "تفعيل الحساب",
-      "description": "يرجى تعيين كلمة مرور لتفعيل حسابك في NORAV."
+      "description": "يرجى تعيين كلمة مرور لتفعيل حسابك في ALLEMARO."
     },
     "inactive": {
       "title": "الحساب غير مفعّل",
-      "description": "حسابك غير مفعّل حاليًا. يرجى التواصل مع فريق NORAV."
+      "description": "حسابك غير مفعّل حاليًا. يرجى التواصل مع فريق ALLEMARO."
     }
   },
   "nav": {
@@ -160,9 +160,9 @@
       "reviewComment": "تعليق",
       "profileStatus": "حالة الملف",
       "noProfile": "لم يتم إنشاء ملف نشر بعد.",
-      "approvalNote": "لا تصبح التعديلات سارية إلا بعد اعتمادها من فريق NORAV. حتى ذلك الحين تبقى القيم الحالية سارية.",
+      "approvalNote": "لا تصبح التعديلات سارية إلا بعد اعتمادها من فريق ALLEMARO. حتى ذلك الحين تبقى القيم الحالية سارية.",
       "greeting": "أهلاً بعودتك، {name}.",
-      "noRecord": "لا يوجد ملف مرشح مرتبط بحسابك بعد. يرجى التواصل مع فريق NORAV.",
+      "noRecord": "لا يوجد ملف مرشح مرتبط بحسابك بعد. يرجى التواصل مع فريق ALLEMARO.",
       "accountStatus": "حالة الحساب",
       "primaryOccupation": "الخيار الأول",
       "openSection": "عرض الكل",
@@ -173,7 +173,7 @@
     },
     "changes": {
       "title": "اقتراح تعديلات",
-      "description": "يراجع فريق NORAV اقتراحاتك. تبقى القيم الحالية سارية وظاهرة حتى الاعتماد.",
+      "description": "يراجع فريق ALLEMARO اقتراحاتك. تبقى القيم الحالية سارية وظاهرة حتى الاعتماد.",
       "sourceLanguage": "لغة الإدخال",
       "listHint": "افصل بين القيم المتعددة بفواصل.",
       "submit": "إرسال للمراجعة",
@@ -187,7 +187,7 @@
       "errorEmpty": "يرجى تعديل حقل واحد على الأقل.",
       "errorUnchanged": "لم يتم رصد أي تغيير — القيم المُدخلة مطابقة للبيانات المعتمدة.",
       "errorFailed": "فشل الإرسال. يرجى المحاولة لاحقًا.",
-      "reviewNote": "لا تصبح اقتراحاتك سارية إلا بعد اعتمادها من فريق NORAV."
+      "reviewNote": "لا تصبح اقتراحاتك سارية إلا بعد اعتمادها من فريق ALLEMARO."
     },
     "documents": {
       "title": "مستنداتي",
@@ -200,7 +200,7 @@
       "uploadedAt": "تاريخ الرفع",
       "reviewNote": "ملاحظة المراجعة",
       "noDocuments": "لا توجد مستندات بعد.",
-      "description": "ارفع مستنداتك. يراجع فريق NORAV كل مستند.",
+      "description": "ارفع مستنداتك. يراجع فريق ALLEMARO كل مستند.",
       "listTitle": "مستنداتك",
       "uploading": "جارٍ الرفع …",
       "errorNoFile": "يرجى اختيار ملف.",
@@ -222,7 +222,7 @@
       "title": "حالة المراجعة",
       "description": "اطّلع على ما هو قيد المراجعة حاليًا وعلى نتائج اقتراحاتك السابقة.",
       "pendingTitle": "تعديلات قيد المراجعة",
-      "pendingDescription": "هذه الاقتراحات لدى فريق NORAV. تبقى القيمة المعتمدة سارية حتى قبولها.",
+      "pendingDescription": "هذه الاقتراحات لدى فريق ALLEMARO. تبقى القيمة المعتمدة سارية حتى قبولها.",
       "noPending": "لا يوجد شيء قيد المراجعة حاليًا.",
       "historyTitle": "سجل المراجعات",
       "historyDescription": "الاقتراحات السابقة ونتيجتها — معتمدة أو مرفوضة.",
@@ -279,7 +279,7 @@
       "historyDescription": "المراجعات المكتملة مع النتيجة والتعليق.",
       "noHistory": "لا توجد قرارات بعد.",
       "reviewedAt": "روجع",
-      "reviewer": "روجع من فريق NORAV",
+      "reviewer": "روجع من فريق ALLEMARO",
       "working": "جارٍ الحفظ …",
       "doneApproved": "تم الاعتماد.",
       "doneRejected": "تم الرفض."
@@ -402,9 +402,9 @@
       "candidateUnpublished": "الملف لم يعد منشورًا",
       "closed": "مُغلق.",
       "commentLabel": "ملاحظة داخلية",
-      "commentPlaceholder": "ملاحظة داخلية (اختياري، تظهر لـ NORAV فقط)",
+      "commentPlaceholder": "ملاحظة داخلية (اختياري، تظهر لـ ALLEMARO فقط)",
       "failed": "تعذّر تغيير الحالة.",
-      "contactNote": "تتولى NORAV إجراء التعارف بنفسها. الموافقة لا تكشف بيانات اتصال المرشح لصاحب العمل.",
+      "contactNote": "تتولى ALLEMARO إجراء التعارف بنفسها. الموافقة لا تكشف بيانات اتصال المرشح لصاحب العمل.",
       "moveTo": {
         "reviewing": "بدء المراجعة",
         "approved": "الموافقة",
@@ -415,12 +415,12 @@
   },
   "employer": {
     "title": "منطقة صاحب العمل",
-    "welcome": "مرحبًا بكم في NORAV.",
+    "welcome": "مرحبًا بكم في ALLEMARO.",
     "company": "شركتكم",
     "noCompany": "لم يتم ربط أي شركة بحسابكم بعد.",
     "marketplace": {
       "title": "المرشحون",
-      "description": "ملفات مجهولة الهوية نشرتها NORAV لأصحاب العمل.",
+      "description": "ملفات مجهولة الهوية نشرتها ALLEMARO لأصحاب العمل.",
       "filters": "عوامل التصفية",
       "apply": "تطبيق التصفية",
       "reset": "إعادة التعيين",
@@ -448,7 +448,7 @@
     "candidate": {
       "backToList": "العودة إلى المرشحين",
       "profileTitle": "الملف",
-      "anonymousNote": "ملف مجهول الهوية. لا تشارك NORAV الاسم وبيانات الاتصال إلا بعد التعارف.",
+      "anonymousNote": "ملف مجهول الهوية. لا تشارك ALLEMARO الاسم وبيانات الاتصال إلا بعد التعارف.",
       "goalTitle": "الهدف المهني",
       "qualificationTitle": "المؤهل",
       "availabilityTitle": "التوفر والتنقل",
@@ -464,12 +464,12 @@
     },
     "introduction": {
       "title": "طلب التعارف",
-      "description": "تراجع NORAV طلبك وتتولى إجراء التعارف. هذا لا يمنحك بيانات اتصال المرشح.",
+      "description": "تراجع ALLEMARO طلبك وتتولى إجراء التعارف. هذا لا يمنحك بيانات اتصال المرشح.",
       "cta": "طلب التعارف",
       "sending": "جارٍ الإرسال …",
-      "alreadySent": "استلمت NORAV طلبك.",
+      "alreadySent": "استلمت ALLEMARO طلبك.",
       "noContactRelease": "لا يتم كشف أي بيانات اتصال للمرشح.",
-      "messageLabel": "رسالة إلى NORAV",
+      "messageLabel": "رسالة إلى ALLEMARO",
       "messagePlaceholder": "عمّا تبحث تحديدًا؟ (اختياري)",
       "jobLabel": "الوظيفة (اختياري)",
       "noJob": "دون ربط بوظيفة",
@@ -482,7 +482,7 @@
       "submitted": "أُرسل في",
       "openProfile": "عرض الملف",
       "candidateWithdrawn": "تم سحب الملف",
-      "processNote": "تراجع NORAV كل طلب وتتولى التعارف بنفسها. لا يتم أبدًا كشف بيانات اتصال المرشحين عبر السوق.",
+      "processNote": "تراجع ALLEMARO كل طلب وتتولى التعارف بنفسها. لا يتم أبدًا كشف بيانات اتصال المرشحين عبر السوق.",
       "markAllRead": "تعليم الكل كمقروء",
       "markRead": "تعليم كمقروء",
       "updated": "{count} تحديث"

@@ -1,4 +1,4 @@
-/* NORAV V0.1 — Mandatory workflow & security test (§34).
+/* ALLEMARO V0.1 — Mandatory workflow & security test (§34).
  *
  * Runs against a real Supabase project (env vars from .env.local):
  *   1. Candidate A: canonical German B1, proposes B2 → canonical stays B1,

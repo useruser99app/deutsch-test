@@ -1,5 +1,5 @@
 /**
- * Language-neutral canonical domain values (see NORAV principle §23).
+ * Language-neutral canonical domain values (see ALLEMARO principle §23).
  * These keys are stored in the database as-is; human-readable labels are
  * resolved at presentation level via the i18n message catalogs.
  */
@@ -60,7 +60,7 @@ export const profileStatuses = ["draft", "published", "unpublished"] as const;
 export type ProfileStatus = (typeof profileStatuses)[number];
 
 /**
- * Introduction request lifecycle (§16/§17). NORAV facilitates the actual
+ * Introduction request lifecycle (§16/§17). ALLEMARO facilitates the actual
  * introduction operationally; 'introduced' records that this happened. No
  * status change ever releases candidate contact data to the employer (§18).
  */

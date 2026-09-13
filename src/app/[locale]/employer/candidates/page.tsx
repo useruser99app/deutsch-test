@@ -33,7 +33,7 @@ export default async function EmployerMarketplacePage({
   const tFields = await getTranslations("fields");
   const tEnums = await getTranslations("enums");
 
-  // Ausbildung is the default mode: it is NORAV's main candidate group.
+  // Ausbildung is the default mode: it is ALLEMARO's main candidate group.
   const candidateType: CandidateType =
     one(search, "type") === "skilled_worker"
       ? "skilled_worker"
