@@ -90,55 +90,135 @@ export function candidateTypeForJob(
 }
 
 /**
- * Occupation comparison. Deterministic and generous about German job-title
- * spelling: "Pflegefachmann/-frau" and "Pflegefachfrau" are the same target,
- * and gender suffixes must not cost a candidate points.
+ * Occupation comparison.
+ *
+ * German job titles are written in several equivalent ways, and a vacancy
+ * usually uses the paired form while a candidate wrote one gender:
+ *
+ *   job:       "Pflegefachmann/-frau"
+ *   candidate: "Pflegefachfrau"
+ *
+ * These are the same occupation and must match. The solution is EXPANSION,
+ * not truncation: a written form is expanded into the exact set of spellings
+ * it stands for, and two titles match when their sets intersect. Nothing is
+ * guessed and no ending is stripped speculatively, so "Elektriker" and
+ * "Elektroniker" stay different occupations — they are not variants of one
+ * another, they are two jobs.
+ *
+ * No fuzzy matching, no edit distance, no AI. Same input, same output.
  */
-function normalizeOccupation(value: string): string {
-  const words = value
+
+/** Lowercase, NFC, drop "(m/w/d)" noise, normalise dashes and whitespace. */
+function normalizeOccupationText(value: string): string {
+  return value
+    .normalize("NFC")
     .toLowerCase()
-    .replace(/\(.*?\)/g, " ")
-    .replace(/[/\-–—,.]/g, " ")
-    .replace(/\b(m|w|d)\b/g, " ")
-    .split(/\s+/)
-    .filter(Boolean)
-    // A German job title carries its gender in the ending, and the same
-    // role is written "Pflegefachmann/-frau", "Pflegefachfrau" or
-    // "Pflegefachkraft". Strip the ending so the role, not the wording,
-    // decides. Length guards keep short words like "Frau" or "Medizin"
-    // intact; both sides are normalized identically either way.
-    .map((word) => {
-      if (word.length >= 8) {
-        const stem = word.replace(/(innen|mann|frau)$/, "");
-        if (stem.length >= 4) return stem;
+    .replace(/\(.*?\)/g, " ")        // (m/w/d), (Vollzeit)
+    .replace(/\b[mwd]\b/g, " ")      // bare m / w / d
+    .replace(/[\u2010-\u2015]/g, "-") // unicode dashes -> hyphen
+    .replace(/[,.;:]/g, " ")
+    .replace(/\s*\/\s*/g, "/")       // "mann / -frau" -> "mann/-frau"
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * The paired short forms German job titles actually use. Each rule matches a
+ * whole title and states exactly which spellings it abbreviates — the list
+ * is explicit on purpose, so adding a form is a deliberate act.
+ */
+const PAIRED_FORMS: { pattern: RegExp; expand: (stem: string) => string[] }[] = [
+  // "Pflegefachmann/-frau", "Kaufmann/frau" -> mann + frau
+  {
+    pattern: /^(.*?)mann\/-?frau$/,
+    expand: (stem) => [`${stem}mann`, `${stem}frau`],
+  },
+  // "Kauffrau/-mann" — the same pair written the other way round
+  {
+    pattern: /^(.*?)frau\/-?mann$/,
+    expand: (stem) => [`${stem}frau`, `${stem}mann`],
+  },
+  // "Erzieher/-in", "Erzieher/in" -> base + base+in
+  {
+    pattern: /^(.*?)\/-?in$/,
+    expand: (stem) => [stem, `${stem}in`],
+  },
+  // Gender star / colon / underscore: "Erzieher*in", "Erzieher:in"
+  {
+    // (?:innen|in), not "innen?" — the latter reads as "inne" plus an
+    // optional "n" and would never match "Erzieher*in".
+    pattern: /^(.*?)[*:_](?:innen|in)$/,
+    expand: (stem) => [stem, `${stem}in`],
+  },
+];
+
+/**
+ * Every spelling one written occupation stands for. Reusable and
+ * deterministic: the returned set depends only on the input string.
+ */
+export function occupationVariants(value: string): Set<string> {
+  const base = normalizeOccupationText(value);
+  if (!base) return new Set();
+
+  const variants = new Set<string>();
+  let expanded = false;
+
+  for (const { pattern, expand } of PAIRED_FORMS) {
+    const match = base.match(pattern);
+    if (match && match[1]) {
+      for (const form of expand(match[1])) {
+        const cleaned = form.replace(/[-/]/g, "").trim();
+        if (cleaned) variants.add(cleaned);
       }
-      if (word.length >= 9) {
-        const stem = word.replace(/in$/, "");
-        if (stem.length >= 6) return stem;
-      }
-      return word;
-    })
-    .filter((word) => !["frau", "mann", "kraft", "in", "innen"].includes(word));
-  return words.join(" ").trim();
+      expanded = true;
+      break;
+    }
+  }
+
+  // Not a paired form: the title stands only for itself. Remaining
+  // separators become spaces so "Kfz-Mechatroniker" and "Kfz Mechatroniker"
+  // are one spelling.
+  if (!expanded) {
+    variants.add(base.replace(/[-/]/g, " ").replace(/\s+/g, " ").trim());
+  }
+
+  return variants;
 }
 
 export type OccupationMatch = "exact" | "related" | "none";
+
+const tokensOf = (value: string) =>
+  new Set(value.split(" ").filter(Boolean));
+
+const isSubset = (a: Set<string>, b: Set<string>) =>
+  a.size > 0 && [...a].every((t) => b.has(t));
 
 export function compareOccupation(
   a: string | null | undefined,
   b: string | null | undefined
 ): OccupationMatch {
   if (!a || !b) return "none";
-  const na = normalizeOccupation(a);
-  const nb = normalizeOccupation(b);
-  if (!na || !nb) return "none";
-  if (na === nb) return "exact";
-  if (na.includes(nb) || nb.includes(na)) return "related";
+  const va = occupationVariants(a);
+  const vb = occupationVariants(b);
+  if (va.size === 0 || vb.size === 0) return "none";
 
-  // A shared distinctive token ("pflege", "elektro") means the same field.
-  const ta = new Set(na.split(" ").filter((t) => t.length >= 5));
-  const tb = na === nb ? ta : new Set(nb.split(" ").filter((t) => t.length >= 5));
-  for (const token of ta) if (tb.has(token)) return "related";
+  // Same occupation, possibly written differently.
+  for (const variant of va) if (vb.has(variant)) return "exact";
+
+  // A specialisation of the same occupation: every word of one title also
+  // appears in the other, e.g. "Pflegefachmann" within "Pflegefachmann
+  // Intensivpflege". Word sets, never substrings — "Elektriker" is not a
+  // part of "Elektroniker".
+  for (const x of va) {
+    for (const y of vb) {
+      const tx = tokensOf(x);
+      const ty = tokensOf(y);
+      if (tx.size !== ty.size && (isSubset(tx, ty) || isSubset(ty, tx))) {
+        return "related";
+      }
+    }
+  }
+
   return "none";
 }
 

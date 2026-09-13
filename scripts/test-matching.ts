@@ -9,6 +9,7 @@ import {
   germanLevelRank,
   meetsGermanLevel,
   compareOccupation,
+  occupationVariants,
   rankCandidatesForJob,
   candidateTypeForJob,
   type JobRequirements,
@@ -98,11 +99,48 @@ check("Unknown level is unknown, not false", meetsGermanLevel(null, "B1") === nu
 check("Levels are not compared as strings (C1 > B2)",
   meetsGermanLevel("C1", "B2") === true);
 
-// --- Occupation comparison ---------------------------------------------
-check("Gender suffixes do not break occupation match",
-  compareOccupation("Pflegefachmann/-frau", "Pflegefachfrau") !== "none");
+// --- Occupation variant normalization -----------------------------------
+// A paired German title is expanded into the exact spellings it stands for;
+// nothing is truncated, so unrelated titles stay unrelated.
+check("Pflegefachmann/-frau matches Pflegefachfrau",
+  compareOccupation("Pflegefachmann/-frau", "Pflegefachfrau") === "exact",
+  JSON.stringify([...occupationVariants("Pflegefachmann/-frau")]));
+check("Pflegefachmann/-frau matches Pflegefachmann",
+  compareOccupation("Pflegefachmann/-frau", "Pflegefachmann") === "exact");
+check("Kaufmann/-frau matches Kauffrau",
+  compareOccupation("Kaufmann/-frau", "Kauffrau") === "exact",
+  JSON.stringify([...occupationVariants("Kaufmann/-frau")]));
+check("Kaufmann/-frau matches Kaufmann",
+  compareOccupation("Kaufmann/-frau", "Kaufmann") === "exact");
+check("Elektriker is NOT the same occupation as Elektroniker",
+  compareOccupation("Elektriker", "Elektroniker") === "none");
+check("Pflegefachmann/-frau does not match Hotelfachmann/-frau",
+  compareOccupation("Pflegefachmann/-frau", "Hotelfachmann/-frau") === "none");
 check("Unrelated occupations do not match",
   compareOccupation("Pflegefachmann/-frau", "Elektriker") === "none");
+
+// Further forms the expansion is responsible for.
+check("Erzieher/-in matches Erzieherin",
+  compareOccupation("Erzieher/-in", "Erzieherin") === "exact");
+check("Erzieher*in matches Erzieher",
+  compareOccupation("Erzieher*in", "Erzieher") === "exact");
+check("A (m/w/d) suffix is ignored",
+  compareOccupation("Elektriker (m/w/d)", "Elektriker") === "exact");
+check("Hyphen and space spelling are one title",
+  compareOccupation("Kfz-Mechatroniker", "Kfz Mechatroniker") === "exact");
+check("Variant expansion is deterministic",
+  JSON.stringify([...occupationVariants("Pflegefachmann/-frau")]) ===
+    JSON.stringify([...occupationVariants("Pflegefachmann/-frau")]));
+check("Pflegefachmann/-frau expands to exactly its two spellings",
+  [...occupationVariants("Pflegefachmann/-frau")].sort().join("|") ===
+    "pflegefachfrau|pflegefachmann");
+check("Kaufmann/-frau expands to kaufmann and kauffrau",
+  [...occupationVariants("Kaufmann/-frau")].sort().join("|") ===
+    "kauffrau|kaufmann");
+check("A specialisation is related, not identical",
+  compareOccupation("Pflegefachmann", "Pflegefachmann Intensivpflege") === "related");
+check("Pflegefachkraft is not silently merged with Pflegefachmann",
+  compareOccupation("Pflegefachmann/-frau", "Pflegefachkraft") === "none");
 
 // --- 9. Apprenticeship must not require work experience -----------------
 const aminaFit = evaluateCandidateForJob(jobA, amina);
