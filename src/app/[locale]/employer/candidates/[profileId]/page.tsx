@@ -183,7 +183,7 @@ export default async function EmployerCandidateDetailPage({
         }
       />
 
-      <section className="rounded-lg border border-hairline bg-surface px-5 py-4 shadow-panel">
+      <section className="rounded-lg border border-hairline bg-surface px-5 py-4">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <span className="t-meta font-mono">
             <bdi>{candidate.candidate_code}</bdi>

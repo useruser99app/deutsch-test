@@ -77,7 +77,7 @@ export default async function AdminCandidatesPage({
 
       {/* Search leads; the narrower filters sit beneath it. */}
       <form method="get" className="mb-6">
-        <div className="rounded-lg border border-hairline bg-surface p-4 shadow-panel">
+        <div className="rounded-lg border border-hairline bg-surface p-4">
           <label className="t-label mb-1.5 block" htmlFor="q">
             {t("searchLabel")}
           </label>
@@ -212,7 +212,7 @@ export default async function AdminCandidatesPage({
               return (
                 <li
                   key={row.id}
-                  className="rounded-lg border border-hairline bg-surface p-4 shadow-panel"
+                  className="rounded-lg border border-hairline bg-surface p-4"
                 >
                   <CandidateIdentity
                     candidate={row}
@@ -246,7 +246,7 @@ export default async function AdminCandidatesPage({
             })}
           </ul>
 
-          <div className="hidden overflow-hidden rounded-lg border border-hairline bg-surface shadow-panel xl:block">
+          <div className="hidden overflow-hidden rounded-lg border border-hairline bg-surface xl:block">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-hairline bg-ink-50">
@@ -348,7 +348,7 @@ export default async function AdminCandidatesPage({
       <details
         id="create"
         open={sp.create === "1"}
-        className="mt-6 scroll-mt-6 rounded-lg border border-hairline bg-surface shadow-panel"
+        className="mt-6 scroll-mt-6 rounded-lg border border-hairline bg-surface"
       >
         <summary className="cursor-pointer px-5 py-4 text-sm font-medium text-ink-800">
           {t("create")}

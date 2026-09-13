@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import PortalShell from "@/components/shell/PortalShell";
+import AppShell from "@/components/shell/AppShell";
 import { requireRole } from "@/lib/auth";
 import { countUnreadNotifications } from "@/lib/notifications";
 
@@ -19,21 +19,27 @@ export default async function EmployerLayout({
   const unread = await countUnreadNotifications(supabase);
 
   return (
-    <PortalShell
+    <AppShell
       locale={locale}
       email={profile.email}
       workspaceLabel={t("employerPortal")}
-      nav={[
-        { href: "/employer", label: t("dashboard") },
-        { href: "/employer/candidates", label: t("candidates") },
+      groups={[
         {
-          href: "/employer/requests",
-          label: t("employerRequests"),
-          badge: unread,
+          // Only routes that exist. No placeholder sections.
+          items: [
+            { href: "/employer", label: t("dashboard"), icon: "overview", exact: true },
+            { href: "/employer/candidates", label: t("candidates"), icon: "discover" },
+            {
+              href: "/employer/requests",
+              label: t("employerRequests"),
+              icon: "requests",
+              badge: unread,
+            },
+          ],
         },
       ]}
     >
       {children}
-    </PortalShell>
+    </AppShell>
   );
 }

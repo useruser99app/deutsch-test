@@ -15,7 +15,7 @@ import { formatDateValue } from "@/components/ui/useValueFormatter";
 import { trackClass } from "@/components/ui/CandidateIdentity";
 import PageHeader from "@/components/ui/PageHeader";
 import Panel from "@/components/ui/Panel";
-import StatCard from "@/components/ui/StatCard";
+import StatStrip from "@/components/ui/StatStrip";
 import StatusBadge from "@/components/ui/StatusBadge";
 import EmptyState from "@/components/ui/EmptyState";
 import { buttonClass } from "@/components/ui/button";
@@ -80,38 +80,38 @@ export default async function EmployerDashboard({
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label={tDash("kpiAvailable")}
-          value={marketplace.rows.length}
-          href="/employer/candidates"
-          actionLabel={tDash("open")}
-        />
-        <StatCard
-          label={tDash("kpiActive")}
-          value={activeRequests}
-          href="/employer/requests"
-          actionLabel={tDash("open")}
-        />
-        <StatCard
-          label={tDash("kpiUnread")}
-          value={unread.length}
-          href="/employer/requests"
-          actionLabel={tDash("open")}
-          emphasis={unread.length > 0}
-        />
-        <StatCard
-          label={tDash("kpiIntroduced")}
-          value={introduced}
-          href="/employer/requests"
-          actionLabel={tDash("open")}
-        />
-      </div>
+      {/* KPI definitions are explicit: "open" excludes rejected, "new
+          updates" counts unread notification events, not requests. */}
+      <StatStrip
+        stats={[
+          {
+            label: tDash("kpiAvailable"),
+            value: marketplace.rows.length,
+            href: "/employer/candidates",
+          },
+          {
+            label: tDash("kpiActive"),
+            value: activeRequests,
+            href: "/employer/requests",
+          },
+          {
+            label: tDash("kpiUnread"),
+            value: unread.length,
+            href: "/employer/requests",
+            waiting: true,
+          },
+          {
+            label: tDash("kpiIntroduced"),
+            value: introduced,
+            href: "/employer/requests",
+          },
+        ]}
+      />
 
       {/* What needs attention — compact and calm when nothing is waiting. */}
       <div className="mt-6">
         {unread.length === 0 ? (
-          <div className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface px-5 py-3.5 shadow-panel">
+          <div className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface px-5 py-3.5">
             <StatusBadge status="approved" size="sm" />
             <p className="t-body text-ink-600">{tDash("noUpdates")}</p>
           </div>
@@ -245,7 +245,7 @@ export default async function EmployerDashboard({
       </div>
 
       {/* Clear next actions. */}
-      <div className="mt-6 flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface px-5 py-4 shadow-panel">
+      <div className="mt-6 flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface px-5 py-4">
         <span className="t-label">{tDash("nextActions")}</span>
         <Link
           href="/employer/candidates"

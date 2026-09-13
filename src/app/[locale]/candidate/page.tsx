@@ -80,43 +80,44 @@ export default async function CandidateDashboard({
     <>
       <PageHeader title={t("greeting", { name: candidate.first_name })} />
 
-      {/* Status and next step — one primary action, no duplication. */}
-      <section className="rounded-lg border border-hairline bg-surface shadow-panel">
-        <div className="grid gap-x-8 gap-y-4 px-5 py-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="t-label">{t("profileStatus")}</p>
-            <div className="mt-1.5">
-              {snapshot.profile ? (
-                <StatusBadge status={snapshot.profile.profile_status} />
-              ) : (
-                <span className="t-meta">{t("noProfile")}</span>
-              )}
-            </div>
-          </div>
-          <div>
-            <p className="t-label">{tReviews("pendingTitle")}</p>
-            <p className="mt-1 text-lg font-semibold text-ink-900 tabular-nums">
-              {openCount}
-            </p>
-          </div>
-          <div>
-            <p className="t-label">{tFields("german_level")}</p>
-            <p className="mt-1 text-lg font-semibold text-ink-900">
-              <bdi>{candidate.german_level}</bdi>
-            </p>
-          </div>
-          <div>
-            <p className="t-label">{tFields("candidate_code")}</p>
-            <p className="t-value mt-1 font-mono">
+      {/*
+        The candidate's own state, then the single next step. The order is
+        the message: where you stand, then what to do. A candidate never
+        needs a metric dashboard — they need one unambiguous instruction.
+      */}
+      <section className="overflow-hidden rounded-lg border border-hairline bg-surface">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-hairline px-5 py-3">
+          <span className="flex items-center gap-2">
+            <span className="t-meta font-mono">
               <bdi>{candidate.candidate_code}</bdi>
-            </p>
-            <p className="t-meta">
+            </span>
+            <span className="t-meta">
               {tEnums(`candidateType.${candidate.candidate_type}`)}
-            </p>
-          </div>
+            </span>
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="t-label">{tFields("german_level")}</span>
+            <span className="text-sm font-semibold text-ink-900">
+              <bdi>{candidate.german_level}</bdi>
+            </span>
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="t-label">{t("profileStatus")}</span>
+            {snapshot.profile ? (
+              <StatusBadge status={snapshot.profile.profile_status} size="sm" />
+            ) : (
+              <span className="t-meta">{t("noProfile")}</span>
+            )}
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="t-label">{tReviews("pendingTitle")}</span>
+            <span className="text-sm font-semibold tabular-nums text-ink-900">
+              {openCount}
+            </span>
+          </span>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-hairline bg-accent-soft px-5 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-accent-soft px-5 py-4">
           <p className="t-body max-w-xl text-ink-800">{nextStep.text}</p>
           <div className="flex flex-wrap items-center gap-3">
             <Link href={secondary.href} className="text-sm font-medium text-accent hover:underline">

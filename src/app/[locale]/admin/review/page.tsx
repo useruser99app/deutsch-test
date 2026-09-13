@@ -43,7 +43,7 @@ export default async function AdminReviewPage({
           {pending.map((item) => (
             <li
               key={item.id}
-              className="rounded-lg border border-hairline bg-surface shadow-panel"
+              className="rounded-lg border border-hairline bg-surface"
             >
               <div className="flex flex-wrap items-start justify-between gap-3 border-b border-hairline px-5 py-4">
                 <CandidateIdentity

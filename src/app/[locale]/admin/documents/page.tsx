@@ -51,7 +51,7 @@ export default async function AdminDocumentsPage({
       {pending.length === 0 ? (
         <EmptyState message={t("empty")} />
       ) : (
-        <div className="rounded-lg border border-hairline bg-surface shadow-panel">
+        <div className="rounded-lg border border-hairline bg-surface">
           <ul className="divide-y divide-hairline">
             {pending.map((doc) => (
               <DocumentRow

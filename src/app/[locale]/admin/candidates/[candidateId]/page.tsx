@@ -124,7 +124,7 @@ export default async function AdminCandidateDetailPage({
         }
       />
 
-      <section className="rounded-lg border border-hairline bg-surface shadow-panel">
+      <section className="rounded-lg border border-hairline bg-surface">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-5 pt-4">
           <span className="t-meta font-mono">
             <bdi>{candidate.candidate_code}</bdi>

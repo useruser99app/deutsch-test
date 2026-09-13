@@ -263,7 +263,7 @@
       "field": "Champ",
       "current": "Actuel",
       "proposed": "Proposé",
-      "comment": "Commentaire (facultatif)",
+      "comment": "Commentaire d'examen",
       "approve": "Approuver",
       "reject": "Refuser",
       "submittedAt": "Soumis le",

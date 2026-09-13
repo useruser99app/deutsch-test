@@ -4,7 +4,7 @@ import { requireRole } from "@/lib/auth";
 import { loadAdminOverview, loadCandidateList } from "@/lib/admin-data";
 import PageHeader from "@/components/ui/PageHeader";
 import Panel from "@/components/ui/Panel";
-import StatCard from "@/components/ui/StatCard";
+import StatStrip from "@/components/ui/StatStrip";
 import StatusBadge from "@/components/ui/StatusBadge";
 import EmptyState from "@/components/ui/EmptyState";
 import CandidateIdentity from "@/components/ui/CandidateIdentity";
@@ -40,46 +40,38 @@ export default async function AdminDashboard({
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        <StatCard
-          label={t("pendingChanges")}
-          value={overview.pendingChanges}
-          href="/admin/review"
-          actionLabel={t("openQueue")}
-          emphasis
-        />
-        <StatCard
-          label={t("pendingDocuments")}
-          value={overview.pendingDocuments}
-          href="/admin/documents"
-          actionLabel={t("openQueue")}
-          emphasis
-        />
-        <StatCard
-          label={t("newRequests")}
-          value={overview.newRequests}
-          href="/admin/requests"
-          actionLabel={t("openQueue")}
-          emphasis
-        />
-        <StatCard
-          label={t("candidates")}
-          value={overview.candidates}
-          href="/admin/candidates"
-          actionLabel={t("open")}
-        />
-        <StatCard
-          label={t("companies")}
-          value={overview.companies}
-          href="/admin/companies"
-          actionLabel={t("open")}
-        />
-      </div>
+      <StatStrip
+        stats={[
+          {
+            label: t("pendingChanges"),
+            value: overview.pendingChanges,
+            href: "/admin/review",
+            waiting: true,
+          },
+          {
+            label: t("pendingDocuments"),
+            value: overview.pendingDocuments,
+            href: "/admin/documents",
+            waiting: true,
+          },
+          {
+            label: t("newRequests"),
+            value: overview.newRequests,
+            href: "/admin/requests",
+            waiting: true,
+          },
+          {
+            label: t("candidates"),
+            value: overview.candidates,
+            href: "/admin/candidates",
+          },
+        ]}
+      />
 
       {/* Needs attention — compact and calm when nothing is waiting (§5). */}
       <div className="mt-6">
         {attention.rows.length === 0 ? (
-          <div className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface px-5 py-3.5 shadow-panel">
+          <div className="flex flex-wrap items-center gap-3 rounded-lg border border-hairline bg-surface px-5 py-3.5">
             <StatusBadge status="approved" size="sm" />
             <p className="t-body text-ink-600">{t("noAttention")}</p>
           </div>

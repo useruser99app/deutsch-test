@@ -184,7 +184,7 @@ export default function ChangeForm({
         return (
           <fieldset
             key={section}
-            className="rounded-lg border border-hairline bg-surface p-5 shadow-panel"
+            className="rounded-lg border border-hairline bg-surface p-5"
           >
             <legend className="t-section-title px-1">
               {tSections(section)}

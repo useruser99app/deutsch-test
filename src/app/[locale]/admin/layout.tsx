@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import AdminShell from "@/components/shell/AdminShell";
+import AppShell from "@/components/shell/AppShell";
 import { requireRole } from "@/lib/auth";
 
 export default async function AdminLayout({
@@ -31,7 +31,7 @@ export default async function AdminLayout({
   ]);
 
   return (
-    <AdminShell
+    <AppShell
       locale={locale}
       email={profile.email}
       workspaceLabel={t("adminWorkspace")}
@@ -39,20 +39,28 @@ export default async function AdminLayout({
         {
           label: t("groupOperations"),
           items: [
-            { href: "/admin", label: t("dashboard") },
+            {
+              href: "/admin",
+              label: t("dashboard"),
+              icon: "overview" as const,
+              exact: true,
+            },
             {
               href: "/admin/review",
               label: t("review"),
+              icon: "review" as const,
               badge: changes.count ?? 0,
             },
             {
               href: "/admin/documents",
               label: t("adminDocuments"),
+              icon: "documents" as const,
               badge: documents.count ?? 0,
             },
             {
               href: "/admin/requests",
               label: t("adminRequests"),
+              icon: "requests" as const,
               badge: requests.count ?? 0,
             },
           ],
@@ -60,13 +68,21 @@ export default async function AdminLayout({
         {
           label: t("groupManagement"),
           items: [
-            { href: "/admin/candidates", label: t("candidates") },
-            { href: "/admin/companies", label: t("companies") },
+            {
+              href: "/admin/candidates",
+              label: t("candidates"),
+              icon: "candidates" as const,
+            },
+            {
+              href: "/admin/companies",
+              label: t("companies"),
+              icon: "companies" as const,
+            },
           ],
         },
       ]}
     >
       {children}
-    </AdminShell>
+    </AppShell>
   );
 }

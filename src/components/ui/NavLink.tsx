@@ -1,70 +1,64 @@
 "use client";
 
 import { Link, usePathname } from "@/i18n/navigation";
+import Icon, { type IconName } from "@/components/shell/Icon";
 
 /**
- * Navigation entry with an active-state indicator. The only client component
- * in the shell — the active state needs the current path.
+ * One sidebar entry. The only client component in the shell — the active
+ * state needs the current path.
+ *
+ * The active state is carried by three things at once (a filled ground, a
+ * brighter label and a solid rail on the inline-start edge) so it survives
+ * both dark and light rendering and does not depend on colour alone.
  */
 export default function NavLink({
   href,
   label,
+  icon,
   badge,
-  variant = "sidebar",
+  exact = false,
 }: {
   href: string;
   label: string;
+  icon?: IconName;
   badge?: number;
-  variant?: "sidebar" | "topbar";
+  /** Section roots match exactly; their sub-pages match by prefix. */
+  exact?: boolean;
 }) {
   const pathname = usePathname();
-  // Exact match for section roots, prefix match for their sub-pages.
   const isActive =
-    pathname === href ||
-    (href !== "/admin" && href !== "/candidate" && pathname.startsWith(`${href}/`));
-
-  if (variant === "topbar") {
-    return (
-      <Link
-        href={href}
-        aria-current={isActive ? "page" : undefined}
-        className={`inline-flex items-center gap-2 border-b-2 px-1 py-3 text-sm font-medium transition-colors ${
-          isActive
-            ? "border-accent text-ink-900"
-            : "border-transparent text-ink-500 hover:border-ink-200 hover:text-ink-800"
-        }`}
-      >
-        {label}
-        {badge ? (
-          <span className="rounded-full bg-attention-soft px-1.5 py-0.5 text-[11px] font-semibold text-attention">
-            {badge}
-          </span>
-        ) : null}
-      </Link>
-    );
-  }
+    pathname === href || (!exact && pathname.startsWith(`${href}/`));
 
   return (
     <Link
       href={href}
       aria-current={isActive ? "page" : undefined}
-      className={`flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+      className={`group relative flex items-center gap-2.5 rounded-md py-2 ps-3 pe-2.5 text-sm transition-colors ${
         isActive
-          ? "bg-white/10 text-white"
-          : "text-ink-200 hover:bg-white/5 hover:text-white"
+          ? "bg-white/10 font-semibold text-white"
+          : "font-medium text-ink-300 hover:bg-white/5 hover:text-white"
       }`}
     >
-      <span className="flex items-center gap-2">
-        <span
-          aria-hidden
-          className={`h-4 w-0.5 rounded-full ${
-            isActive ? "bg-white" : "bg-transparent"
+      <span
+        aria-hidden
+        className={`absolute inset-y-1.5 start-0 w-0.5 rounded-full transition-colors ${
+          isActive ? "bg-accent" : "bg-transparent"
+        }`}
+      />
+      {icon && (
+        <Icon
+          name={icon}
+          className={`h-[18px] w-[18px] transition-colors ${
+            isActive ? "text-white" : "text-ink-400 group-hover:text-ink-200"
           }`}
         />
-        {label}
-      </span>
+      )}
+      <span className="min-w-0 flex-1 truncate">{label}</span>
       {badge ? (
-        <span className="rounded-full bg-attention px-1.5 py-0.5 text-[11px] font-semibold text-white">
+        <span
+          className="shrink-0 rounded-full bg-attention px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-white"
+          aria-label={`${badge}`}
+        >
           {badge}
         </span>
       ) : null}

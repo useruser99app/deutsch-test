@@ -263,7 +263,7 @@
       "field": "Field",
       "current": "Current",
       "proposed": "Proposed",
-      "comment": "Comment (optional)",
+      "comment": "Review comment",
       "approve": "Approve",
       "reject": "Reject",
       "submittedAt": "Submitted on",
