@@ -56,7 +56,10 @@ export default function StatusBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full font-medium ${
+      // shrink-0 + nowrap: as a flex item the badge must never be
+      // compressed below its own content, or the label spills out of the
+      // pill. Logical, so it holds in LTR and RTL alike.
+      className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full font-medium ${
         toneClass[tone]
       } ${size === "sm" ? "px-2 py-0.5 text-[11px]" : "px-2.5 py-1 text-xs"}`}
     >

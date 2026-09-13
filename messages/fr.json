@@ -183,7 +183,7 @@
       "orderHint": "Séparez les métiers par des virgules. L'ordre détermine la priorité — le premier est votre choix principal.",
       "alreadyPending": "Une proposition pour ce champ est déjà en cours de vérification.",
       "sourceLanguageHint": "Dans quelle langue avez-vous rédigé les textes libres ? Cela aide l'équipe lors de la vérification.",
-      "submitted": "Soumis pour vérification : {count} modification(s). Les valeurs actuelles restent valables jusqu'à la validation.",
+      "submitted": "Soumis pour examen : {count, plural, one {# modification} other {# modifications}}. Les valeurs actuelles restent valables jusqu'à la validation.",
       "errorEmpty": "Veuillez modifier au moins un champ.",
       "errorUnchanged": "Aucune modification détectée — les valeurs saisies correspondent aux données approuvées.",
       "errorFailed": "Échec de l'envoi. Veuillez réessayer plus tard.",
@@ -208,7 +208,9 @@
       "replaces": "Remplace",
       "supersededNote": "Ce document a été remplacé par une version approuvée plus récente.",
       "reviewNoteLabel": "Note de vérification",
-      "uploadHint": "Après le téléversement, le document passe en « vérification en attente »."
+      "uploadHint": "Après le téléversement, le document passe en « vérification en attente ».",
+      "chooseFile": "Choisir un fichier",
+      "noFileSelected": "Aucun fichier sélectionné"
     },
     "sections": {
       "profile": "Profil",
@@ -342,8 +344,8 @@
       "resultCount": "Résultats : {count}",
       "noResults": "Aucun candidat pour ces filtres.",
       "truncated": "Seuls les premiers résultats sont affichés. Affinez la recherche ou les filtres.",
-      "pendingChangesShort": "{count} modifications",
-      "pendingDocumentsShort": "{count} documents",
+      "pendingChangesShort": "{count, plural, one {# modification} other {# modifications}}",
+      "pendingDocumentsShort": "{count, plural, one {# document} other {# documents}}",
       "createShort": "+ Ajouter un candidat"
     },
     "companies": {
@@ -424,7 +426,7 @@
       "filters": "Filtres",
       "apply": "Appliquer les filtres",
       "reset": "Réinitialiser",
-      "results": "{count} candidats",
+      "results": "{count, plural, one {# candidat} other {# candidats}}",
       "truncated": "Seuls les 100 premiers résultats sont affichés.",
       "noMatches": "Aucun candidat ne correspond à ces filtres.",
       "noApprenticeships": "Aucun candidat en formation n'est publié actuellement.",
@@ -433,7 +435,7 @@
       "noOccupation": "Objectif professionnel non renseigné",
       "yes": "Oui",
       "no": "Non",
-      "years": "{count} ans",
+      "years": "{count, plural, one {# an} other {# ans}}",
       "practicalExperience": "Expérience pratique",
       "location": "Pays",
       "anyLevel": "Indifférent",
@@ -485,7 +487,7 @@
       "processNote": "ALLEMARO examine chaque demande et établit le contact lui-même. Les coordonnées des candidats ne sont jamais transmises via la place de marché.",
       "markAllRead": "Tout marquer comme lu",
       "markRead": "Marquer comme lu",
-      "updated": "{count} nouveauté(s)"
+      "updated": "{count, plural, one {# mise à jour} other {# mises à jour}}"
     },
     "dashboard": {
       "welcome": "Votre aperçu des candidats disponibles et des demandes en cours.",
@@ -503,7 +505,7 @@
       "newCandidates": "Nouveau sur la place de marché",
       "newCandidatesHint": "Profils publiés le plus récemment.",
       "nextActions": "Prochaines étapes",
-      "reviewUpdates": "Examiner {count} demandes",
+      "reviewUpdates": "{count, plural, one {Examiner # demande} other {Examiner # demandes}}",
       "event": {
         "request_reviewing": "Demande en cours d'examen",
         "request_approved": "Demande validée",

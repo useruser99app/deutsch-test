@@ -183,7 +183,7 @@
       "orderHint": "Mehrere Berufe mit Komma trennen. Die Reihenfolge bestimmt die Priorität — der erste ist dein Hauptwunsch.",
       "alreadyPending": "Für dieses Feld liegt bereits ein Vorschlag zur Prüfung vor.",
       "sourceLanguageHint": "In welcher Sprache hast du die Freitexte verfasst? Das hilft dem Team bei der Prüfung.",
-      "submitted": "Zur Prüfung eingereicht: {count} Änderung(en). Bis zur Freigabe bleiben die aktuellen Werte gültig.",
+      "submitted": "Zur Prüfung eingereicht: {count, plural, one {# Änderung} other {# Änderungen}}. Bis zur Freigabe bleiben die aktuellen Werte gültig.",
       "errorEmpty": "Bitte ändere mindestens ein Feld.",
       "errorUnchanged": "Es wurden keine Änderungen erkannt — die eingetragenen Werte entsprechen dem freigegebenen Stand.",
       "errorFailed": "Einreichen fehlgeschlagen. Bitte später erneut versuchen.",
@@ -208,7 +208,9 @@
       "replaces": "Ersetzt",
       "supersededNote": "Dieses Dokument wurde durch eine neuere freigegebene Version ersetzt.",
       "reviewNoteLabel": "Prüfkommentar",
-      "uploadHint": "Nach dem Hochladen steht das Dokument auf „Prüfung ausstehend“."
+      "uploadHint": "Nach dem Hochladen steht das Dokument auf „Prüfung ausstehend“.",
+      "chooseFile": "Datei auswählen",
+      "noFileSelected": "Keine Datei ausgewählt"
     },
     "sections": {
       "profile": "Profil",
@@ -342,8 +344,8 @@
       "resultCount": "Treffer: {count}",
       "noResults": "Keine Kandidaten für diese Filter.",
       "truncated": "Es werden nur die ersten Treffer angezeigt. Bitte Suche oder Filter verfeinern.",
-      "pendingChangesShort": "{count} Änderungen",
-      "pendingDocumentsShort": "{count} Dokumente",
+      "pendingChangesShort": "{count, plural, one {# Änderung} other {# Änderungen}}",
+      "pendingDocumentsShort": "{count, plural, one {# Dokument} other {# Dokumente}}",
       "createShort": "+ Kandidat anlegen"
     },
     "companies": {
@@ -424,7 +426,7 @@
       "filters": "Filter",
       "apply": "Filter anwenden",
       "reset": "Filter zurücksetzen",
-      "results": "{count} Kandidaten",
+      "results": "{count, plural, one {# Kandidat} other {# Kandidaten}}",
       "truncated": "Es werden nur die ersten 100 Treffer angezeigt.",
       "noMatches": "Keine Kandidaten entsprechen diesen Filtern.",
       "noApprenticeships": "Zurzeit sind keine Auszubildenden veröffentlicht.",
@@ -433,7 +435,7 @@
       "noOccupation": "Berufsziel nicht angegeben",
       "yes": "Ja",
       "no": "Nein",
-      "years": "{count} Jahre",
+      "years": "{count, plural, one {# Jahr} other {# Jahre}}",
       "practicalExperience": "Praktische Erfahrung",
       "location": "Land",
       "anyLevel": "Beliebig",
@@ -485,7 +487,7 @@
       "processNote": "ALLEMARO prüft jede Anfrage und stellt den Kontakt selbst her. Kontaktdaten der Kandidaten werden über den Marktplatz nicht freigegeben.",
       "markAllRead": "Alle als gelesen markieren",
       "markRead": "Als gelesen markieren",
-      "updated": "{count} Update(s)"
+      "updated": "{count, plural, one {# Update} other {# Updates}}"
     },
     "dashboard": {
       "welcome": "Ihr Überblick über verfügbare Kandidaten und laufende Anfragen.",
@@ -503,7 +505,7 @@
       "newCandidates": "Neu im Marktplatz",
       "newCandidatesHint": "Zuletzt veröffentlichte Profile.",
       "nextActions": "Nächste Schritte",
-      "reviewUpdates": "{count} Anfragen prüfen",
+      "reviewUpdates": "{count, plural, one {# Anfrage prüfen} other {# Anfragen prüfen}}",
       "event": {
         "request_reviewing": "Anfrage wird geprüft",
         "request_approved": "Anfrage freigegeben",

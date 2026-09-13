@@ -183,7 +183,7 @@
       "orderHint": "افصل بين المهن بفواصل. الترتيب يحدد الأولوية — الأول هو خيارك الرئيسي.",
       "alreadyPending": "يوجد بالفعل اقتراح لهذا الحقل قيد المراجعة.",
       "sourceLanguageHint": "بأي لغة كتبت النصوص الحرة؟ هذا يساعد الفريق أثناء المراجعة.",
-      "submitted": "تم الإرسال للمراجعة: {count} تعديل. تبقى القيم الحالية سارية حتى الاعتماد.",
+      "submitted": "أُرسل للمراجعة: {count, plural, zero {لا تغييرات} one {تغيير واحد} two {تغييران} few {# تغييرات} many {# تغييرًا} other {# تغيير}}. تبقى القيم الحالية سارية حتى الاعتماد.",
       "errorEmpty": "يرجى تعديل حقل واحد على الأقل.",
       "errorUnchanged": "لم يتم رصد أي تغيير — القيم المُدخلة مطابقة للبيانات المعتمدة.",
       "errorFailed": "فشل الإرسال. يرجى المحاولة لاحقًا.",
@@ -208,7 +208,9 @@
       "replaces": "يحل محل",
       "supersededNote": "تم استبدال هذا المستند بنسخة معتمدة أحدث.",
       "reviewNoteLabel": "ملاحظة المراجعة",
-      "uploadHint": "بعد الرفع تصبح حالة المستند «بانتظار المراجعة»."
+      "uploadHint": "بعد الرفع تصبح حالة المستند «بانتظار المراجعة».",
+      "chooseFile": "اختيار ملف",
+      "noFileSelected": "لم يتم اختيار ملف"
     },
     "sections": {
       "profile": "الملف الشخصي",
@@ -342,8 +344,8 @@
       "resultCount": "النتائج: {count}",
       "noResults": "لا يوجد مرشحون مطابقون لهذه المرشحات.",
       "truncated": "يتم عرض النتائج الأولى فقط. يرجى تضييق البحث أو المرشحات.",
-      "pendingChangesShort": "{count} تعديلات",
-      "pendingDocumentsShort": "{count} مستندات",
+      "pendingChangesShort": "{count, plural, zero {لا تغييرات} one {تغيير واحد} two {تغييران} few {# تغييرات} many {# تغييرًا} other {# تغيير}}",
+      "pendingDocumentsShort": "{count, plural, zero {لا مستندات} one {مستند واحد} two {مستندان} few {# مستندات} many {# مستندًا} other {# مستند}}",
       "createShort": "+ إضافة مرشح"
     },
     "companies": {
@@ -424,7 +426,7 @@
       "filters": "عوامل التصفية",
       "apply": "تطبيق التصفية",
       "reset": "إعادة التعيين",
-      "results": "{count} مرشحين",
+      "results": "{count, plural, zero {لا مرشحين} one {مرشح واحد} two {مرشحان} few {# مرشحين} many {# مرشحًا} other {# مرشح}}",
       "truncated": "تُعرض أول 100 نتيجة فقط.",
       "noMatches": "لا يوجد مرشحون مطابقون لهذه التصفية.",
       "noApprenticeships": "لا يوجد متدربون منشورون حاليًا.",
@@ -433,7 +435,7 @@
       "noOccupation": "الهدف المهني غير محدد",
       "yes": "نعم",
       "no": "لا",
-      "years": "{count} سنوات",
+      "years": "{count, plural, zero {0 سنوات} one {سنة واحدة} two {سنتان} few {# سنوات} many {# سنة} other {# سنة}}",
       "practicalExperience": "خبرة عملية",
       "location": "البلد",
       "anyLevel": "أي مستوى",
@@ -485,7 +487,7 @@
       "processNote": "تراجع ALLEMARO كل طلب وتتولى التعارف بنفسها. لا يتم أبدًا كشف بيانات اتصال المرشحين عبر السوق.",
       "markAllRead": "تعليم الكل كمقروء",
       "markRead": "تعليم كمقروء",
-      "updated": "{count} تحديث"
+      "updated": "{count, plural, zero {لا تحديثات} one {تحديث واحد} two {تحديثان} few {# تحديثات} many {# تحديثًا} other {# تحديث}}"
     },
     "dashboard": {
       "welcome": "نظرة عامة على المرشحين المتاحين والطلبات الجارية.",
@@ -503,7 +505,7 @@
       "newCandidates": "جديد في السوق",
       "newCandidatesHint": "أحدث الملفات المنشورة.",
       "nextActions": "الخطوات التالية",
-      "reviewUpdates": "مراجعة {count} طلبات",
+      "reviewUpdates": "{count, plural, zero {مراجعة الطلبات} one {مراجعة طلب واحد} two {مراجعة طلبين} few {مراجعة # طلبات} many {مراجعة # طلبًا} other {مراجعة # طلب}}",
       "event": {
         "request_reviewing": "الطلب قيد المراجعة",
         "request_approved": "تمت الموافقة على الطلب",

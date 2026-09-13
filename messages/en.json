@@ -183,7 +183,7 @@
       "orderHint": "Separate occupations with commas. The order sets the priority — the first one is your main choice.",
       "alreadyPending": "A proposal for this field is already under review.",
       "sourceLanguageHint": "Which language did you write the free text in? This helps the team during review.",
-      "submitted": "Submitted for review: {count} change(s). The current values stay valid until approval.",
+      "submitted": "Submitted for review: {count, plural, one {# change} other {# changes}}. The current values remain valid until approval.",
       "errorEmpty": "Please change at least one field.",
       "errorUnchanged": "No changes detected — the values you entered match the approved data.",
       "errorFailed": "Submission failed. Please try again later.",
@@ -208,7 +208,9 @@
       "replaces": "Replaces",
       "supersededNote": "This document was replaced by a newer approved version.",
       "reviewNoteLabel": "Review note",
-      "uploadHint": "After uploading, the document is set to “pending review”."
+      "uploadHint": "After uploading, the document is set to “pending review”.",
+      "chooseFile": "Choose file",
+      "noFileSelected": "No file selected"
     },
     "sections": {
       "profile": "Profile",
@@ -342,8 +344,8 @@
       "resultCount": "Results: {count}",
       "noResults": "No candidates match these filters.",
       "truncated": "Only the first results are shown. Please refine the search or filters.",
-      "pendingChangesShort": "{count} changes",
-      "pendingDocumentsShort": "{count} documents",
+      "pendingChangesShort": "{count, plural, one {# change} other {# changes}}",
+      "pendingDocumentsShort": "{count, plural, one {# document} other {# documents}}",
       "createShort": "+ Add candidate"
     },
     "companies": {
@@ -424,7 +426,7 @@
       "filters": "Filters",
       "apply": "Apply filters",
       "reset": "Reset filters",
-      "results": "{count} candidates",
+      "results": "{count, plural, one {# candidate} other {# candidates}}",
       "truncated": "Only the first 100 matches are shown.",
       "noMatches": "No candidates match these filters.",
       "noApprenticeships": "No apprenticeship candidates are published at the moment.",
@@ -433,7 +435,7 @@
       "noOccupation": "No target occupation recorded",
       "yes": "Yes",
       "no": "No",
-      "years": "{count} years",
+      "years": "{count, plural, one {# year} other {# years}}",
       "practicalExperience": "Practical experience",
       "location": "Country",
       "anyLevel": "Any",
@@ -485,7 +487,7 @@
       "processNote": "ALLEMARO reviews every request and makes the introduction itself. Candidate contact details are never released through the marketplace.",
       "markAllRead": "Mark all as read",
       "markRead": "Mark as read",
-      "updated": "{count} update(s)"
+      "updated": "{count, plural, one {# update} other {# updates}}"
     },
     "dashboard": {
       "welcome": "Your overview of available candidates and open requests.",
@@ -503,7 +505,7 @@
       "newCandidates": "New in the marketplace",
       "newCandidatesHint": "Most recently published profiles.",
       "nextActions": "Next steps",
-      "reviewUpdates": "Review {count} requests",
+      "reviewUpdates": "{count, plural, one {Review # request} other {Review # requests}}",
       "event": {
         "request_reviewing": "Request under review",
         "request_approved": "Request approved",

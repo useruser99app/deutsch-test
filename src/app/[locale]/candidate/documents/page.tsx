@@ -45,8 +45,8 @@ export default async function CandidateDocumentsPage({
 
                 return (
                   <li key={doc.id} className="px-5 py-4">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div className="min-w-0">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-semibold text-ink-900">
                           {tEnums(`documentType.${doc.document_type}`)}
                         </p>

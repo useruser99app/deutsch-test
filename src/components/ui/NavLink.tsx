@@ -33,7 +33,7 @@ export default function NavLink({
     <Link
       href={href}
       aria-current={isActive ? "page" : undefined}
-      className={`group relative flex items-center gap-2.5 rounded-md py-2 ps-3 pe-2.5 text-sm transition-colors ${
+      className={`group relative flex items-start gap-2.5 rounded-md py-2 ps-3 pe-2.5 text-sm transition-colors ${
         isActive
           ? "bg-white/10 font-semibold text-white"
           : "font-medium text-ink-300 hover:bg-white/5 hover:text-white"
@@ -48,12 +48,15 @@ export default function NavLink({
       {icon && (
         <Icon
           name={icon}
-          className={`h-[18px] w-[18px] transition-colors ${
+          className={`mt-px h-[18px] w-[18px] transition-colors ${
             isActive ? "text-white" : "text-ink-400 group-hover:text-ink-200"
           }`}
         />
       )}
-      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {/* Wraps instead of truncating: a navigation label that reads
+          "Proposer des modificati…" is worse than one on two lines, and
+          this holds for every locale rather than the longest one today. */}
+      <span className="min-w-0 flex-1 break-words leading-snug">{label}</span>
       {badge ? (
         <span
           className="shrink-0 rounded-full bg-attention px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-white"

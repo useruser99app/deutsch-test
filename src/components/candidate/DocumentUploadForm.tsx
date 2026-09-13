@@ -8,6 +8,7 @@ import {
 } from "@/lib/actions/candidate";
 import { documentTypes } from "@/lib/domain";
 import { buttonClass, controlClass } from "@/components/ui/button";
+import FilePicker from "@/components/candidate/FilePicker";
 
 const initialState: CandidateFormState = { status: "idle" };
 
@@ -73,19 +74,8 @@ export default function DocumentUploadForm() {
           </select>
         </div>
         <div>
-          <label
-            className="t-label mb-1.5 block"
-            htmlFor="file"
-          >
-            {t("file")}
-          </label>
-          <input
-            id="file"
-            type="file"
-            name="file"
-            required
-            className="w-full rounded-md border border-hairline bg-surface px-3 py-2 text-sm text-ink-700 file:me-3 file:rounded file:border-0 file:bg-ink-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-ink-700"
-          />
+          <p className="t-label mb-1.5">{t("file")}</p>
+          <FilePicker name="file" required />
         </div>
       </div>
 
