@@ -580,15 +580,14 @@
     },
     "fit": {
       "explanation": "Die Übereinstimmung wird deterministisch aus den veröffentlichten Angaben berechnet. Keine KI, keine Bewertung der Person.",
-      "score": "{score} von 100",
       "strengths": "Passt",
       "gaps": "Lücken",
       "missing": "Nicht angegeben",
       "level": {
-        "strong": "Sehr gute Übereinstimmung",
+        "very_good": "Sehr gute Übereinstimmung",
         "good": "Gute Übereinstimmung",
         "partial": "Teilweise Übereinstimmung",
-        "weak": "Geringe Übereinstimmung"
+        "insufficient_data": "Zu wenig Daten für eine Bewertung"
       },
       "reason": {
         "occupationPrimary": "Wunschberuf auf Platz 1 passt: {candidate}",
@@ -616,7 +615,11 @@
         "relocationReady": "Umzugsbereit",
         "relocationNo": "Nicht umzugsbereit",
         "relocation": "Umzugsbereitschaft nicht angegeben"
-      }
+      },
+      "evidenceMatched": "{matched} von {evaluated, plural, one {# prüfbaren Anforderung} other {# prüfbaren Anforderungen}} erfüllt",
+      "evidenceGaps": "{count, plural, one {# Abweichung} other {# Abweichungen}}",
+      "evidenceMissing": "{count, plural, one {# Angabe fehlt} other {# Angaben fehlen}}",
+      "evidenceNone": "Keine der Anforderungen ist mit dem veröffentlichten Profil vergleichbar."
     }
   }
 }

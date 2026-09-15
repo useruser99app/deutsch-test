@@ -147,8 +147,9 @@ const aminaFit = evaluateCandidateForJob(jobA, amina);
 check("Apprenticeship: no experience criterion is produced",
   ![...aminaFit.strengths, ...aminaFit.gaps, ...aminaFit.missing]
     .some((c) => c.key.startsWith("experience")));
-check("Apprenticeship: candidate without work experience still scores strongly",
-  aminaFit.level === "strong", `level=${aminaFit.level} score=${aminaFit.score}`);
+check("Apprenticeship: candidate without work experience still rates very good",
+  aminaFit.level === "very_good",
+  `level=${aminaFit.level} evidence=${JSON.stringify(aminaFit.evidence)}`);
 check("Apprenticeship: first-choice occupation recognised",
   aminaFit.strengths.some((c) => c.key === "occupationPrimary"));
 check("Apprenticeship: B2 recorded as meeting B1",
@@ -209,6 +210,145 @@ const otherCountry = candidate({ ...amina, country: "DE" });
 check("Country of residence does not change the score",
   evaluateCandidateForJob(jobA, otherCountry).score ===
     evaluateCandidateForJob(jobA, amina).score);
+
+// =======================================================================
+// Match confidence: the band must follow the EVIDENCE, not the percentage.
+// =======================================================================
+
+// (A) Only the occupation is comparable -> GOOD, never VERY_GOOD.
+const jobOccupationOnly: JobRequirements = {
+  job_type: "apprenticeship",
+  profession_or_training_occupation: "Pflegefachmann/-frau",
+  required_german_level: null,
+  training_start_date: null,
+  minimum_experience_years: null,
+  location: null,
+};
+const bareCandidate = candidate({
+  candidate_type: "apprenticeship_candidate",
+  target_occupations: ["Pflegefachmann/-frau"],
+  primary_occupation: "Pflegefachmann/-frau",
+  german_level: "B2",
+  desired_training_start: null,
+  preferred_locations: null,
+  relocation_ready: null,
+});
+const fitA = evaluateCandidateForJob(jobOccupationOnly, bareCandidate);
+check("A: a single comparable requirement rates GOOD, not VERY_GOOD",
+  fitA.level === "good", `level=${fitA.level}`);
+check("A: exactly one criterion was evaluated",
+  fitA.evidence.evaluatedCriteria === 1, JSON.stringify(fitA.evidence));
+check("A: that one criterion matched",
+  fitA.evidence.matchedCriteria === 1);
+check("A: no gaps",
+  fitA.evidence.gapCriteria === 0);
+check("A: the internal score is still 100 but is not the employer signal",
+  fitA.score === 100 && fitA.level !== "very_good");
+
+// (B) Occupation + German + start all confirmed -> VERY_GOOD.
+const jobThree: JobRequirements = {
+  job_type: "apprenticeship",
+  profession_or_training_occupation: "Pflegefachmann/-frau",
+  required_german_level: "B1",
+  training_start_date: "2027-09-01",
+  minimum_experience_years: null,
+  location: null,
+};
+const fitB = evaluateCandidateForJob(jobThree, candidate({
+  candidate_type: "apprenticeship_candidate",
+  target_occupations: ["Pflegefachmann/-frau"],
+  primary_occupation: "Pflegefachmann/-frau",
+  german_level: "B2",
+  desired_training_start: "2027-09-01",
+}));
+check("B: three confirmed criteria rate VERY_GOOD",
+  fitB.level === "very_good", `level=${fitB.level}`);
+check("B: three criteria evaluated, three matched, no gaps",
+  fitB.evidence.evaluatedCriteria === 3 &&
+  fitB.evidence.matchedCriteria === 3 &&
+  fitB.evidence.gapCriteria === 0, JSON.stringify(fitB.evidence));
+
+// (C) A German requirement the candidate does not reach -> PARTIAL.
+const jobGermanB2: JobRequirements = { ...jobThree, required_german_level: "B2", training_start_date: null };
+const fitC = evaluateCandidateForJob(jobGermanB2, candidate({
+  candidate_type: "apprenticeship_candidate",
+  target_occupations: ["Pflegefachmann/-frau"],
+  primary_occupation: "Pflegefachmann/-frau",
+  german_level: "B1",
+}));
+check("C: an unmet requirement rates PARTIAL",
+  fitC.level === "partial", `level=${fitC.level}`);
+check("C: the German requirement appears as a gap",
+  fitC.gaps.some((g) => g.key === "germanBelow"));
+check("C: one match and one gap were counted",
+  fitC.evidence.matchedCriteria === 1 && fitC.evidence.gapCriteria === 1,
+  JSON.stringify(fitC.evidence));
+
+// (D) Nothing comparable beyond candidate type -> INSUFFICIENT_DATA.
+// german_level is `not null default 'none'` in the database, so it is never
+// absent; a candidate at 'none' genuinely fails a B1 requirement and that is
+// a GAP, not missing data. This case therefore uses a vacancy that states no
+// language requirement, and a profile that carries neither occupation nor
+// desired start.
+const jobNoLanguage: JobRequirements = {
+  job_type: "apprenticeship",
+  profession_or_training_occupation: "Pflegefachmann/-frau",
+  required_german_level: null,
+  training_start_date: "2027-09-01",
+  minimum_experience_years: null,
+  location: null,
+};
+const fitD = evaluateCandidateForJob(jobNoLanguage, candidate({
+  candidate_type: "apprenticeship_candidate",
+  target_occupations: null,
+  primary_occupation: null,
+  desired_training_start: null,
+}));
+check("D: nothing comparable rates INSUFFICIENT_DATA",
+  fitD.level === "insufficient_data", `level=${fitD.level}`);
+check("D: nothing was evaluated, everything is reported as missing",
+  fitD.evidence.evaluatedCriteria === 0 && fitD.evidence.missingCriteria === 2,
+  JSON.stringify(fitD.evidence));
+
+// A candidate at 'none' against a stated requirement is a gap, not a blank.
+const noGerman = evaluateCandidateForJob(jobGermanB2, candidate({
+  candidate_type: "apprenticeship_candidate",
+  target_occupations: ["Pflegefachmann/-frau"],
+  primary_occupation: "Pflegefachmann/-frau",
+  german_level: "none",
+}));
+check("German level 'none' is a gap against a B2 requirement, not missing",
+  noGerman.gaps.some((g) => g.key === "germanBelow") &&
+  !noGerman.missing.some((g) => g.key === "german"));
+check("D: nothing comparable produces no gaps",
+  fitD.evidence.gapCriteria === 0);
+
+// A requirement the employer left blank is not a candidate shortcoming.
+check("An unspecified job field produces no criterion at all",
+  fitA.evidence.evaluatedCriteria + fitA.evidence.missingCriteria === 1,
+  JSON.stringify(fitA.evidence));
+
+// Relocation only counts once the vacancy names a place to move to.
+const noLocationJob: JobRequirements = { ...jobOccupationOnly };
+const willingCandidate = candidate({
+  candidate_type: "apprenticeship_candidate",
+  target_occupations: ["Pflegefachmann/-frau"],
+  primary_occupation: "Pflegefachmann/-frau",
+  relocation_ready: true,
+});
+check("Relocation is not a criterion when the vacancy states no location",
+  !["strengths", "gaps", "missing"].some((k) =>
+    (evaluateCandidateForJob(noLocationJob, willingCandidate) as unknown as
+      Record<string, { key: string }[]>)[k].some((c) => c.key.startsWith("relocation"))));
+
+// The counting invariant must always hold.
+for (const f of [fitA, fitB, fitC, fitD, aminaFit, youssefFit]) {
+  check(`Counts are consistent (${f.level})`,
+    f.evidence.matchedCriteria + f.evidence.gapCriteria === f.evidence.evaluatedCriteria &&
+    f.evidence.matchedCriteria === f.strengths.length &&
+    f.evidence.gapCriteria === f.gaps.length &&
+    f.evidence.missingCriteria === f.missing.length);
+}
 
 console.log(`\n${passed} passed, ${failures.length} failed`);
 if (failures.length > 0) {

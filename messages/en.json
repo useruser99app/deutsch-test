@@ -580,15 +580,14 @@
     },
     "fit": {
       "explanation": "The fit is calculated deterministically from published information. No AI, and no judgement about the person.",
-      "score": "{score} of 100",
       "strengths": "Fits",
       "gaps": "Gaps",
       "missing": "Not provided",
       "level": {
-        "strong": "Very good fit",
-        "good": "Good fit",
-        "partial": "Partial fit",
-        "weak": "Limited fit"
+        "very_good": "Very good match",
+        "good": "Good match",
+        "partial": "Partial match",
+        "insufficient_data": "Not enough data to assess"
       },
       "reason": {
         "occupationPrimary": "First-choice occupation matches: {candidate}",
@@ -616,7 +615,11 @@
         "relocationReady": "Ready to relocate",
         "relocationNo": "Not ready to relocate",
         "relocation": "Relocation readiness not provided"
-      }
+      },
+      "evidenceMatched": "{matched} of {evaluated, plural, one {# checkable requirement} other {# checkable requirements}} met",
+      "evidenceGaps": "{count, plural, one {# gap} other {# gaps}}",
+      "evidenceMissing": "{count, plural, one {# detail missing} other {# details missing}}",
+      "evidenceNone": "None of the requirements can be compared with the published profile."
     }
   }
 }

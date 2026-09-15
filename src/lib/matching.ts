@@ -58,8 +58,31 @@ export interface JobRequirements {
   location: string | null;
 }
 
-export type FitLevel = "strong" | "good" | "partial" | "weak";
+/**
+ * What the employer is told. Deliberately about EVIDENCE, not about a
+ * percentage: a candidate who satisfies the only comparable requirement is
+ * a good lead, but calling that a very good match overstates what was
+ * actually checked.
+ */
+export type FitLevel = "very_good" | "good" | "partial" | "insufficient_data";
 export type CriterionKind = "strength" | "gap" | "missing";
+
+/**
+ * How much could actually be compared.
+ *
+ * A criterion is EVALUATED only when the vacancy states that requirement
+ * AND the candidate has comparable published data. A requirement the
+ * employer left blank is not a candidate shortcoming, and a candidate
+ * field that is absent is missing — never a gap.
+ *
+ * Invariant: matchedCriteria + gapCriteria === evaluatedCriteria.
+ */
+export interface FitEvidence {
+  evaluatedCriteria: number;
+  matchedCriteria: number;
+  gapCriteria: number;
+  missingCriteria: number;
+}
 
 export interface FitCriterion {
   /** Canonical id; the UI translates it. Never a user-facing sentence. */
@@ -70,9 +93,15 @@ export interface FitCriterion {
 }
 
 export interface FitResult {
-  /** 0-100 over the criteria that could actually be evaluated. */
+  /**
+   * 0-100 over the criteria that could be evaluated. INTERNAL: it is the
+   * sort key, not an employer-facing figure. Out of one comparable
+   * requirement it can read 100 while almost nothing was checked, which is
+   * exactly why `level` and `evidence` carry the message instead.
+   */
   score: number;
   level: FitLevel;
+  evidence: FitEvidence;
   strengths: FitCriterion[];
   gaps: FitCriterion[];
   missing: FitCriterion[];
@@ -402,9 +431,11 @@ export function evaluateCandidateForJob(
     }
   }
 
-  // --- Relocation — apprenticeship only; for skilled it is folded into
-  //     availability, which matters more for an already-employed worker.
-  if (isApprenticeship) {
+  // --- Relocation — apprenticeship only, and only when the vacancy names a
+  //     location. Without a stated place there is nothing to move to, so
+  //     willingness to relocate is not a requirement of this job and must
+  //     not count as an evaluated criterion.
+  if (isApprenticeship && job.location) {
     const ready = candidate.relocation_ready;
     if (ready === null || ready === undefined) {
       scored.push({ key: "relocation", weight: WEIGHTS.apprenticeship.relocation, earned: null, kind: "missing" });
@@ -431,12 +462,24 @@ export function evaluateCandidateForJob(
     ...(s.values ? { values: s.values } : {}),
   });
 
+  const strengths = scored.filter((s) => s.kind === "strength");
+  const gaps = scored.filter((s) => s.kind === "gap");
+  const missingList = scored.filter((s) => s.kind === "missing");
+
+  const evidence: FitEvidence = {
+    evaluatedCriteria: strengths.length + gaps.length,
+    matchedCriteria: strengths.length,
+    gapCriteria: gaps.length,
+    missingCriteria: missingList.length,
+  };
+
   return {
     score,
-    level: fitLevel(score, possible),
-    strengths: scored.filter((s) => s.kind === "strength").map(toCriterion),
-    gaps: scored.filter((s) => s.kind === "gap").map(toCriterion),
-    missing: scored.filter((s) => s.kind === "missing").map(toCriterion),
+    level: fitLevel(evidence),
+    evidence,
+    strengths: strengths.map(toCriterion),
+    gaps: gaps.map(toCriterion),
+    missing: missingList.map(toCriterion),
     eligible,
   };
 }
@@ -446,16 +489,28 @@ function rankMatch(m: OccupationMatch): number {
 }
 
 /**
- * A band, not a precise measurement. With nothing evaluable the result is
- * "weak" rather than a confident zero — the employer should read that as
- * "not enough information", which the missing list then spells out.
+ * The band follows the EVIDENCE, not the percentage.
+ *
+ * "Very good" therefore requires both that nothing contradicts the vacancy
+ * and that enough was actually comparable to say so. One satisfied
+ * requirement out of one is a promising lead — it is not a verified match,
+ * and the employer should be able to see the difference at a glance.
  */
-function fitLevel(score: number, possible: number): FitLevel {
-  if (possible === 0) return "weak";
-  if (score >= 85) return "strong";
-  if (score >= 65) return "good";
-  if (score >= 40) return "partial";
-  return "weak";
+const VERY_GOOD_MIN_CRITERIA = 3;
+
+function fitLevel(evidence: FitEvidence): FitLevel {
+  // Nothing beyond candidate-type compatibility could be compared.
+  if (evidence.evaluatedCriteria === 0) return "insufficient_data";
+
+  if (evidence.gapCriteria === 0) {
+    return evidence.matchedCriteria >= VERY_GOOD_MIN_CRITERIA
+      ? "very_good"
+      : "good";
+  }
+
+  // Something contradicts the vacancy. Whether any requirement was also
+  // satisfied is visible in the evidence line and in the two lists.
+  return "partial";
 }
 
 /** Eligible candidates only, best fit first, ties broken deterministically. */

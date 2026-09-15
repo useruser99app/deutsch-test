@@ -2,6 +2,13 @@ import { useLocale, useTranslations } from "next-intl";
 import type { FitResult } from "@/lib/matching";
 import { formatDateValue } from "@/components/ui/useValueFormatter";
 
+const toneFor: Record<string, string> = {
+  very_good: "bg-positive-soft text-positive",
+  good: "bg-accent-soft text-accent",
+  partial: "bg-attention-soft text-attention",
+  insufficient_data: "bg-ink-100 text-ink-600",
+};
+
 /**
  * Criterion values stay canonical in the data (an ISO date, a CEFR level)
  * and are formatted only here, so the reason reads like the rest of the UI
@@ -22,18 +29,14 @@ function presentable(
   return out;
 }
 
-const toneFor: Record<string, string> = {
-  strong: "bg-positive-soft text-positive",
-  good: "bg-accent-soft text-accent",
-  partial: "bg-attention-soft text-attention",
-  weak: "bg-ink-100 text-ink-600",
-};
-
 /**
- * Why this candidate appears. The band is the headline and the score is
- * secondary on purpose: the number is a deterministic sum of named
- * criteria, not a measurement, and presenting it as a precise figure would
- * claim more than the calculation can support.
+ * Why this candidate appears.
+ *
+ * The numeric score is deliberately NOT shown. Out of a single comparable
+ * requirement it reads 100, which an employer would take as a verified
+ * match when in truth almost nothing was checked. The band plus a one-line
+ * evidence summary say how much was actually compared; the score stays
+ * internal and only orders the list.
  */
 export default function FitSummary({
   fit,
@@ -43,25 +46,51 @@ export default function FitSummary({
   compact?: boolean;
 }) {
   const t = useTranslations("employer.fit");
+  const { evidence } = fit;
 
-  const line = (
-    <span className="flex flex-wrap items-center gap-2">
-      <span
-        className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-          toneFor[fit.level] ?? toneFor.weak
-        }`}
-      >
-        {t(`level.${fit.level}`)}
-      </span>
-      <span className="t-meta tabular-nums">{t("score", { score: fit.score })}</span>
+  const badge = (
+    <span
+      className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+        toneFor[fit.level] ?? toneFor.insufficient_data
+      }`}
+    >
+      {t(`level.${fit.level}`)}
     </span>
   );
 
-  if (compact) return line;
+  // One quiet line, not a metrics block: what was checked, what differs,
+  // what the profile does not say.
+  const evidenceLine =
+    evidence.evaluatedCriteria === 0 ? (
+      <span className="t-meta">{t("evidenceNone")}</span>
+    ) : (
+      <span className="t-meta">
+        {t("evidenceMatched", {
+          matched: evidence.matchedCriteria,
+          evaluated: evidence.evaluatedCriteria,
+        })}
+        {evidence.gapCriteria > 0 &&
+          ` · ${t("evidenceGaps", { count: evidence.gapCriteria })}`}
+        {evidence.missingCriteria > 0 &&
+          ` · ${t("evidenceMissing", { count: evidence.missingCriteria })}`}
+      </span>
+    );
+
+  if (compact) {
+    return (
+      <span className="flex flex-wrap items-center gap-2">
+        {badge}
+        {evidenceLine}
+      </span>
+    );
+  }
 
   return (
     <div className="space-y-2.5">
-      {line}
+      <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        {badge}
+        {evidenceLine}
+      </span>
       {fit.strengths.length > 0 && (
         <ReasonList title={t("strengths")} items={fit.strengths} marker="✓" tone="text-positive" />
       )}

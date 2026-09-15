@@ -580,15 +580,14 @@
     },
     "fit": {
       "explanation": "La correspondance est calculée de façon déterministe à partir des informations publiées. Sans IA et sans jugement sur la personne.",
-      "score": "{score} sur 100",
       "strengths": "Correspond",
       "gaps": "Écarts",
       "missing": "Non renseigné",
       "level": {
-        "strong": "Très bonne correspondance",
+        "very_good": "Très bonne correspondance",
         "good": "Bonne correspondance",
         "partial": "Correspondance partielle",
-        "weak": "Correspondance faible"
+        "insufficient_data": "Données insuffisantes pour évaluer"
       },
       "reason": {
         "occupationPrimary": "Métier souhaité en premier choix : {candidate}",
@@ -616,7 +615,11 @@
         "relocationReady": "Prêt à déménager",
         "relocationNo": "Pas prêt à déménager",
         "relocation": "Disposition au déménagement non renseignée"
-      }
+      },
+      "evidenceMatched": "{matched} sur {evaluated, plural, one {# exigence vérifiable} other {# exigences vérifiables}} satisfaite(s)",
+      "evidenceGaps": "{count, plural, one {# écart} other {# écarts}}",
+      "evidenceMissing": "{count, plural, one {# information manquante} other {# informations manquantes}}",
+      "evidenceNone": "Aucune exigence n'est comparable avec le profil publié."
     }
   }
 }
