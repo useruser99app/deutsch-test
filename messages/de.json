@@ -616,7 +616,7 @@
         "relocationNo": "Nicht umzugsbereit",
         "relocation": "Umzugsbereitschaft nicht angegeben"
       },
-      "evidenceMatched": "{matched} von {evaluated, plural, one {# prüfbaren Anforderung} other {# prüfbaren Anforderungen}} erfüllt",
+      "evidenceMatched": "{matched} von {evaluated} prüfbaren Anforderungen erfüllt",
       "evidenceGaps": "{count, plural, one {# Abweichung} other {# Abweichungen}}",
       "evidenceMissing": "{count, plural, one {# Angabe fehlt} other {# Angaben fehlen}}",
       "evidenceNone": "Keine der Anforderungen ist mit dem veröffentlichten Profil vergleichbar."

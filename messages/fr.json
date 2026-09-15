@@ -616,7 +616,7 @@
         "relocationNo": "Pas prêt à déménager",
         "relocation": "Disposition au déménagement non renseignée"
       },
-      "evidenceMatched": "{matched} sur {evaluated, plural, one {# exigence vérifiable} other {# exigences vérifiables}} satisfaite(s)",
+      "evidenceMatched": "{matched} sur {evaluated, plural, one {# exigence vérifiable} other {# exigences vérifiables}} {matched, plural, one {satisfaite} other {satisfaites}}",
       "evidenceGaps": "{count, plural, one {# écart} other {# écarts}}",
       "evidenceMissing": "{count, plural, one {# information manquante} other {# informations manquantes}}",
       "evidenceNone": "Aucune exigence n'est comparable avec le profil publié."
