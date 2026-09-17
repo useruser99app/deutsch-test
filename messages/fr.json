@@ -500,7 +500,14 @@
       "jobLabel": "Poste (facultatif)",
       "noJob": "Sans poste précis",
       "failed": "La demande n'a pas pu être envoyée.",
-      "forJob": "Pour le poste"
+      "forJob": "Pour le poste",
+      "statusNote": {
+        "new": "Votre demande a été transmise à ALLEMARO.",
+        "reviewing": "ALLEMARO examine votre demande.",
+        "approved": "ALLEMARO a validé votre demande.",
+        "introduced": "La mise en relation est terminée.",
+        "rejected": "Votre demande a été refusée."
+      }
     },
     "requests": {
       "title": "Demandes",

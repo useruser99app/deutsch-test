@@ -56,7 +56,13 @@ export default function NavLink({
       {/* Wraps instead of truncating: a navigation label that reads
           "Proposer des modificati…" is worse than one on two lines, and
           this holds for every locale rather than the longest one today. */}
-      <span className="min-w-0 flex-1 break-words leading-snug">{label}</span>
+      {/* Wraps at word boundaries first. `hyphens-auto` lets a browser with
+          the locale's dictionary break a long compound at a syllable
+          instead of mid-word; `break-words` remains the last resort so a
+          label can never overflow the rail. */}
+      <span className="min-w-0 flex-1 hyphens-auto break-words leading-snug">
+        {label}
+      </span>
       {badge ? (
         <span
           className="shrink-0 rounded-full bg-attention px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-white"

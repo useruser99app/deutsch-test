@@ -51,7 +51,14 @@ export default function IntroductionRequestForm({
       <div className="rounded-lg border border-hairline bg-ink-50 p-5">
         <div className="flex flex-wrap items-center gap-3">
           <StatusBadge status={settled} />
-          <p className="t-body font-medium text-ink-800">{t("alreadySent")}</p>
+          {/* Say where the request actually stands, not just that one
+              exists. Copy only — the status values and the workflow that
+              produces them are untouched. */}
+          <p className="t-body font-medium text-ink-800">
+            {t.has(`statusNote.${settled}`)
+              ? t(`statusNote.${settled}`)
+              : t("alreadySent")}
+          </p>
         </div>
         {existingJobTitle && (
           <p className="t-meta mt-1.5">

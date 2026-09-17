@@ -500,7 +500,14 @@
       "jobLabel": "Job (optional)",
       "noJob": "No specific job",
       "failed": "The request could not be sent.",
-      "forJob": "For the job"
+      "forJob": "For the job",
+      "statusNote": {
+        "new": "Your request has been sent to ALLEMARO.",
+        "reviewing": "ALLEMARO is reviewing your request.",
+        "approved": "ALLEMARO has approved your request.",
+        "introduced": "The introduction has been completed.",
+        "rejected": "Your request was declined."
+      }
     },
     "requests": {
       "title": "Requests",

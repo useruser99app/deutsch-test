@@ -500,7 +500,14 @@
       "jobLabel": "الوظيفة (اختياري)",
       "noJob": "دون ربط بوظيفة",
       "failed": "تعذّر إرسال الطلب.",
-      "forJob": "للوظيفة"
+      "forJob": "للوظيفة",
+      "statusNote": {
+        "new": "تم إرسال طلبك إلى ALLEMARO.",
+        "reviewing": "تراجع ALLEMARO طلبك.",
+        "approved": "وافقت ALLEMARO على طلبك.",
+        "introduced": "اكتمل التعارف.",
+        "rejected": "تم رفض طلبك."
+      }
     },
     "requests": {
       "title": "الطلبات",

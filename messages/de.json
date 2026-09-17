@@ -64,7 +64,7 @@
     "groupOperations": "Prüfung",
     "groupManagement": "Stammdaten",
     "employerRequests": "Anfragen",
-    "adminRequests": "Vorstellungsanfragen",
+    "adminRequests": "Anfragen",
     "jobs": "Stellen"
   },
   "status": {
@@ -500,7 +500,14 @@
       "jobLabel": "Stelle (optional)",
       "noJob": "Ohne Stellenbezug",
       "failed": "Die Anfrage konnte nicht gesendet werden.",
-      "forJob": "Für die Stelle"
+      "forJob": "Für die Stelle",
+      "statusNote": {
+        "new": "Ihre Anfrage wurde an ALLEMARO übermittelt.",
+        "reviewing": "ALLEMARO prüft Ihre Anfrage.",
+        "approved": "Ihre Anfrage wurde von ALLEMARO freigegeben.",
+        "introduced": "Die Vorstellung wurde abgeschlossen.",
+        "rejected": "Ihre Anfrage wurde abgelehnt."
+      }
     },
     "requests": {
       "title": "Anfragen",
