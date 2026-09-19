@@ -25,7 +25,8 @@
       "password": "Mot de passe",
       "submit": "Se connecter",
       "forgot": "Mot de passe oublié ?",
-      "invalid": "Échec de la connexion. Vérifiez votre e-mail et votre mot de passe."
+      "invalid": "Échec de la connexion. Vérifiez votre e-mail et votre mot de passe.",
+      "linkInvalid": "Ce lien d'invitation ou de confirmation est invalide ou a déjà été utilisé. Veuillez en demander un nouveau."
     },
     "forgot": {
       "title": "Réinitialiser le mot de passe",

@@ -33,7 +33,11 @@ export default async function LoginPage({
           role="alert"
           className="mb-4 rounded-md border border-critical/25 bg-critical-soft px-3 py-2 text-sm text-critical"
         >
-          {t("invalid")}
+          {/* A dead invitation link is not a wrong password; saying so
+              sends the user to reset their credentials for no reason. */}
+          {error === "invalid_link" || error === "callback"
+            ? t("linkInvalid")
+            : t("invalid")}
         </p>
       )}
       <form action={login} className="space-y-4">

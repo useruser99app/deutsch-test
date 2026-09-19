@@ -14,6 +14,8 @@ import {
   type PublishActionState,
 } from "@/lib/domain";
 import { provisionAccount, ProvisioningError } from "@/lib/provisioning";
+import { buildConfirmUrl, invitePath, siteUrl } from "@/lib/auth-confirm";
+import { sendInviteEmail } from "@/lib/email/invite";
 import { dispatchNotificationEmails } from "@/lib/email/notify";
 
 function text(formData: FormData, key: string): string {
@@ -62,8 +64,8 @@ export async function createCandidateAccountAction(
     return { status: "error" };
   }
 
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const redirectTo = `${site}/auth/callback?next=/${preferredLocale}/set-password`;
+  const next = invitePath(preferredLocale);
+  const redirectTo = `${siteUrl()}${next}`;
   const metadata = {
     norav_role: "candidate",
     norav_account_status: "invited",
@@ -71,29 +73,41 @@ export async function createCandidateAccountAction(
   };
 
   const admin = createAdminClient();
-  let userId: string;
-  let inviteLink: string | null = null;
 
-  if (inviteMode === "link") {
-    const { data, error } = await admin.auth.admin.generateLink({
-      type: "invite",
-      email,
-      options: { data: metadata, redirectTo },
+  // ONE flow for both modes. generateLink returns the one-time
+  // `hashed_token`, from which we build an ALLEMARO URL pointing at
+  // /auth/confirm. Supabase's own `action_link` is deliberately NOT used:
+  // it verifies at Supabase and redirects with the session in the URL
+  // fragment, which a server route can never read.
+  const { data, error } = await admin.auth.admin.generateLink({
+    type: "invite",
+    email,
+    options: { data: metadata, redirectTo },
+  });
+  if (error || !data.user || !data.properties?.hashed_token) {
+    return { status: "error" };
+  }
+  const userId = data.user.id;
+  const confirmUrl = buildConfirmUrl({
+    siteUrl: siteUrl(),
+    tokenHash: data.properties.hashed_token,
+    type: "invite",
+    next,
+  });
+
+  // Link mode shows the URL once in the POST response; e-mail mode sends
+  // the very same URL through the existing provider, so both modes lead
+  // through the identical server-side verification.
+  let inviteLink: string | null = inviteMode === "link" ? confirmUrl : null;
+  if (inviteMode === "email") {
+    const sent = await sendInviteEmail({
+      to: email,
+      locale: preferredLocale,
+      url: confirmUrl,
     });
-    if (error || !data.user) {
-      return { status: "error" };
-    }
-    userId = data.user.id;
-    inviteLink = data.properties?.action_link ?? null;
-  } else {
-    const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
-      data: metadata,
-      redirectTo,
-    });
-    if (error || !data.user) {
-      return { status: "error" };
-    }
-    userId = data.user.id;
+    // No mail provider configured: surface the link instead of silently
+    // leaving the account unreachable.
+    if (!sent) inviteLink = confirmUrl;
   }
 
   // The invite only creates the auth user; handle_new_user() gives it safe
@@ -194,8 +208,8 @@ export async function createEmployerAccountAction(
     return { status: "error" };
   }
 
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const redirectTo = `${site}/auth/callback?next=/${preferredLocale}/set-password`;
+  const next = invitePath(preferredLocale);
+  const redirectTo = `${siteUrl()}${next}`;
   const metadata = {
     norav_role: "employer",
     norav_account_status: "invited",
@@ -203,29 +217,41 @@ export async function createEmployerAccountAction(
   };
 
   const admin = createAdminClient();
-  let userId: string;
-  let inviteLink: string | null = null;
 
-  if (inviteMode === "link") {
-    const { data, error } = await admin.auth.admin.generateLink({
-      type: "invite",
-      email,
-      options: { data: metadata, redirectTo },
+  // ONE flow for both modes. generateLink returns the one-time
+  // `hashed_token`, from which we build an ALLEMARO URL pointing at
+  // /auth/confirm. Supabase's own `action_link` is deliberately NOT used:
+  // it verifies at Supabase and redirects with the session in the URL
+  // fragment, which a server route can never read.
+  const { data, error } = await admin.auth.admin.generateLink({
+    type: "invite",
+    email,
+    options: { data: metadata, redirectTo },
+  });
+  if (error || !data.user || !data.properties?.hashed_token) {
+    return { status: "error" };
+  }
+  const userId = data.user.id;
+  const confirmUrl = buildConfirmUrl({
+    siteUrl: siteUrl(),
+    tokenHash: data.properties.hashed_token,
+    type: "invite",
+    next,
+  });
+
+  // Link mode shows the URL once in the POST response; e-mail mode sends
+  // the very same URL through the existing provider, so both modes lead
+  // through the identical server-side verification.
+  let inviteLink: string | null = inviteMode === "link" ? confirmUrl : null;
+  if (inviteMode === "email") {
+    const sent = await sendInviteEmail({
+      to: email,
+      locale: preferredLocale,
+      url: confirmUrl,
     });
-    if (error || !data.user) {
-      return { status: "error" };
-    }
-    userId = data.user.id;
-    inviteLink = data.properties?.action_link ?? null;
-  } else {
-    const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
-      data: metadata,
-      redirectTo,
-    });
-    if (error || !data.user) {
-      return { status: "error" };
-    }
-    userId = data.user.id;
+    // No mail provider configured: surface the link instead of silently
+    // leaving the account unreachable.
+    if (!sent) inviteLink = confirmUrl;
   }
 
   // Same as above: the employer role must be written explicitly, otherwise

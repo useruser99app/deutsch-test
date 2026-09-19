@@ -25,7 +25,8 @@
       "password": "Passwort",
       "submit": "Anmelden",
       "forgot": "Passwort vergessen?",
-      "invalid": "Anmeldung fehlgeschlagen. Bitte E-Mail und Passwort prüfen."
+      "invalid": "Anmeldung fehlgeschlagen. Bitte E-Mail und Passwort prüfen.",
+      "linkInvalid": "Dieser Einladungs- oder Bestätigungslink ist ungültig oder bereits verwendet worden. Bitte fordere einen neuen Link an."
     },
     "forgot": {
       "title": "Passwort zurücksetzen",

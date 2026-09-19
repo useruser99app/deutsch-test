@@ -11,7 +11,8 @@
     "seed:dev": "tsx scripts/seed-dev.ts",
     "test:workflow": "tsx scripts/test-workflow.ts",
     "check:consistency": "tsx scripts/check-consistency.ts",
-    "test:matching": "tsx scripts/test-matching.ts"
+    "test:matching": "tsx scripts/test-matching.ts",
+    "test:auth": "tsx scripts/test-auth-invite.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

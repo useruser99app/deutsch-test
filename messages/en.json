@@ -25,7 +25,8 @@
       "password": "Password",
       "submit": "Log in",
       "forgot": "Forgot password?",
-      "invalid": "Login failed. Please check your email and password."
+      "invalid": "Login failed. Please check your email and password.",
+      "linkInvalid": "This invitation or confirmation link is invalid or has already been used. Please request a new one."
     },
     "forgot": {
       "title": "Reset password",
