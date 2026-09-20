@@ -79,42 +79,43 @@ export default function CandidatePreview({
     value === null ? null : value ? t("yes") : t("no");
 
   /**
-   * Type-specific hierarchy: for an Ausbildung candidate the target
-   * occupation and school background lead, and years of professional
-   * experience are deliberately NOT the quality indicator.
+   * ONE list of facts, not three sections.
+   *
+   * With a thin profile the old grouping produced three headed blocks of
+   * two rows each — a datasheet. The hierarchy that matters is type
+   * specific and lives in the ORDER: for an Ausbildung candidate the
+   * target occupation and school background lead, and years of
+   * professional experience are deliberately not the quality indicator.
+   * Anything without a value is dropped, so nothing is padded out.
    */
-  const overview: { label: string; value: string | null }[] = isApprenticeship
-    ? [
-        {
-          label: tFields("target_occupations"),
-          value: list(candidate.target_occupations),
-        },
-        {
-          label: tFields("desired_training_start"),
-          value: date(candidate.desired_training_start),
-        },
-        { label: tFields("german_level"), value: candidate.german_level },
-      ]
-    : [
-        { label: tFields("profession"), value: candidate.profession },
-        { label: tFields("specialization"), value: candidate.specialization },
-        { label: tFields("german_level"), value: candidate.german_level },
-      ];
-
-  const qualification: { label: string; value: string | null }[] =
+  const facts: { label: string; value: string | null; wide?: boolean }[] =
     isApprenticeship
       ? [
+          {
+            label: tFields("target_occupations"),
+            value: list(candidate.target_occupations),
+            wide: true,
+          },
+          {
+            label: tFields("desired_training_start"),
+            value: date(candidate.desired_training_start),
+          },
+          {
+            label: tDetail("practicalExperience"),
+            value: bool(candidate.has_practical_experience),
+          },
           {
             label: tFields("school_qualification"),
             value: candidate.school_qualification,
           },
           {
-            label: tFields("school_specialization"),
-            value: candidate.school_specialization,
-          },
-          {
             label: tFields("graduation_year"),
             value: candidate.graduation_year?.toString() ?? null,
+          },
+          {
+            label: tFields("school_specialization"),
+            value: candidate.school_specialization,
+            wide: true,
           },
           {
             label: tFields("german_certificate_type"),
@@ -133,15 +134,18 @@ export default function CandidatePreview({
                 : candidate.german_certificate_status,
           },
           {
-            label: tDetail("practicalExperience"),
-            value: bool(candidate.has_practical_experience),
+            label: tFields("preferred_locations"),
+            value: list(candidate.preferred_locations),
+            wide: true,
+          },
+          {
+            label: tFields("relocation_ready"),
+            value: bool(candidate.relocation_ready),
           },
         ]
       : [
-          {
-            label: tFields("highest_qualification"),
-            value: candidate.highest_qualification,
-          },
+          { label: tFields("profession"), value: candidate.profession },
+          { label: tFields("specialization"), value: candidate.specialization },
           {
             label: tFields("years_experience"),
             value:
@@ -149,44 +153,36 @@ export default function CandidatePreview({
                 ? null
                 : t("years", { count: candidate.years_experience }),
           },
-          { label: tDetail("skills"), value: list(candidate.skills) },
+          {
+            label: tFields("highest_qualification"),
+            value: candidate.highest_qualification,
+          },
+          {
+            label: tDetail("skills"),
+            value: list(candidate.skills),
+            wide: true,
+          },
           {
             label: tFields("preferred_positions"),
             value: list(candidate.preferred_positions),
+            wide: true,
+          },
+          {
+            label: tFields("availability_date"),
+            value: date(candidate.availability_date),
+          },
+          {
+            label: tFields("relocation_ready"),
+            value: bool(candidate.relocation_ready),
+          },
+          {
+            label: tFields("preferred_locations"),
+            value: list(candidate.preferred_locations),
+            wide: true,
           },
         ];
 
-  const availability: { label: string; value: string | null }[] = [
-    {
-      label: tFields("availability_date"),
-      value: date(candidate.availability_date),
-    },
-    {
-      label: tFields("preferred_locations"),
-      value: list(candidate.preferred_locations),
-    },
-    {
-      label: tFields("relocation_ready"),
-      value: bool(candidate.relocation_ready),
-    },
-    {
-      label: tDetail("region"),
-      value: candidate.country ? countryName(candidate.country, locale) : null,
-    },
-  ];
-
-  // A section with nothing in it is dropped entirely: a published profile
-  // with thin data stays quiet instead of showing a wall of empty rows.
-  const sections = [
-    { title: tDetail("goalTitle"), items: overview },
-    { title: tDetail("qualificationTitle"), items: qualification },
-    { title: tDetail("availabilityTitle"), items: availability },
-  ]
-    .map((section) => ({
-      ...section,
-      items: section.items.filter((item) => item.value),
-    }))
-    .filter((section) => section.items.length > 0);
+  const shownFacts = facts.filter((fact) => fact.value);
 
   const narrativeBlocks = [
     { label: tDetail("summary"), value: narrative?.public_summary },
@@ -232,9 +228,15 @@ export default function CandidatePreview({
             size="lg"
           />
           <div className="min-w-0 flex-1">
-            <h2 className={isPanel ? "mk-title-lg" : "t-page-title"}>
-              <bdi>{candidate.headline_occupation ?? t("noOccupation")}</bdi>
-            </h2>
+            <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+              <h2 className={isPanel ? "mk-title-lg" : "t-page-title"}>
+                <bdi>{candidate.headline_occupation ?? t("noOccupation")}</bdi>
+              </h2>
+              {/* The ONE place the request state is shown. The block at the
+                  foot of the panel is omitted entirely when it is set, so
+                  the same status can never appear twice. */}
+              {activeRequest && <StatusBadge status={activeRequest.status} />}
+            </div>
 
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className="t-meta font-mono">
@@ -275,19 +277,24 @@ export default function CandidatePreview({
           </div>
         </div>
 
-        {/* One primary action, or — when a request is already open — its
-            state in that action's place. Never both, and never a second
-            request button. */}
-        <div className="mt-3.5 flex flex-wrap items-center gap-x-3 gap-y-2">
+        {/* One primary action, or — when a request is already open — what
+            that request is waiting on, in its place. */}
+        <div className="mt-3.5 flex flex-wrap items-center gap-2">
           {activeRequest ? (
-            <>
-              <StatusBadge status={activeRequest.status} />
-              <span className="mk-meta">
-                {tIntro.has(`statusNote.${activeRequest.status}`)
-                  ? tIntro(`statusNote.${activeRequest.status}`)
-                  : tIntro("alreadySent")}
+            <p className="mk-meta">
+              {tIntro.has(`statusNote.${activeRequest.status}`)
+                ? tIntro(`statusNote.${activeRequest.status}`)
+                : tIntro("alreadySent")}
+              {activeRequest.jobs?.title && (
+                <>
+                  {" · "}
+                  <bdi>{activeRequest.jobs.title}</bdi>
+                </>
+              )}
+              <span className="block text-ink-400">
+                {tDetail("anonymousShort")}
               </span>
-            </>
+            </p>
           ) : (
             <a
               href={`#${requestAnchor}`}
@@ -299,22 +306,19 @@ export default function CandidatePreview({
           {fullProfileHref && (
             <Link
               href={fullProfileHref}
-              className="text-sm font-medium text-accent hover:underline"
+              className={buttonClass("secondary", "sm")}
             >
               {tDetail("openFullProfile")}
             </Link>
           )}
         </div>
-
-        {/* Secondary, one line: the rule matters, the paragraph did not. */}
-        <p className="t-meta mt-2.5">{tDetail("anonymousShort")}</p>
       </header>
 
-      {/* Matching against the chosen vacancy. The band and the evidence line
-          come straight from the existing evaluation — no percentage is shown
+      {/* Matching against the chosen vacancy. The band and the evidence
+          line come straight from the existing evaluation — no percentage,
           because the score says nothing about how much was compared. */}
       {fit && (
-        <section className="border-b border-hairline bg-teal-soft/50 px-5 py-4">
+        <section className="border-b border-hairline bg-teal-soft/50 px-5 py-3.5">
           <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
             <h3 className="mk-section">{t("fitForJob")}</h3>
             {jobTitle && (
@@ -323,72 +327,82 @@ export default function CandidatePreview({
               </span>
             )}
           </div>
-          <div className="mt-2.5">
+          <div className="mt-2">
             <FitSummary fit={fit} emphasis />
           </div>
-          <p className="t-meta mt-3">{tFit("explanation")}</p>
+          <p className="t-meta mt-2.5">{tFit("explanation")}</p>
         </section>
       )}
 
-      <div className="divide-y divide-hairline">
-        {sections.map((section) => (
-          <section key={section.title} className="px-5 py-4">
-            <h3 className="mk-section mb-2.5">{section.title}</h3>
-            {/* Two facts per row even in the panel: most values are a date,
-                a level or a single word, and one per row turned the profile
-                into a long ladder of near-empty lines. */}
-            <dl
-              className={`grid gap-x-5 gap-y-2.5 ${
-                isPanel ? "grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
-              }`}
-            >
-              {section.items.map((item) => (
-                <div key={item.label} className="min-w-0">
-                  <dt className="mk-label">{item.label}</dt>
-                  <dd className="mk-value mt-0.5 break-words">
-                    <bdi>{item.value}</bdi>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        ))}
-
-        {/* Approved employer-language prose only. Nothing is machine
-            translated and no unapproved source-language text is shown. */}
-        {narrativeBlocks.length > 0 ? (
-          <section className="px-5 py-4">
-            <h3 className="mk-section mb-2.5">{tDetail("narrativeTitle")}</h3>
-            <div className="space-y-3">
-              {narrativeBlocks.map((block) => (
-                <div key={block.label}>
-                  <p className="mk-label">{block.label}</p>
-                  <p className="mt-1 max-w-[68ch] text-sm leading-[1.4rem] text-ink-700">
-                    <bdi>{block.value}</bdi>
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : (
-          <section className="px-5 py-3.5">
-            <p className="t-meta">{tDetail("noNarrative")}</p>
-          </section>
+      <div className="px-5 py-4">
+        {/* One grid, no heading above it: with a thin profile a heading per
+            pair was more chrome than content. */}
+        {shownFacts.length > 0 && (
+          <dl
+            className={`grid gap-x-6 gap-y-3 ${
+              isPanel ? "grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
+            }`}
+          >
+            {shownFacts.map((fact) => (
+              <div
+                key={fact.label}
+                className={`min-w-0 ${
+                  fact.wide
+                    ? isPanel
+                      ? "col-span-2"
+                      : "sm:col-span-2 lg:col-span-3"
+                    : ""
+                }`}
+              >
+                <dt className="mk-label">{fact.label}</dt>
+                <dd className="mk-value mt-0.5 break-words font-medium">
+                  <bdi>{fact.value}</bdi>
+                </dd>
+              </div>
+            ))}
+          </dl>
         )}
 
-        {/* The existing introduction workflow, unchanged. When an open
-            request exists the form shows its status instead of offering a
-            second primary action. */}
-        <section id={requestAnchor} className="scroll-mt-4 px-5 py-4">
+        {/* Approved employer-language prose only. Nothing is machine
+            translated and no unapproved source-language text is shown.
+            Separated by space rather than by another ruled section. */}
+        {narrativeBlocks.length > 0 ? (
+          <div
+            className={`space-y-3 ${shownFacts.length > 0 ? "mt-4 border-t border-hairline pt-4" : ""}`}
+          >
+            {narrativeBlocks.map((block) => (
+              <div key={block.label}>
+                <p className="mk-label">{block.label}</p>
+                <p className="mt-0.5 max-w-[68ch] text-sm leading-[1.35rem] text-ink-700">
+                  <bdi>{block.value}</bdi>
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p
+            className={`t-meta ${shownFacts.length > 0 ? "mt-4 border-t border-hairline pt-3" : ""}`}
+          >
+            {tDetail("noNarrative")}
+          </p>
+        )}
+      </div>
+
+      {/* The existing introduction workflow, unchanged. Rendered only when
+          there is no open request — when there is one, its state already
+          sits in the header and a second box would just repeat it. */}
+      {!activeRequest && (
+        <section
+          id={requestAnchor}
+          className="scroll-mt-4 border-t border-hairline px-5 py-4"
+        >
           <IntroductionRequestForm
             profileId={candidate.profile_id}
-            existingStatus={activeRequest?.status}
-            existingJobTitle={activeRequest?.jobs?.title ?? null}
             jobs={jobs}
             preselectedJobId={preselectedJobId}
           />
         </section>
-      </div>
+      )}
     </article>
   );
 }

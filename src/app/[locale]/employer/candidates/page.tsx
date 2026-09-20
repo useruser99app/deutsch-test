@@ -238,10 +238,13 @@ export default async function EmployerMarketplacePage({
       {/* 58/42 rather than a fixed panel width: at 1440 the preview grows
           with the viewport instead of staying a narrow tall rail, and the
           two columns read as one workspace. */}
-      <div className="mt-stack lg:grid lg:grid-cols-[minmax(0,58fr)_minmax(22rem,42fr)] lg:items-start lg:gap-4">
+      <div className="mt-4 lg:grid lg:grid-cols-[minmax(0,58fr)_minmax(22rem,42fr)] lg:items-stretch lg:gap-4">
         {/* ---- Result list ------------------------------------------- */}
         <section className={listOnlyClass}>
-          <div className="overflow-hidden rounded-card border border-hairline-strong bg-surface shadow-card">
+          {/* The columns stretch to a shared height, so a short result set
+              leaves room INSIDE the workspace instead of bare canvas beside
+              a tall panel. Nothing is invented to fill it. */}
+          <div className="flex flex-col overflow-hidden rounded-card border border-hairline-strong bg-surface shadow-card lg:h-full">
             <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-hairline bg-surface-sunken px-4 py-2">
               <h2 className="mk-section">
                 {t("results", { count: rows.length })}
@@ -272,7 +275,7 @@ export default async function EmployerMarketplacePage({
                 />
               </div>
             ) : (
-              <ul>
+              <ul className="flex-1">
                 {rows.map((candidate) => (
                   <CandidateListItem
                     key={candidate.profile_id}
@@ -293,9 +296,6 @@ export default async function EmployerMarketplacePage({
             )}
           </div>
 
-          {rows.length > 0 && (
-            <p className="t-meta mt-2 px-1">{t("privacyNote")}</p>
-          )}
         </section>
 
         {/* ---- Preview ----------------------------------------------- */}

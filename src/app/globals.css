@@ -189,8 +189,8 @@
   }
 
   html[lang="ar"] .t-display {
-    font-size: 1.75rem;
-    line-height: 2.75rem;
+    font-size: 1.5rem;
+    line-height: 2.375rem;
     letter-spacing: 0;
   }
 
@@ -298,10 +298,10 @@
   /* One step above .t-page-title, used only where a surface genuinely
    * opens a workflow — the marketplace entry, not every page. */
   .t-display {
-    font-size: 1.75rem;
-    line-height: 2.25rem;
+    font-size: 1.5rem;
+    line-height: 1.875rem;
     font-weight: 680;
-    letter-spacing: -0.022em;
+    letter-spacing: -0.018em;
     color: var(--color-ink-900);
   }
 
@@ -362,14 +362,15 @@
     color: var(--color-ink-600);
   }
 
-  /* Field label inside the preview — smaller than the old .t-label but
-   * darker, so it stays legible instead of fading into the surface. */
+  /* Field label inside the preview. Sentence case on purpose: a profile
+   * full of small caps reads as a form, and the uppercase run is what made
+   * the panel look like a datasheet. Size and ink carry the hierarchy. */
   .mk-label {
-    font-size: 0.6563rem;
-    line-height: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--color-ink-500);
   }
 
@@ -379,15 +380,15 @@
     color: var(--color-ink-900);
   }
 
-  /* Section heading inside the preview. Clearly above .mk-label and
-   * clearly below the preview title. */
+  /* Section heading. Also sentence case — it separates from the labels
+   * under it by weight and ink, which works in every script. */
   .mk-section {
-    font-size: 0.75rem;
-    line-height: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-ink-700);
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--color-ink-800);
   }
 
   /* Arabic: no case, no tracking, more vertical room — same rules the
@@ -412,9 +413,6 @@
   html[lang="ar"] .mk-label {
     font-size: 0.8125rem;
     line-height: 1.375rem;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--color-ink-500);
   }
 
   html[lang="ar"] .mk-value {
@@ -423,11 +421,8 @@
   }
 
   html[lang="ar"] .mk-section {
-    font-size: 1rem;
-    line-height: 1.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.625rem;
     font-weight: 700;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--color-ink-800);
   }
 }

@@ -27,7 +27,7 @@ export default function PageHeader({
   const isDisplay = size === "display";
 
   return (
-    <header className={isDisplay ? "mb-stack" : "mb-5"}>
+    <header className={isDisplay ? "mb-4" : "mb-5"}>
       {breadcrumb && <div className="mb-1.5">{breadcrumb}</div>}
       <div
         className={`flex flex-wrap justify-between gap-x-4 gap-y-2 ${
@@ -35,14 +35,14 @@ export default function PageHeader({
         }`}
       >
         <div className="min-w-0">
-          {eyebrow && <p className="t-eyebrow mb-1.5">{eyebrow}</p>}
+          {eyebrow && <p className="t-eyebrow mb-1">{eyebrow}</p>}
           {/* A display title wraps: it is a sentence, and truncating a
               sentence to one line loses the point of having one. */}
-          <h1 className={isDisplay ? "t-display max-w-[28ch]" : "t-page-title truncate"}>
+          <h1 className={isDisplay ? "t-display max-w-[38ch]" : "t-page-title truncate"}>
             {title}
           </h1>
           {description && (
-            <p className={isDisplay ? "t-lead mt-2 max-w-[62ch]" : "t-meta mt-0.5 max-w-2xl"}>
+            <p className={isDisplay ? "t-lead mt-1 max-w-[80ch]" : "t-meta mt-0.5 max-w-2xl"}>
               {description}
             </p>
           )}

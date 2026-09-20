@@ -73,17 +73,17 @@ export default function IntroductionRequestForm({
   return (
     <form
       action={formAction}
-      className="rounded-lg border border-accent/30 bg-accent-soft p-5"
+      className="rounded-control border border-accent/25 bg-accent-soft px-4 py-3.5"
     >
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="profile_id" value={profileId} />
 
-      <h2 className="t-section-title">{t("title")}</h2>
-      <p className="t-body mt-1 max-w-2xl">{t("description")}</p>
+      <h2 className="mk-section">{t("title")}</h2>
+      <p className="mk-meta mt-1 max-w-[60ch]">{t("description")}</p>
 
       {jobs.length > 0 && (
-        <div className="mt-4 max-w-sm">
-          <label className="t-label mb-1.5 block" htmlFor="job_id">
+        <div className="mt-3 max-w-sm">
+          <label className="mk-label mb-1 block" htmlFor="job_id">
             {t("jobLabel")}
           </label>
           <select
@@ -102,21 +102,24 @@ export default function IntroductionRequestForm({
         </div>
       )}
 
-      <div className="mt-4">
-        <label className="t-label mb-1.5 block" htmlFor="message">
+      <div className="mt-3">
+        <label className="mk-label mb-1 block" htmlFor="message">
           {t("messageLabel")}
         </label>
         <textarea
           id="message"
           name="message"
-          rows={3}
+          rows={2}
           maxLength={2000}
           className={controlClass}
           placeholder={t("messagePlaceholder")}
         />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      {/* The description above already states that no contact data is
+          released; repeating it beside the button said the same thing
+          twice on one screen. */}
+      <div className="mt-4">
         <button
           type="submit"
           disabled={pending}
@@ -124,7 +127,6 @@ export default function IntroductionRequestForm({
         >
           {pending ? t("sending") : t("cta")}
         </button>
-        <p className="t-meta">{t("noContactRelease")}</p>
       </div>
 
       {state.status === "error" && (

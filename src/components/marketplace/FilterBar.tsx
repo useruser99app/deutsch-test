@@ -66,21 +66,23 @@ export default function FilterBar({
   };
 
   return (
-    <section className="rounded-card border border-hairline-strong bg-surface px-4 py-3.5 shadow-card">
-      {/* Candidate type is navigation, not a form field: it changes which
-          filters exist, so it reloads rather than waiting for a submit. */}
-      <div className="inline-flex rounded-control bg-canvas p-0.5">
-        {tab(
-          "apprenticeship_candidate",
-          tEnums("candidateType.apprenticeship_candidate")
-        )}
-        {tab("skilled_worker", tEnums("candidateType.skilled_worker"))}
-      </div>
-
-      <form method="get" className="mt-3">
+    <section className="rounded-card border border-hairline-strong bg-surface px-3.5 py-3 shadow-card">
+      <form method="get">
         <input type="hidden" name="type" value={candidateType} />
 
         <div className="flex flex-wrap items-center gap-2">
+          {/* Candidate type is navigation, not a form field: it changes which
+              filters exist, so it reloads rather than waiting for a submit.
+              It sits in the same row as the fields — as its own row it cost
+              the marketplace a full line of height for two words. */}
+          <div className="inline-flex shrink-0 rounded-control bg-canvas p-0.5">
+            {tab(
+              "apprenticeship_candidate",
+              tEnums("candidateType.apprenticeship_candidate"),
+            )}
+            {tab("skilled_worker", tEnums("candidateType.skilled_worker"))}
+          </div>
+
           {isApprenticeship ? (
             <SearchInput
               id="occupation"
@@ -99,7 +101,7 @@ export default function FilterBar({
             />
           )}
 
-          <div className="w-full sm:w-36">
+          <div className="w-full sm:w-32">
             <label className="sr-only" htmlFor="germanLevel">
               {tFields("german_level")}
             </label>
@@ -118,9 +120,9 @@ export default function FilterBar({
             </select>
           </div>
 
-          {/* Matching needs a vacancy to compare against — see JobContext. */}
+          {/* Matching needs a vacancy to compare against. */}
           {jobs.length > 0 && (
-            <div className="w-full sm:w-56">
+            <div className="w-full sm:w-52">
               <label className="sr-only" htmlFor="job">
                 {t("jobContext")}
               </label>
@@ -148,7 +150,7 @@ export default function FilterBar({
           </button>
         </div>
 
-        <details open={moreOpen} className="group mt-2.5">
+        <details open={moreOpen} className="group mt-2">
           <summary className="inline-flex cursor-pointer list-none items-center gap-1 text-[13px] font-medium text-ink-500 transition-colors hover:text-ink-800">
             <svg
               aria-hidden
@@ -165,7 +167,10 @@ export default function FilterBar({
             {t("moreFilters")}
           </summary>
 
-          <div className="mt-3 grid gap-3 border-t border-hairline pt-3 sm:grid-cols-2 lg:grid-cols-4">
+          {/* A flat row, not a grid of stacked label/field pairs: the label
+              sits beside its control, so the secondary filters cost one
+              line instead of three. */}
+          <div className="mt-2 flex flex-wrap items-center gap-x-3.5 gap-y-2 border-t border-hairline pt-2.5">
             {isApprenticeship ? (
               <>
                 <Field id="startFrom" label={t("startFrom")}>
@@ -174,7 +179,7 @@ export default function FilterBar({
                     name="startFrom"
                     type="date"
                     defaultValue={param(search, "startFrom")}
-                    className={barField}
+                    className={`${barField} w-auto`}
                   />
                 </Field>
                 <Field
@@ -185,7 +190,7 @@ export default function FilterBar({
                     id="qualification"
                     name="qualification"
                     defaultValue={param(search, "qualification")}
-                    className={barField}
+                    className={`${barField} w-32`}
                   />
                 </Field>
               </>
@@ -199,7 +204,7 @@ export default function FilterBar({
                     min="0"
                     step="1"
                     defaultValue={param(search, "minExperience")}
-                    className={barField}
+                    className={`${barField} w-20`}
                   />
                 </Field>
                 <Field id="availableFrom" label={t("availableFrom")}>
@@ -208,7 +213,7 @@ export default function FilterBar({
                     name="availableFrom"
                     type="date"
                     defaultValue={param(search, "availableFrom")}
-                    className={barField}
+                    className={`${barField} w-auto`}
                   />
                 </Field>
               </>
@@ -219,35 +224,33 @@ export default function FilterBar({
                 id="location"
                 name="location"
                 defaultValue={param(search, "location")}
-                className={barField}
+                className={`${barField} w-32`}
                 placeholder={t("locationPlaceholder")}
               />
             </Field>
 
-            <div className="flex flex-wrap items-end gap-4 sm:col-span-2 lg:col-span-4">
-              <label className="flex items-center gap-2 text-sm text-ink-700">
+            <label className="flex items-center gap-2 text-[13px] text-ink-700">
+              <input
+                type="checkbox"
+                name="relocation"
+                value="1"
+                defaultChecked={param(search, "relocation") === "1"}
+                className="h-4 w-4 rounded border-hairline"
+              />
+              {tFields("relocation_ready")}
+            </label>
+            {isApprenticeship && (
+              <label className="flex items-center gap-2 text-[13px] text-ink-700">
                 <input
                   type="checkbox"
-                  name="relocation"
+                  name="practical"
                   value="1"
-                  defaultChecked={param(search, "relocation") === "1"}
+                  defaultChecked={param(search, "practical") === "1"}
                   className="h-4 w-4 rounded border-hairline"
                 />
-                {tFields("relocation_ready")}
+                {t("practicalExperience")}
               </label>
-              {isApprenticeship && (
-                <label className="flex items-center gap-2 text-sm text-ink-700">
-                  <input
-                    type="checkbox"
-                    name="practical"
-                    value="1"
-                    defaultChecked={param(search, "practical") === "1"}
-                    className="h-4 w-4 rounded border-hairline"
-                  />
-                  {t("practicalExperience")}
-                </label>
-              )}
-            </div>
+            )}
           </div>
         </details>
       </form>
@@ -265,8 +268,8 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <label className="mk-label mb-1 block" htmlFor={id}>
+    <div className="flex items-center gap-2">
+      <label className="mk-label whitespace-nowrap" htmlFor={id}>
         {label}
       </label>
       {children}
