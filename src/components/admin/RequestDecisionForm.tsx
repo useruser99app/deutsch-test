@@ -48,22 +48,15 @@ export default function RequestDecisionForm({
   }
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form action={formAction}>
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="request_id" value={requestId} />
 
-      <label className="sr-only" htmlFor={`comment-${requestId}`}>
-        {t("commentLabel")}
-      </label>
-      <input
-        id={`comment-${requestId}`}
-        name="comment"
-        className={controlClass}
-        placeholder={t("commentPlaceholder")}
-        maxLength={500}
-      />
-
-      <div className="flex flex-wrap gap-2">
+      {/* The decision itself sits in the row, as in the operations
+          reference. The internal note keeps its place in the same form
+          behind a disclosure, so no capability is lost to the tighter
+          layout. */}
+      <div className="flex flex-wrap gap-1.5">
         {options.map((next) => (
           <button
             key={next}
@@ -76,19 +69,48 @@ export default function RequestDecisionForm({
                 ? "critical"
                 : next === "introduced"
                   ? "positive"
-                  : "secondary",
-              "sm"
+                  : next === "approved"
+                    ? "primary"
+                    : "secondary",
+              "sm",
+              "px-2.5 py-1 text-[13px]"
             )}
           >
-            {t.has(`moveTo.${next}`)
-              ? t(`moveTo.${next}`)
-              : tStatus(next)}
+            {t.has(`moveTo.${next}`) ? t(`moveTo.${next}`) : tStatus(next)}
           </button>
         ))}
       </div>
 
+      <details className="group mt-1.5">
+        <summary className="inline-flex cursor-pointer list-none items-center gap-1 text-[12px] font-medium text-ink-500 transition-colors hover:text-ink-800">
+          <svg
+            aria-hidden
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-3 w-3 transition-transform group-open:rotate-180"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+          {t("commentLabel")}
+        </summary>
+        <label className="sr-only" htmlFor={`comment-${requestId}`}>
+          {t("commentLabel")}
+        </label>
+        <input
+          id={`comment-${requestId}`}
+          name="comment"
+          className={`${controlClass} mt-1.5 py-1.5 text-[13px] sm:text-[13px]`}
+          placeholder={t("commentPlaceholder")}
+          maxLength={500}
+        />
+      </details>
+
       {state.status === "error" && (
-        <p role="alert" className="text-sm text-critical">
+        <p role="alert" className="mt-1.5 text-[13px] text-critical">
           {t("failed")}
         </p>
       )}
