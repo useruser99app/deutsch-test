@@ -274,7 +274,16 @@
       "needsAttention": "Erfordert Aufmerksamkeit",
       "needsAttentionDescription": "Kandidaten mit offenen Änderungen oder Dokumenten.",
       "noAttention": "Zurzeit wartet nichts auf Prüfung.",
-      "newRequests": "Vorstellungsanfragen"
+      "newRequests": "Vorstellungsanfragen",
+      "subtitle": "Offene Vorgänge und operative Aufgaben auf einen Blick.",
+      "openTasks": "{count, plural, =0 {Nichts offen} one {# offener Vorgang} other {# offene Vorgänge}}",
+      "openTasksHint": "Änderungen, Dokumente und neue Anfragen",
+      "hintChanges": "Warten auf Prüfung",
+      "hintDocuments": "Warten auf Verifizierung",
+      "hintRequests": "Noch nicht gesichtet",
+      "hintCandidates": "Im Bestand",
+      "masterData": "Stammdaten",
+      "totalShare": "Gesamt"
     },
     "review": {
       "title": "Änderungs-Review",

@@ -274,7 +274,16 @@
       "needsAttention": "Needs attention",
       "needsAttentionDescription": "Candidates with open changes or documents.",
       "noAttention": "Nothing is waiting for review right now.",
-      "newRequests": "Introduction requests"
+      "newRequests": "Introduction requests",
+      "subtitle": "Open items and operational tasks at a glance.",
+      "openTasks": "{count, plural, =0 {Nothing open} one {# open item} other {# open items}}",
+      "openTasksHint": "Changes, documents and new requests",
+      "hintChanges": "Awaiting review",
+      "hintDocuments": "Awaiting verification",
+      "hintRequests": "Not yet triaged",
+      "hintCandidates": "On record",
+      "masterData": "Master data",
+      "totalShare": "Total"
     },
     "review": {
       "title": "Change review",
