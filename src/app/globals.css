@@ -43,6 +43,39 @@
 
   --shadow-panel: 0 1px 2px rgba(14, 28, 44, 0.04);
   --shadow-raised: 0 4px 16px -4px rgba(14, 28, 44, 0.12);
+
+  /* -------------------------------------------------------------------
+   * Design System 2.0 — added for the employer marketplace pilot.
+   *
+   * Extends the scale above rather than replacing it: ink, canvas,
+   * surface, hairline and the semantic colours keep their meaning, so a
+   * page that has not been migrated yet renders exactly as before.
+   * ---------------------------------------------------------------- */
+
+  /* A second, cooler accent. Blue stays the interactive colour; teal marks
+   * evaluated/verified information so the two never compete for "click me". */
+  --color-teal: #0f7f86;
+  --color-teal-soft: #e4f3f4;
+
+  /* Two more surface steps: a sunken ground for list rails and filter bars,
+   * and a stronger hairline for the edges that carry structure. */
+  --color-surface-sunken: #fafbfc;
+  --color-hairline-strong: #d5dde6;
+
+  /* Radius — three steps only, so nothing is rounded by accident. */
+  --radius-control: 0.5rem;
+  --radius-card: 0.75rem;
+  --radius-pill: 9999px;
+
+  /* Spacing rhythm — the three distances this system actually uses. */
+  --spacing-card: 1.25rem;
+  --spacing-stack: 1.5rem;
+  --spacing-gutter: 1rem;
+
+  /* Elevation — barely there. A card lifts on hover, nothing floats. */
+  --shadow-card: 0 1px 2px rgba(14, 28, 44, 0.05), 0 1px 3px rgba(14, 28, 44, 0.04);
+  --shadow-card-hover: 0 2px 4px rgba(14, 28, 44, 0.06),
+    0 10px 28px -14px rgba(14, 28, 44, 0.22);
 }
 
 @layer base {
@@ -144,6 +177,28 @@
     line-height: 1.875rem;
   }
 
+  /* Arabic has no case and the connected script breaks under tracking, so
+   * the eyebrow separates from the title by ink and weight instead. */
+  html[lang="ar"] .t-eyebrow {
+    font-size: 0.8125rem;
+    line-height: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--color-ink-500);
+  }
+
+  html[lang="ar"] .t-display {
+    font-size: 1.75rem;
+    line-height: 2.75rem;
+    letter-spacing: 0;
+  }
+
+  html[lang="ar"] .t-lead {
+    font-size: 1rem;
+    line-height: 1.875rem;
+  }
+
   /* Latin values inside Arabic copy — B2, NOR-00011, e-mail addresses,
    * German occupation names — must not be reordered by the bidi algorithm
    * or inherit the RTL baseline direction. */
@@ -225,5 +280,35 @@
     font-size: 0.875rem;
     line-height: 1.5rem;
     color: var(--color-ink-700);
+  }
+
+  /* ---- Design System 2.0 ------------------------------------------- */
+
+  /* The small line above a page title. It names the surface you are on,
+   * so it is quiet and wide — never a second headline. */
+  .t-eyebrow {
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-400);
+  }
+
+  /* One step above .t-page-title, used only where a surface genuinely
+   * opens a workflow — the marketplace entry, not every page. */
+  .t-display {
+    font-size: 1.625rem;
+    line-height: 2.125rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: var(--color-ink-900);
+  }
+
+  /* Lead paragraph under a display title: readable, never shouty. */
+  .t-lead {
+    font-size: 0.9375rem;
+    line-height: 1.5rem;
+    color: var(--color-ink-600);
   }
 }

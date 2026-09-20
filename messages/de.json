@@ -470,7 +470,19 @@
       "professionPlaceholder": "z. B. Elektriker",
       "startFrom": "Ausbildungsbeginn ab",
       "minExperience": "Berufserfahrung ab (Jahre)",
-      "availableFrom": "Verfügbar bis spätestens"
+      "availableFrom": "Verfügbar bis spätestens",
+      "eyebrow": "Kandidatenmarktplatz",
+      "headline": "Passende Talente für Ihr Unternehmen finden",
+      "subtitle": "Entdecken Sie anonymisierte, vorqualifizierte Kandidaten und finden Sie passende Profile für Ihre offenen Stellen.",
+      "moreFilters": "Weitere Filter",
+      "removeFilter": "Filter entfernen",
+      "resetAll": "Alle Filter zurücksetzen",
+      "jobContext": "Stellenbezug",
+      "noJobContext": "Ohne Stellenbezug",
+      "fitForJob": "Übereinstimmung mit Ihrer Stelle",
+      "previewLabel": "Profilvorschau",
+      "previewEmpty": "Wählen Sie ein Profil aus der Liste, um die Details zu sehen.",
+      "privacyNote": "Alle Profile sind anonymisiert. Namen und Kontaktdaten gibt ALLEMARO erst nach einer Vorstellung weiter."
     },
     "candidate": {
       "backToList": "Zurück zur Kandidatenliste",
@@ -487,7 +499,8 @@
       "motivation": "Motivation",
       "practicalExperience": "Praktische Erfahrung",
       "skills": "Kenntnisse",
-      "region": "Land"
+      "region": "Land",
+      "openFullProfile": "Vollständiges Profil öffnen"
     },
     "introduction": {
       "title": "Vorstellung anfragen",

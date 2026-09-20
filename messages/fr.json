@@ -470,7 +470,19 @@
       "professionPlaceholder": "p. ex. Elektriker",
       "startFrom": "Début de formation à partir du",
       "minExperience": "Expérience à partir de (années)",
-      "availableFrom": "Disponible au plus tard le"
+      "availableFrom": "Disponible au plus tard le",
+      "eyebrow": "Place de marché des candidats",
+      "headline": "Trouvez les talents adaptés à votre entreprise",
+      "subtitle": "Découvrez des candidats anonymisés et préqualifiés, et trouvez les profils correspondant à vos postes ouverts.",
+      "moreFilters": "Plus de filtres",
+      "removeFilter": "Retirer le filtre",
+      "resetAll": "Réinitialiser tous les filtres",
+      "jobContext": "Poste de référence",
+      "noJobContext": "Sans poste de référence",
+      "fitForJob": "Correspondance avec votre poste",
+      "previewLabel": "Aperçu du profil",
+      "previewEmpty": "Sélectionnez un profil dans la liste pour afficher les détails.",
+      "privacyNote": "Tous les profils sont anonymisés. ALLEMARO ne communique le nom et les coordonnées qu'après une présentation."
     },
     "candidate": {
       "backToList": "Retour aux candidats",
@@ -487,7 +499,8 @@
       "motivation": "Motivation",
       "practicalExperience": "Expérience pratique",
       "skills": "Compétences",
-      "region": "Pays"
+      "region": "Pays",
+      "openFullProfile": "Ouvrir le profil complet"
     },
     "introduction": {
       "title": "Demander une présentation",

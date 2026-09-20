@@ -470,7 +470,19 @@
       "professionPlaceholder": "e.g. Elektriker",
       "startFrom": "Training start from",
       "minExperience": "Experience from (years)",
-      "availableFrom": "Available no later than"
+      "availableFrom": "Available no later than",
+      "eyebrow": "Candidate marketplace",
+      "headline": "Find the right talent for your organisation",
+      "subtitle": "Browse anonymised, pre-qualified candidates and find the profiles that fit your open positions.",
+      "moreFilters": "More filters",
+      "removeFilter": "Remove filter",
+      "resetAll": "Reset all filters",
+      "jobContext": "Vacancy context",
+      "noJobContext": "No vacancy selected",
+      "fitForJob": "Fit with your vacancy",
+      "previewLabel": "Profile preview",
+      "previewEmpty": "Select a profile from the list to see the details.",
+      "privacyNote": "All profiles are anonymised. ALLEMARO only shares names and contact details after an introduction."
     },
     "candidate": {
       "backToList": "Back to candidates",
@@ -487,7 +499,8 @@
       "motivation": "Motivation",
       "practicalExperience": "Practical experience",
       "skills": "Skills",
-      "region": "Country"
+      "region": "Country",
+      "openFullProfile": "Open full profile"
     },
     "introduction": {
       "title": "Request an introduction",

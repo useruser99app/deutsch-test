@@ -470,7 +470,19 @@
       "professionPlaceholder": "مثال: Elektriker",
       "startFrom": "بداية التدريب اعتبارًا من",
       "minExperience": "الخبرة اعتبارًا من (سنوات)",
-      "availableFrom": "متاح في موعد أقصاه"
+      "availableFrom": "متاح في موعد أقصاه",
+      "eyebrow": "سوق المرشحين",
+      "headline": "اعثر على المواهب المناسبة لمؤسستك",
+      "subtitle": "تصفّح ملفات مرشحين مجهولة الهوية ومؤهّلة مسبقًا، واعثر على الملفات المناسبة لوظائفك الشاغرة.",
+      "moreFilters": "مزيد من عوامل التصفية",
+      "removeFilter": "إزالة عامل التصفية",
+      "resetAll": "إعادة تعيين كل عوامل التصفية",
+      "jobContext": "الوظيفة المرجعية",
+      "noJobContext": "بدون وظيفة مرجعية",
+      "fitForJob": "مدى التوافق مع وظيفتك",
+      "previewLabel": "معاينة الملف",
+      "previewEmpty": "اختر ملفًا من القائمة لعرض التفاصيل.",
+      "privacyNote": "جميع الملفات مجهولة الهوية. لا تشارك ALLEMARO الاسم وبيانات الاتصال إلا بعد التعارف."
     },
     "candidate": {
       "backToList": "العودة إلى المرشحين",
@@ -487,7 +499,8 @@
       "motivation": "الدافع",
       "practicalExperience": "خبرة عملية",
       "skills": "المهارات",
-      "region": "البلد"
+      "region": "البلد",
+      "openFullProfile": "فتح الملف الكامل"
     },
     "introduction": {
       "title": "طلب التعارف",

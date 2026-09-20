@@ -1,28 +1,54 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { requireRole } from "@/lib/auth";
-import { loadMarketplace, type MarketplaceFilters } from "@/lib/employer-data";
-import { germanLevels, type CandidateType } from "@/lib/domain";
+import {
+  loadActiveRequest,
+  loadCompanyJobs,
+  loadEmployerCandidate,
+  loadEmployerRequests,
+  loadMarketplace,
+  loadPublicNarrative,
+  type MarketplaceFilters,
+} from "@/lib/employer-data";
+import { loadJob } from "@/lib/jobs-data";
+import {
+  activeInterestRequestStatuses,
+  type CandidateType,
+} from "@/lib/domain";
+import { evaluateCandidateForJob, type FitResult } from "@/lib/matching";
+import {
+  activeFilterKeys,
+  marketplaceHref,
+  param,
+  resetFiltersHref,
+  type MarketplaceSearch,
+} from "@/lib/marketplace-url";
 import PageHeader from "@/components/ui/PageHeader";
-import Panel from "@/components/ui/Panel";
 import EmptyState from "@/components/ui/EmptyState";
-import CandidateResult from "@/components/employer/CandidateResult";
-import { buttonClass, controlClass } from "@/components/ui/button";
+import FilterBar from "@/components/marketplace/FilterBar";
+import FilterChip from "@/components/marketplace/FilterChip";
+import CandidateListItem from "@/components/marketplace/CandidateListItem";
+import CandidatePreview from "@/components/marketplace/CandidatePreview";
 import { formatDateValue } from "@/components/ui/useValueFormatter";
 
-type Search = Record<string, string | string[] | undefined>;
-
-function one(search: Search, key: string): string {
-  const value = search[key];
-  return (Array.isArray(value) ? value[0] : value)?.trim() ?? "";
-}
-
+/**
+ * The employer candidate marketplace — the Design System 2.0 pilot.
+ *
+ * Desktop is a list beside a preview; below `lg` the two become one view at
+ * a time, because a 390px screen cannot show both without making each
+ * useless. Which one is visible follows from the URL alone, so there is no
+ * client state, no layout flash and no second source of truth.
+ *
+ * Everything shown here comes from `employer_candidate_profiles`, the view
+ * whose column list IS the publication whitelist. No private identity is
+ * loaded, so none can be rendered.
+ */
 export default async function EmployerMarketplacePage({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<Search>;
+  searchParams: Promise<MarketplaceSearch>;
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -31,271 +57,271 @@ export default async function EmployerMarketplacePage({
 
   const t = await getTranslations("employer.marketplace");
   const tFields = await getTranslations("fields");
-  const tEnums = await getTranslations("enums");
 
   // Ausbildung is the default mode: it is ALLEMARO's main candidate group.
   const candidateType: CandidateType =
-    one(search, "type") === "skilled_worker"
+    param(search, "type") === "skilled_worker"
       ? "skilled_worker"
       : "apprenticeship_candidate";
   const isApprenticeship = candidateType === "apprenticeship_candidate";
 
   const filters: MarketplaceFilters = {
     candidateType,
-    germanLevel: one(search, "germanLevel") || undefined,
-    location: one(search, "location") || undefined,
-    relocationOnly: one(search, "relocation") === "1" || undefined,
+    germanLevel: param(search, "germanLevel") || undefined,
+    location: param(search, "location") || undefined,
+    relocationOnly: param(search, "relocation") === "1" || undefined,
     ...(isApprenticeship
       ? {
-          occupation: one(search, "occupation") || undefined,
-          trainingStartFrom: one(search, "startFrom") || undefined,
-          schoolQualification: one(search, "qualification") || undefined,
-          practicalExperience: one(search, "practical") === "1" || undefined,
+          occupation: param(search, "occupation") || undefined,
+          trainingStartFrom: param(search, "startFrom") || undefined,
+          schoolQualification: param(search, "qualification") || undefined,
+          practicalExperience: param(search, "practical") === "1" || undefined,
         }
       : {
-          profession: one(search, "profession") || undefined,
-          minExperience: one(search, "minExperience")
-            ? Number(one(search, "minExperience"))
+          profession: param(search, "profession") || undefined,
+          minExperience: param(search, "minExperience")
+            ? Number(param(search, "minExperience"))
             : undefined,
-          availableFrom: one(search, "availableFrom") || undefined,
+          availableFrom: param(search, "availableFrom") || undefined,
         }),
   };
 
-  const { rows, truncated } = await loadMarketplace(supabase, filters);
+  const jobId = param(search, "job");
+
+  const [{ rows, truncated }, jobs, requests, job] = await Promise.all([
+    loadMarketplace(supabase, filters),
+    loadCompanyJobs(supabase),
+    loadEmployerRequests(supabase),
+    // RLS scopes this to the employer's own company — another company's
+    // vacancy simply does not exist for this session.
+    jobId ? loadJob(supabase, jobId) : Promise.resolve(null),
+  ]);
+
+  /**
+   * The company's own open request per candidate. Read from the requests the
+   * employer already sees on their requests page — no new access path, and
+   * nothing about other companies' interest is visible.
+   */
+  const openRequestByCandidate = new Map<string, string>();
+  for (const request of requests) {
+    if (
+      (activeInterestRequestStatuses as readonly string[]).includes(
+        request.status,
+      )
+    ) {
+      openRequestByCandidate.set(request.candidate_profile_id, request.status);
+    }
+  }
+
+  /**
+   * Matching needs something to match AGAINST. Without a vacancy there is no
+   * requirement to compare a profile to, so no band is shown at all rather
+   * than a made-up one. With a vacancy the existing evaluation runs
+   * unchanged — same function, same criteria, same evidence.
+   *
+   * The result order stays `published_at` either way: this is a marketplace
+   * the employer filters, not a ranked recommendation feed.
+   */
+  const fitByCandidate = new Map<string, FitResult>();
+  if (job) {
+    for (const candidate of rows) {
+      const fit = evaluateCandidateForJob(job, candidate);
+      if (fit.eligible) fitByCandidate.set(candidate.profile_id, fit);
+    }
+  }
+
+  // No explicit selection on a wide screen still shows a preview: the first
+  // result. On a narrow screen the absence of the parameter is what keeps
+  // the list, and only the list, on screen.
+  const selectedParam = param(search, "selected");
+  const selectedId =
+    (selectedParam && rows.some((row) => row.profile_id === selectedParam)
+      ? selectedParam
+      : "") ||
+    rows[0]?.profile_id ||
+    "";
+  const hasExplicitSelection = Boolean(selectedParam);
+
+  const selected = selectedId
+    ? await loadEmployerCandidate(supabase, selectedId)
+    : null;
+
+  const [narrative, activeRequest] = selected
+    ? await Promise.all([
+        loadPublicNarrative(supabase, selected.profile_id, locale),
+        loadActiveRequest(supabase, selected.profile_id),
+      ])
+    : [null, null];
 
   const formatDate = (value: string | null) => formatDateValue(value, locale);
 
-  const hasFilters = Object.entries(filters).some(
-    ([key, value]) => key !== "candidateType" && value !== undefined
-  );
+  // One chip per active filter, each removable on its own.
+  const chipLabels: Record<string, string> = {
+    occupation: tFields("target_occupations"),
+    profession: tFields("profession"),
+    germanLevel: tFields("german_level"),
+    location: t("preferredLocation"),
+    startFrom: t("startFrom"),
+    qualification: tFields("school_qualification"),
+    availableFrom: t("availableFrom"),
+    minExperience: t("minExperience"),
+    relocation: tFields("relocation_ready"),
+    practical: t("practicalExperience"),
+  };
+  const chips = activeFilterKeys(search).map((key) => {
+    const raw = param(search, key);
+    return {
+      key,
+      label: chipLabels[key] ?? key,
+      // A checkbox filter reads as its own label, not as "1".
+      value: key === "relocation" || key === "practical" ? t("yes") : raw,
+      href: marketplaceHref(search, { [key]: null, selected: null }),
+    };
+  });
 
-  const tabClass = (active: boolean) =>
-    `rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-      active
-        ? "bg-ink-900 text-white"
-        : "border border-hairline bg-surface text-ink-700 hover:bg-ink-50"
-    }`;
+  const listOnlyClass = hasExplicitSelection ? "hidden lg:block" : "block";
+  const previewOnlyClass = hasExplicitSelection ? "block" : "hidden lg:block";
 
   return (
     <>
-      <PageHeader title={t("title")} description={t("description")} />
+      {/* Below `lg` a chosen candidate IS the view: the title block and the
+          filters step aside so the profile starts at the top of the screen,
+          and the preview's own back link returns to the list. */}
+      <div className={listOnlyClass}>
+        <PageHeader
+          eyebrow={t("eyebrow")}
+          title={t("headline")}
+          description={t("subtitle")}
+          size="display"
+        />
 
-      <div className="flex flex-wrap gap-2">
-        <Link
-          href="/employer/candidates?type=apprenticeship_candidate"
-          className={tabClass(isApprenticeship)}
-        >
-          {tEnums("candidateType.apprenticeship_candidate")}
-        </Link>
-        <Link
-          href="/employer/candidates?type=skilled_worker"
-          className={tabClass(!isApprenticeship)}
-        >
-          {tEnums("candidateType.skilled_worker")}
-        </Link>
+        <FilterBar
+          search={search}
+          candidateType={candidateType}
+          jobs={jobs}
+          moreOpen={chips.some((chip) =>
+            [
+              "location",
+              "startFrom",
+              "qualification",
+              "availableFrom",
+              "minExperience",
+              "relocation",
+              "practical",
+            ].includes(chip.key),
+          )}
+        />
+
+        {chips.length > 0 && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {chips.map((chip) => (
+              <FilterChip
+                key={chip.key}
+                label={chip.label}
+                value={chip.value}
+                removeHref={chip.href}
+                removeLabel={t("removeFilter")}
+              />
+            ))}
+            <Link
+              href={resetFiltersHref(search)}
+              className="text-sm font-medium text-accent hover:underline"
+            >
+              {t("resetAll")}
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Filters are a plain GET form: shareable URLs, no client state. */}
-      <form method="get" className="mt-4">
-        <input type="hidden" name="type" value={candidateType} />
-        <Panel title={t("filters")}>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {isApprenticeship ? (
-              <>
-                <div>
-                  <label className="t-label mb-1.5 block" htmlFor="occupation">
-                    {tFields("target_occupations")}
-                  </label>
-                  <input
-                    id="occupation"
-                    name="occupation"
-                    defaultValue={one(search, "occupation")}
-                    className={controlClass}
-                    placeholder={t("occupationPlaceholder")}
-                  />
-                </div>
-                <div>
-                  <label className="t-label mb-1.5 block" htmlFor="startFrom">
-                    {t("startFrom")}
-                  </label>
-                  <input
-                    id="startFrom"
-                    name="startFrom"
-                    type="date"
-                    defaultValue={one(search, "startFrom")}
-                    className={controlClass}
-                  />
-                </div>
-                <div>
-                  <label
-                    className="t-label mb-1.5 block"
-                    htmlFor="qualification"
-                  >
-                    {tFields("school_qualification")}
-                  </label>
-                  <input
-                    id="qualification"
-                    name="qualification"
-                    defaultValue={one(search, "qualification")}
-                    className={controlClass}
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <label className="t-label mb-1.5 block" htmlFor="profession">
-                    {tFields("profession")}
-                  </label>
-                  <input
-                    id="profession"
-                    name="profession"
-                    defaultValue={one(search, "profession")}
-                    className={controlClass}
-                    placeholder={t("professionPlaceholder")}
-                  />
-                </div>
-                <div>
-                  <label
-                    className="t-label mb-1.5 block"
-                    htmlFor="minExperience"
-                  >
-                    {t("minExperience")}
-                  </label>
-                  <input
-                    id="minExperience"
-                    name="minExperience"
-                    type="number"
-                    min="0"
-                    step="1"
-                    defaultValue={one(search, "minExperience")}
-                    className={controlClass}
-                  />
-                </div>
-                <div>
-                  <label
-                    className="t-label mb-1.5 block"
-                    htmlFor="availableFrom"
-                  >
-                    {t("availableFrom")}
-                  </label>
-                  <input
-                    id="availableFrom"
-                    name="availableFrom"
-                    type="date"
-                    defaultValue={one(search, "availableFrom")}
-                    className={controlClass}
-                  />
-                </div>
-              </>
-            )}
+      <div className="mt-stack lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
+        {/* ---- Result list ------------------------------------------- */}
+        <section className={listOnlyClass}>
+          <div className="overflow-hidden rounded-card border border-hairline bg-surface shadow-card">
+            <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-hairline bg-surface-sunken px-4 py-2.5">
+              <h2 className="t-section-title">
+                {t("results", { count: rows.length })}
+              </h2>
+              {truncated && <p className="t-meta">{t("truncated")}</p>}
+            </header>
 
-            <div>
-              <label className="t-label mb-1.5 block" htmlFor="germanLevel">
-                {tFields("german_level")}
-              </label>
-              <select
-                id="germanLevel"
-                name="germanLevel"
-                defaultValue={one(search, "germanLevel")}
-                className={controlClass}
-              >
-                <option value="">{t("anyLevel")}</option>
-                {germanLevels.map((level) => (
-                  <option key={level} value={level}>
-                    {level}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="t-label mb-1.5 block" htmlFor="location">
-                {t("preferredLocation")}
-              </label>
-              <input
-                id="location"
-                name="location"
-                defaultValue={one(search, "location")}
-                className={controlClass}
-                placeholder={t("locationPlaceholder")}
-              />
-            </div>
-
-            <div className="flex flex-wrap items-end gap-4">
-              <label className="flex items-center gap-2 text-sm text-ink-700">
-                <input
-                  type="checkbox"
-                  name="relocation"
-                  value="1"
-                  defaultChecked={one(search, "relocation") === "1"}
-                  className="h-4 w-4 rounded border-hairline"
+            {rows.length === 0 ? (
+              <div className="p-card">
+                <EmptyState
+                  message={
+                    chips.length > 0
+                      ? t("noMatches")
+                      : isApprenticeship
+                        ? t("noApprenticeships")
+                        : t("noSkilled")
+                  }
+                  action={
+                    chips.length > 0 ? (
+                      <Link
+                        href={resetFiltersHref(search)}
+                        className="text-sm font-medium text-accent hover:underline"
+                      >
+                        {t("resetAll")}
+                      </Link>
+                    ) : undefined
+                  }
                 />
-                {tFields("relocation_ready")}
-              </label>
-              {isApprenticeship && (
-                <label className="flex items-center gap-2 text-sm text-ink-700">
-                  <input
-                    type="checkbox"
-                    name="practical"
-                    value="1"
-                    defaultChecked={one(search, "practical") === "1"}
-                    className="h-4 w-4 rounded border-hairline"
+              </div>
+            ) : (
+              <ul>
+                {rows.map((candidate) => (
+                  <CandidateListItem
+                    key={candidate.profile_id}
+                    candidate={candidate}
+                    href={marketplaceHref(search, {
+                      selected: candidate.profile_id,
+                    })}
+                    selected={candidate.profile_id === selectedId}
+                    locale={locale}
+                    formatDate={formatDate}
+                    fit={fitByCandidate.get(candidate.profile_id)}
+                    requestStatus={openRequestByCandidate.get(
+                      candidate.profile_id,
+                    )}
                   />
-                  {t("practicalExperience")}
-                </label>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button type="submit" className={buttonClass("primary", "sm")}>
-              {t("apply")}
-            </button>
-            {hasFilters && (
-              <Link
-                href={`/employer/candidates?type=${candidateType}`}
-                className="text-sm font-medium text-accent hover:underline"
-              >
-                {t("reset")}
-              </Link>
+                ))}
+              </ul>
             )}
           </div>
-        </Panel>
-      </form>
 
-      <div className="mt-6">
-        <Panel
-          title={t("results", { count: rows.length })}
-          description={truncated ? t("truncated") : undefined}
-          bleed
+          {rows.length > 0 && (
+            <p className="t-meta mt-2.5 px-1">{t("privacyNote")}</p>
+          )}
+        </section>
+
+        {/* ---- Preview ----------------------------------------------- */}
+        <aside
+          className={`${previewOnlyClass} lg:sticky lg:top-5 mt-4 lg:mt-0`}
+          aria-label={t("previewLabel")}
         >
-          {rows.length === 0 ? (
-            <div className="p-5">
-              <EmptyState
-                message={
-                  hasFilters
-                    ? t("noMatches")
-                    : isApprenticeship
-                      ? t("noApprenticeships")
-                      : t("noSkilled")
-                }
-                compact
+          {selected ? (
+            <div className="lg:max-h-[calc(100vh-2.5rem)] lg:overflow-y-auto">
+              <CandidatePreview
+                candidate={selected}
+                narrative={narrative}
+                activeRequest={activeRequest}
+                jobs={jobs}
+                locale={locale}
+                fit={fitByCandidate.get(selected.profile_id)}
+                jobTitle={job?.title}
+                preselectedJobId={jobId || undefined}
+                variant="panel"
+                fullProfileHref={`/employer/candidates/${selected.profile_id}${
+                  jobId ? `?job=${jobId}` : ""
+                }`}
+                backHref={marketplaceHref(search, { selected: null })}
               />
             </div>
           ) : (
-            <ul className="divide-y divide-hairline">
-              {rows.map((candidate) => (
-                <CandidateResult
-                  key={candidate.profile_id}
-                  candidate={candidate}
-                  locale={locale}
-                  formatDate={formatDate}
-                />
-              ))}
-            </ul>
+            <div className="rounded-card border border-dashed border-hairline-strong bg-surface p-card">
+              <p className="t-body text-ink-500">{t("previewEmpty")}</p>
+            </div>
           )}
-        </Panel>
+        </aside>
       </div>
     </>
   );
