@@ -558,7 +558,10 @@
         "request_approved": "Demande validée",
         "request_rejected": "Demande refusée",
         "request_introduced": "Candidat présenté"
-      }
+      },
+      "title": "Vue d'ensemble",
+      "subtitle": "Vos candidats, postes et demandes en un coup d'œil.",
+      "pipeline": "Pipeline de recrutement"
     },
     "jobs": {
       "title": "Postes",

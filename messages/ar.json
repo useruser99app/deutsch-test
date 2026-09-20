@@ -558,7 +558,10 @@
         "request_approved": "تمت الموافقة على الطلب",
         "request_rejected": "تم رفض الطلب",
         "request_introduced": "تم تعارف المرشح"
-      }
+      },
+      "title": "نظرة عامة",
+      "subtitle": "مرشحوك ووظائفك وطلباتك في لمحة واحدة.",
+      "pipeline": "مسار التوظيف"
     },
     "jobs": {
       "title": "الوظائف",

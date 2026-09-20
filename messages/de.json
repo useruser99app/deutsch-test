@@ -558,7 +558,10 @@
         "request_approved": "Anfrage freigegeben",
         "request_rejected": "Anfrage abgelehnt",
         "request_introduced": "Kandidat vorgestellt"
-      }
+      },
+      "title": "Übersicht",
+      "subtitle": "Ihre Kandidaten, Stellen und Anfragen auf einen Blick.",
+      "pipeline": "Recruiting-Pipeline"
     },
     "jobs": {
       "title": "Stellen",

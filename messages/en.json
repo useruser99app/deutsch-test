@@ -558,7 +558,10 @@
         "request_approved": "Request approved",
         "request_rejected": "Request declined",
         "request_introduced": "Candidate introduced"
-      }
+      },
+      "title": "Overview",
+      "subtitle": "Your candidates, vacancies and requests at a glance.",
+      "pipeline": "Recruiting pipeline"
     },
     "jobs": {
       "title": "Jobs",
