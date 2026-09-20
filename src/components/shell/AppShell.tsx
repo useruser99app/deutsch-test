@@ -102,7 +102,12 @@ export default async function AppShell({
       </header>
 
       <main className="min-w-0 flex-1">
-        <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
+        {/* The content width lives in .shell-content so that a surface which
+            genuinely needs more room — today only the marketplace — can ask
+            for it from the inside, via a data attribute, without a prop
+            threaded through every layout. Every other page keeps the exact
+            width it had. */}
+        <div className="shell-content mx-auto px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
           {children}
         </div>
       </main>

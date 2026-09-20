@@ -482,7 +482,8 @@
       "fitForJob": "Übereinstimmung mit Ihrer Stelle",
       "previewLabel": "Profilvorschau",
       "previewEmpty": "Wählen Sie ein Profil aus der Liste, um die Details zu sehen.",
-      "privacyNote": "Alle Profile sind anonymisiert. Namen und Kontaktdaten gibt ALLEMARO erst nach einer Vorstellung weiter."
+      "privacyNote": "Alle Profile sind anonymisiert. Namen und Kontaktdaten gibt ALLEMARO erst nach einer Vorstellung weiter.",
+      "fromDate": "ab"
     },
     "candidate": {
       "backToList": "Zurück zur Kandidatenliste",
@@ -500,7 +501,8 @@
       "practicalExperience": "Praktische Erfahrung",
       "skills": "Kenntnisse",
       "region": "Land",
-      "openFullProfile": "Vollständiges Profil öffnen"
+      "openFullProfile": "Vollständiges Profil öffnen",
+      "anonymousShort": "Anonymisiertes Profil – Kontaktdaten erst nach der Vorstellung."
     },
     "introduction": {
       "title": "Vorstellung anfragen",

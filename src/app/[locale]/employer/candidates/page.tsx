@@ -183,7 +183,9 @@ export default async function EmployerMarketplacePage({
   const previewOnlyClass = hasExplicitSelection ? "block" : "hidden lg:block";
 
   return (
-    <>
+    // data-shell="wide" is what lets .shell-content give this page more
+    // room from 1280px up. No other surface is affected.
+    <div data-shell="wide">
       {/* Below `lg` a chosen candidate IS the view: the title block and the
           filters step aside so the profile starts at the top of the screen,
           and the preview's own back link returns to the list. */}
@@ -233,12 +235,15 @@ export default async function EmployerMarketplacePage({
         )}
       </div>
 
-      <div className="mt-stack lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
+      {/* 58/42 rather than a fixed panel width: at 1440 the preview grows
+          with the viewport instead of staying a narrow tall rail, and the
+          two columns read as one workspace. */}
+      <div className="mt-stack lg:grid lg:grid-cols-[minmax(0,58fr)_minmax(22rem,42fr)] lg:items-start lg:gap-4">
         {/* ---- Result list ------------------------------------------- */}
         <section className={listOnlyClass}>
-          <div className="overflow-hidden rounded-card border border-hairline bg-surface shadow-card">
-            <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-hairline bg-surface-sunken px-4 py-2.5">
-              <h2 className="t-section-title">
+          <div className="overflow-hidden rounded-card border border-hairline-strong bg-surface shadow-card">
+            <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-hairline bg-surface-sunken px-4 py-2">
+              <h2 className="mk-section">
                 {t("results", { count: rows.length })}
               </h2>
               {truncated && <p className="t-meta">{t("truncated")}</p>}
@@ -289,7 +294,7 @@ export default async function EmployerMarketplacePage({
           </div>
 
           {rows.length > 0 && (
-            <p className="t-meta mt-2.5 px-1">{t("privacyNote")}</p>
+            <p className="t-meta mt-2 px-1">{t("privacyNote")}</p>
           )}
         </section>
 
@@ -299,7 +304,7 @@ export default async function EmployerMarketplacePage({
           aria-label={t("previewLabel")}
         >
           {selected ? (
-            <div className="lg:max-h-[calc(100vh-2.5rem)] lg:overflow-y-auto">
+            <div className="lg:max-h-[calc(100vh-2.5rem)] lg:overflow-y-auto lg:overscroll-contain">
               <CandidatePreview
                 candidate={selected}
                 narrative={narrative}
@@ -317,12 +322,12 @@ export default async function EmployerMarketplacePage({
               />
             </div>
           ) : (
-            <div className="rounded-card border border-dashed border-hairline-strong bg-surface p-card">
+            <div className="rounded-card border border-dashed border-hairline-strong bg-surface px-5 py-6">
               <p className="t-body text-ink-500">{t("previewEmpty")}</p>
             </div>
           )}
         </aside>
       </div>
-    </>
+    </div>
   );
 }

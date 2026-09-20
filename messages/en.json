@@ -482,7 +482,8 @@
       "fitForJob": "Fit with your vacancy",
       "previewLabel": "Profile preview",
       "previewEmpty": "Select a profile from the list to see the details.",
-      "privacyNote": "All profiles are anonymised. ALLEMARO only shares names and contact details after an introduction."
+      "privacyNote": "All profiles are anonymised. ALLEMARO only shares names and contact details after an introduction.",
+      "fromDate": "from"
     },
     "candidate": {
       "backToList": "Back to candidates",
@@ -500,7 +501,8 @@
       "practicalExperience": "Practical experience",
       "skills": "Skills",
       "region": "Country",
-      "openFullProfile": "Open full profile"
+      "openFullProfile": "Open full profile",
+      "anonymousShort": "Anonymised profile – contact details only after the introduction."
     },
     "introduction": {
       "title": "Request an introduction",

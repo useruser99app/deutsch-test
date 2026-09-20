@@ -1,7 +1,11 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { countryName, formatDateValue } from "@/components/ui/useValueFormatter";
-import { InfoGrid, InfoItem } from "@/components/ui/InfoGrid";
+import {
+  countryName,
+  formatDateValue,
+} from "@/components/ui/useValueFormatter";
+import StatusBadge from "@/components/ui/StatusBadge";
+import { buttonClass } from "@/components/ui/button";
 import CandidateAvatar from "@/components/marketplace/CandidateAvatar";
 import FitSummary from "@/components/employer/FitSummary";
 import IntroductionRequestForm from "@/components/employer/IntroductionRequestForm";
@@ -59,10 +63,14 @@ export default function CandidatePreview({
   const tFit = useTranslations("employer.fit");
   const tFields = useTranslations("fields");
   const tEnums = useTranslations("enums");
+  const tIntro = useTranslations("employer.introduction");
 
   const isApprenticeship =
     candidate.candidate_type === "apprenticeship_candidate";
   const isPanel = variant === "panel";
+  // Anchor for the header CTA. Unique per profile so two panels on one
+  // page could never fight over the same id.
+  const requestAnchor = `introduction-${candidate.profile_id}`;
 
   const date = (value: string | null) => formatDateValue(value, locale);
   const list = (values: string[] | null) =>
@@ -117,10 +125,10 @@ export default function CandidatePreview({
             value:
               candidate.german_certificate_status &&
               tEnums.has(
-                `certificateStatus.${candidate.german_certificate_status}`
+                `certificateStatus.${candidate.german_certificate_status}`,
               )
                 ? tEnums(
-                    `certificateStatus.${candidate.german_certificate_status}`
+                    `certificateStatus.${candidate.german_certificate_status}`,
                   )
                 : candidate.german_certificate_status,
           },
@@ -187,14 +195,28 @@ export default function CandidatePreview({
     { label: tDetail("motivation"), value: narrative?.motivation_summary },
   ].filter((block) => block.value);
 
+  // Header facts — the same three an employer scans in the list, so the
+  // panel confirms the row rather than restating it in another shape.
+  const headerFacts: string[] = [];
+  if (candidate.country) {
+    headerFacts.push(countryName(candidate.country, locale));
+  }
+  headerFacts.push(`${tFields("german_level")} ${candidate.german_level}`);
+  const startsOn = date(
+    isApprenticeship
+      ? candidate.desired_training_start
+      : candidate.availability_date,
+  );
+  if (startsOn) headerFacts.push(`${t("fromDate")} ${startsOn}`);
+
   return (
-    <article className="overflow-hidden rounded-card border border-hairline bg-surface shadow-card">
-      <header className="border-b border-hairline bg-surface-sunken p-card">
+    <article className="overflow-hidden rounded-card border border-hairline-strong bg-surface shadow-card">
+      <header className="border-b border-hairline bg-surface-sunken px-5 py-4">
         {backHref && (
           // Mobile only: on desktop the list is right next to the panel.
           <Link
             href={backHref}
-            className="t-meta mb-2.5 inline-flex items-center gap-1 hover:text-accent lg:hidden"
+            className="t-meta mb-3 inline-flex items-center gap-1 hover:text-accent lg:hidden"
           >
             <span aria-hidden className="rtl:rotate-180">
               &#8592;
@@ -203,94 +225,145 @@ export default function CandidatePreview({
           </Link>
         )}
 
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3.5">
           <CandidateAvatar
             candidateCode={candidate.candidate_code}
             candidateType={candidate.candidate_type}
             size="lg"
           />
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <h2 className={isPanel ? "mk-title-lg" : "t-page-title"}>
+              <bdi>{candidate.headline_occupation ?? t("noOccupation")}</bdi>
+            </h2>
+
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className="t-meta font-mono">
                 <bdi>{candidate.candidate_code}</bdi>
               </span>
+              <span aria-hidden className="t-meta">
+                ·
+              </span>
               <span
-                className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
+                className={`text-[11px] font-medium ${
                   isApprenticeship
-                    ? "bg-track-apprenticeship-soft text-track-apprenticeship"
-                    : "bg-track-skilled-soft text-track-skilled"
+                    ? "text-track-apprenticeship"
+                    : "text-track-skilled"
                 }`}
               >
                 {tEnums(`candidateType.${candidate.candidate_type}`)}
               </span>
             </div>
-            <h2 className={`${isPanel ? "t-entity" : "t-page-title"} mt-1`}>
-              <bdi>{candidate.headline_occupation ?? t("noOccupation")}</bdi>
-            </h2>
+
+            <p className="mk-meta mt-1.5">
+              {headerFacts.map((fact, index) => (
+                <span key={fact}>
+                  {index > 0 && (
+                    <span aria-hidden className="mx-1.5 text-ink-300">
+                      ·
+                    </span>
+                  )}
+                  <bdi>{fact}</bdi>
+                </span>
+              ))}
+            </p>
+
             {narrative?.public_title && (
-              <p className="t-value mt-0.5 font-medium">
+              <p className="mk-value mt-1.5 text-ink-700">
                 <bdi>{narrative.public_title}</bdi>
               </p>
             )}
           </div>
         </div>
 
-        <p className="t-meta mt-2.5">{tDetail("anonymousNote")}</p>
+        {/* One primary action, or — when a request is already open — its
+            state in that action's place. Never both, and never a second
+            request button. */}
+        <div className="mt-3.5 flex flex-wrap items-center gap-x-3 gap-y-2">
+          {activeRequest ? (
+            <>
+              <StatusBadge status={activeRequest.status} />
+              <span className="mk-meta">
+                {tIntro.has(`statusNote.${activeRequest.status}`)
+                  ? tIntro(`statusNote.${activeRequest.status}`)
+                  : tIntro("alreadySent")}
+              </span>
+            </>
+          ) : (
+            <a
+              href={`#${requestAnchor}`}
+              className={buttonClass("primary", "sm")}
+            >
+              {tIntro("cta")}
+            </a>
+          )}
+          {fullProfileHref && (
+            <Link
+              href={fullProfileHref}
+              className="text-sm font-medium text-accent hover:underline"
+            >
+              {tDetail("openFullProfile")}
+            </Link>
+          )}
+        </div>
 
-        {fullProfileHref && (
-          <Link
-            href={fullProfileHref}
-            className="mt-2 inline-block text-sm font-medium text-accent hover:underline"
-          >
-            {tDetail("openFullProfile")}
-          </Link>
-        )}
+        {/* Secondary, one line: the rule matters, the paragraph did not. */}
+        <p className="t-meta mt-2.5">{tDetail("anonymousShort")}</p>
       </header>
 
       {/* Matching against the chosen vacancy. The band and the evidence line
           come straight from the existing evaluation — no percentage is shown
           because the score says nothing about how much was compared. */}
       {fit && (
-        <section className="border-b border-hairline bg-teal-soft/40 p-card">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-            <h3 className="t-section-label">{t("fitForJob")}</h3>
+        <section className="border-b border-hairline bg-teal-soft/50 px-5 py-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+            <h3 className="mk-section">{t("fitForJob")}</h3>
             {jobTitle && (
-              <span className="t-meta">
+              <span className="mk-meta">
                 <bdi>{jobTitle}</bdi>
               </span>
             )}
           </div>
           <div className="mt-2.5">
-            <FitSummary fit={fit} />
+            <FitSummary fit={fit} emphasis />
           </div>
-          <p className="t-meta mt-2.5">{tFit("explanation")}</p>
+          <p className="t-meta mt-3">{tFit("explanation")}</p>
         </section>
       )}
 
       <div className="divide-y divide-hairline">
         {sections.map((section) => (
-          <section key={section.title} className="p-card">
-            <h3 className="t-section-label mb-3">{section.title}</h3>
-            <InfoGrid columns={isPanel ? 2 : 3}>
+          <section key={section.title} className="px-5 py-4">
+            <h3 className="mk-section mb-2.5">{section.title}</h3>
+            {/* Two facts per row even in the panel: most values are a date,
+                a level or a single word, and one per row turned the profile
+                into a long ladder of near-empty lines. */}
+            <dl
+              className={`grid gap-x-5 gap-y-2.5 ${
+                isPanel ? "grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
+              }`}
+            >
               {section.items.map((item) => (
-                <InfoItem key={item.label} label={item.label}>
-                  {item.value as string}
-                </InfoItem>
+                <div key={item.label} className="min-w-0">
+                  <dt className="mk-label">{item.label}</dt>
+                  <dd className="mk-value mt-0.5 break-words">
+                    <bdi>{item.value}</bdi>
+                  </dd>
+                </div>
               ))}
-            </InfoGrid>
+            </dl>
           </section>
         ))}
 
         {/* Approved employer-language prose only. Nothing is machine
             translated and no unapproved source-language text is shown. */}
         {narrativeBlocks.length > 0 ? (
-          <section className="p-card">
-            <h3 className="t-section-label mb-3">{tDetail("narrativeTitle")}</h3>
-            <div className="space-y-3.5">
+          <section className="px-5 py-4">
+            <h3 className="mk-section mb-2.5">{tDetail("narrativeTitle")}</h3>
+            <div className="space-y-3">
               {narrativeBlocks.map((block) => (
                 <div key={block.label}>
-                  <p className="t-label">{block.label}</p>
-                  <p className="t-body mt-0.5 max-w-[68ch]">
+                  <p className="mk-label">{block.label}</p>
+                  <p className="mt-1 max-w-[68ch] text-sm leading-[1.4rem] text-ink-700">
                     <bdi>{block.value}</bdi>
                   </p>
                 </div>
@@ -298,7 +371,7 @@ export default function CandidatePreview({
             </div>
           </section>
         ) : (
-          <section className="p-card">
+          <section className="px-5 py-3.5">
             <p className="t-meta">{tDetail("noNarrative")}</p>
           </section>
         )}
@@ -306,7 +379,7 @@ export default function CandidatePreview({
         {/* The existing introduction workflow, unchanged. When an open
             request exists the form shows its status instead of offering a
             second primary action. */}
-        <section className="p-card">
+        <section id={requestAnchor} className="scroll-mt-4 px-5 py-4">
           <IntroductionRequestForm
             profileId={candidate.profile_id}
             existingStatus={activeRequest?.status}

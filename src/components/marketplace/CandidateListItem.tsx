@@ -10,9 +10,14 @@ import type { FitResult } from "@/lib/matching";
 /**
  * One anonymized candidate in the marketplace list.
  *
- * Built for scanning: the occupation is the loudest element, the facts sit
- * on one quiet line below it, and the row carries no name, photo or contact
- * detail — the candidate code is the identity an employer works with.
+ * Three levels, in the order a recruiter reads them: the occupation first,
+ * the identity of the record second (code and track), the deciding facts
+ * third — country, German, start date — on a single middot-separated line
+ * rather than as label/value pairs, which cost a line each and say nothing
+ * a recruiter does not already know how to read.
+ *
+ * Status and fit sit together on the end edge, so "where does this stand"
+ * and "does this fit" are answered in one glance without scanning the row.
  *
  * The whole row is the link. Selecting a candidate is a navigation, which
  * is what keeps the two-column layout free of client state.
@@ -42,40 +47,23 @@ export default function CandidateListItem({
   const isApprenticeship =
     candidate.candidate_type === "apprenticeship_candidate";
 
-  // Only facts that actually exist are shown — no "—" filler.
-  const facts: { label: string; value: string }[] = [
-    { label: tFields("german_level"), value: candidate.german_level },
-  ];
-
-  if (candidate.country) {
-    facts.push({
-      label: t("location"),
-      value: countryName(candidate.country, locale),
-    });
-  }
+  // Level 3 — only facts that exist. No "—" filler, no empty pairs.
+  const facts: string[] = [];
+  if (candidate.country) facts.push(countryName(candidate.country, locale));
+  facts.push(`${tFields("german_level")} ${candidate.german_level}`);
 
   const when = formatDate(
     isApprenticeship
       ? candidate.desired_training_start
-      : candidate.availability_date
+      : candidate.availability_date,
   );
-  if (when) {
-    facts.push({
-      label: isApprenticeship
-        ? tFields("desired_training_start")
-        : tFields("availability_date"),
-      value: when,
-    });
-  }
+  if (when) facts.push(`${t("fromDate")} ${when}`);
 
   if (!isApprenticeship && candidate.years_experience !== null) {
-    facts.push({
-      label: tFields("years_experience"),
-      value: t("years", { count: candidate.years_experience }),
-    });
+    facts.push(t("years", { count: candidate.years_experience }));
   }
   if (isApprenticeship && candidate.has_practical_experience) {
-    facts.push({ label: t("practicalExperience"), value: t("yes") });
+    facts.push(t("practicalExperience"));
   }
 
   return (
@@ -83,12 +71,12 @@ export default function CandidateListItem({
       <Link
         href={href}
         aria-current={selected ? "true" : undefined}
-        className={`group relative block border-b border-hairline px-4 py-3.5 transition-colors last:border-b-0 ${
-          selected ? "bg-accent-soft/60" : "hover:bg-surface-sunken"
+        className={`group relative block border-b border-hairline px-4 py-3 transition-colors last:border-b-0 ${
+          selected ? "bg-accent-soft/55" : "hover:bg-surface-sunken"
         }`}
       >
-        {/* The selected row is marked by a solid inline-start rail as well
-            as by ground colour, so the state survives RTL and low contrast. */}
+        {/* The selected row is marked by a rail on the inline-start edge as
+            well as by ground colour: clear, but not a highlighter. */}
         <span
           aria-hidden
           className={`absolute inset-y-0 start-0 w-[3px] ${
@@ -102,49 +90,55 @@ export default function CandidateListItem({
             candidateType={candidate.candidate_type}
           />
 
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="t-meta font-mono">
-                <bdi>{candidate.candidate_code}</bdi>
-              </span>
-              <span
-                className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
-                  isApprenticeship
-                    ? "bg-track-apprenticeship-soft text-track-apprenticeship"
-                    : "bg-track-skilled-soft text-track-skilled"
-                }`}
-              >
-                {tEnums(`candidateType.${candidate.candidate_type}`)}
-              </span>
-              {requestStatus && <StatusBadge status={requestStatus} size="sm" />}
+          <div className="flex min-w-0 flex-1 flex-wrap items-start gap-x-4 gap-y-2">
+            <div className="min-w-0 flex-1 basis-[17rem]">
+              {/* Level 1 — canonical German occupation, bidi-isolated so it
+                  reads correctly inside Arabic copy and is never translated. */}
+              <p className="mk-title truncate group-hover:text-accent">
+                <bdi>{candidate.headline_occupation ?? t("noOccupation")}</bdi>
+              </p>
+
+              {/* Level 2 — which record this is. */}
+              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="t-meta font-mono">
+                  <bdi>{candidate.candidate_code}</bdi>
+                </span>
+                <span aria-hidden className="t-meta">
+                  ·
+                </span>
+                <span
+                  className={`text-[11px] font-medium ${
+                    isApprenticeship
+                      ? "text-track-apprenticeship"
+                      : "text-track-skilled"
+                  }`}
+                >
+                  {tEnums(`candidateType.${candidate.candidate_type}`)}
+                </span>
+              </div>
+
+              {/* Level 3 — the deciding facts, one line. */}
+              <p className="mk-meta mt-1">
+                {facts.map((fact, index) => (
+                  <span key={fact}>
+                    {index > 0 && (
+                      <span aria-hidden className="mx-1.5 text-ink-300">
+                        ·
+                      </span>
+                    )}
+                    <bdi>{fact}</bdi>
+                  </span>
+                ))}
+              </p>
             </div>
 
-            {/* Canonical German occupation, bidi-isolated so it reads
-                correctly inside Arabic copy and is never translated. */}
-            <p className="t-entity mt-1 group-hover:text-accent">
-              <bdi>{candidate.headline_occupation ?? t("noOccupation")}</bdi>
-            </p>
-
-            <dl className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
-              {facts.map((fact) => (
-                <div
-                  key={fact.label}
-                  className="flex flex-wrap items-baseline gap-x-1.5"
-                >
-                  <dt className="t-meta">{fact.label}:</dt>
-                  <dd className="text-sm font-medium text-ink-800">
-                    <bdi>{fact.value}</bdi>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-
-            {/* Only shown when a vacancy was chosen: without one there is
-                nothing real to compare against, and an invented band would
-                be worse than no band. */}
-            {fit && (
-              <div className="mt-2">
-                <FitSummary fit={fit} compact />
+            {/* Status and fit, grouped on the end edge. */}
+            {(requestStatus || fit) && (
+              <div className="flex shrink-0 basis-full flex-col items-start gap-1.5 sm:basis-auto sm:max-w-[13.5rem] sm:items-end sm:text-end">
+                {requestStatus && (
+                  <StatusBadge status={requestStatus} size="sm" />
+                )}
+                {fit && <FitSummary fit={fit} compact />}
               </div>
             )}
           </div>

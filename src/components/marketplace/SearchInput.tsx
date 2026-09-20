@@ -28,7 +28,7 @@ export default function SearchInput({
       </label>
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3 text-ink-400"
+        className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3 text-ink-500"
       >
         <svg
           viewBox="0 0 24 24"
@@ -47,7 +47,7 @@ export default function SearchInput({
         name={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className="w-full rounded-control border border-hairline bg-surface py-2 pe-3 ps-9 text-base text-ink-900 placeholder:text-ink-400 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent sm:text-sm"
+        className="h-10 w-full rounded-control border border-hairline-strong bg-surface pe-3 ps-9 text-[15px] font-medium text-ink-900 transition-colors placeholder:font-normal placeholder:text-ink-400 hover:border-ink-300 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent sm:text-sm"
       />
     </div>
   );

@@ -1,13 +1,22 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { germanLevels } from "@/lib/domain";
-import { controlClass } from "@/components/ui/button";
+
 import SearchInput from "@/components/marketplace/SearchInput";
 import {
   marketplaceHref,
   param,
   type MarketplaceSearch,
 } from "@/lib/marketplace-url";
+
+/**
+ * One height for every control in the bar. Defined here rather than in the
+ * shared `controlClass` so the forms elsewhere in the product keep theirs.
+ */
+const barField =
+  "h-10 w-full rounded-control border border-hairline bg-surface px-3 text-sm " +
+  "text-ink-900 transition-colors hover:border-hairline-strong " +
+  "focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
 
 /**
  * The marketplace filter bar.
@@ -45,7 +54,7 @@ export default function FilterBar({
       <Link
         href={marketplaceHref(search, { type, selected: null })}
         aria-current={active ? "true" : undefined}
-        className={`rounded-control px-3 py-1.5 text-sm transition-colors ${
+        className={`rounded-[0.375rem] px-3 py-1 text-[13px] transition-colors ${
           active
             ? "bg-surface font-semibold text-ink-900 shadow-card"
             : "font-medium text-ink-500 hover:text-ink-800"
@@ -57,10 +66,10 @@ export default function FilterBar({
   };
 
   return (
-    <section className="rounded-card border border-hairline bg-surface p-gutter shadow-card">
+    <section className="rounded-card border border-hairline-strong bg-surface px-4 py-3.5 shadow-card">
       {/* Candidate type is navigation, not a form field: it changes which
           filters exist, so it reloads rather than waiting for a submit. */}
-      <div className="inline-flex rounded-control bg-canvas p-1">
+      <div className="inline-flex rounded-control bg-canvas p-0.5">
         {tab(
           "apprenticeship_candidate",
           tEnums("candidateType.apprenticeship_candidate")
@@ -90,7 +99,7 @@ export default function FilterBar({
             />
           )}
 
-          <div className="min-w-[9rem]">
+          <div className="w-full sm:w-36">
             <label className="sr-only" htmlFor="germanLevel">
               {tFields("german_level")}
             </label>
@@ -98,7 +107,7 @@ export default function FilterBar({
               id="germanLevel"
               name="germanLevel"
               defaultValue={param(search, "germanLevel")}
-              className={controlClass}
+              className={barField}
             >
               <option value="">{t("anyLevel")}</option>
               {germanLevels.map((level) => (
@@ -111,7 +120,7 @@ export default function FilterBar({
 
           {/* Matching needs a vacancy to compare against — see JobContext. */}
           {jobs.length > 0 && (
-            <div className="min-w-[12rem]">
+            <div className="w-full sm:w-56">
               <label className="sr-only" htmlFor="job">
                 {t("jobContext")}
               </label>
@@ -119,7 +128,7 @@ export default function FilterBar({
                 id="job"
                 name="job"
                 defaultValue={param(search, "job")}
-                className={controlClass}
+                className={barField}
               >
                 <option value="">{t("noJobContext")}</option>
                 {jobs.map((job) => (
@@ -133,14 +142,14 @@ export default function FilterBar({
 
           <button
             type="submit"
-            className="shrink-0 rounded-control bg-ink-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-ink-800"
+            className="h-10 shrink-0 rounded-control bg-ink-900 px-4 text-sm font-medium text-white transition-colors hover:bg-ink-800"
           >
             {t("apply")}
           </button>
         </div>
 
-        <details open={moreOpen} className="group mt-3">
-          <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-ink-900">
+        <details open={moreOpen} className="group mt-2.5">
+          <summary className="inline-flex cursor-pointer list-none items-center gap-1 text-[13px] font-medium text-ink-500 transition-colors hover:text-ink-800">
             <svg
               aria-hidden
               viewBox="0 0 24 24"
@@ -149,14 +158,14 @@ export default function FilterBar({
               strokeWidth="1.8"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-4 w-4 transition-transform group-open:rotate-180"
+              className="h-3.5 w-3.5 transition-transform group-open:rotate-180"
             >
               <path d="m6 9 6 6 6-6" />
             </svg>
             {t("moreFilters")}
           </summary>
 
-          <div className="mt-3 grid gap-3 border-t border-hairline pt-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-3 grid gap-3 border-t border-hairline pt-3 sm:grid-cols-2 lg:grid-cols-4">
             {isApprenticeship ? (
               <>
                 <Field id="startFrom" label={t("startFrom")}>
@@ -165,7 +174,7 @@ export default function FilterBar({
                     name="startFrom"
                     type="date"
                     defaultValue={param(search, "startFrom")}
-                    className={controlClass}
+                    className={barField}
                   />
                 </Field>
                 <Field
@@ -176,7 +185,7 @@ export default function FilterBar({
                     id="qualification"
                     name="qualification"
                     defaultValue={param(search, "qualification")}
-                    className={controlClass}
+                    className={barField}
                   />
                 </Field>
               </>
@@ -190,7 +199,7 @@ export default function FilterBar({
                     min="0"
                     step="1"
                     defaultValue={param(search, "minExperience")}
-                    className={controlClass}
+                    className={barField}
                   />
                 </Field>
                 <Field id="availableFrom" label={t("availableFrom")}>
@@ -199,7 +208,7 @@ export default function FilterBar({
                     name="availableFrom"
                     type="date"
                     defaultValue={param(search, "availableFrom")}
-                    className={controlClass}
+                    className={barField}
                   />
                 </Field>
               </>
@@ -210,12 +219,12 @@ export default function FilterBar({
                 id="location"
                 name="location"
                 defaultValue={param(search, "location")}
-                className={controlClass}
+                className={barField}
                 placeholder={t("locationPlaceholder")}
               />
             </Field>
 
-            <div className="flex flex-wrap items-end gap-4 sm:col-span-2 lg:col-span-3">
+            <div className="flex flex-wrap items-end gap-4 sm:col-span-2 lg:col-span-4">
               <label className="flex items-center gap-2 text-sm text-ink-700">
                 <input
                   type="checkbox"
@@ -257,7 +266,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="t-label mb-1.5 block" htmlFor={id}>
+      <label className="mk-label mb-1 block" htmlFor={id}>
         {label}
       </label>
       {children}
