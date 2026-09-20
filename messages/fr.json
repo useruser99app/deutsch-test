@@ -561,7 +561,12 @@
       },
       "title": "Vue d'ensemble",
       "subtitle": "Vos candidats, postes et demandes en un coup d'œil.",
-      "pipeline": "Pipeline de recrutement"
+      "pipeline": "Pipeline de recrutement",
+      "nextUpdatesHint": "Demandes avec de nouveaux changements de statut.",
+      "nextCreateJobHint": "Sans poste, aucune correspondance ne peut être calculée.",
+      "nextMatchJobHint": "Voir les candidats dans le contexte de votre poste ouvert.",
+      "nextDiscoverHint": "Parcourir les profils publiés sur la place de marché.",
+      "stepsOpen": "Tâches ouvertes qui demandent votre attention."
     },
     "jobs": {
       "title": "Postes",

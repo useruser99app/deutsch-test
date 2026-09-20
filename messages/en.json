@@ -561,7 +561,12 @@
       },
       "title": "Overview",
       "subtitle": "Your candidates, vacancies and requests at a glance.",
-      "pipeline": "Recruiting pipeline"
+      "pipeline": "Recruiting pipeline",
+      "nextUpdatesHint": "Requests with new status messages.",
+      "nextCreateJobHint": "Without a vacancy there is no context to compare candidates against.",
+      "nextMatchJobHint": "See candidates in the context of your open vacancy.",
+      "nextDiscoverHint": "Browse published profiles in the marketplace.",
+      "stepsOpen": "Open items that need your attention."
     },
     "jobs": {
       "title": "Jobs",

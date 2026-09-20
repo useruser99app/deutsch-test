@@ -561,7 +561,12 @@
       },
       "title": "Übersicht",
       "subtitle": "Ihre Kandidaten, Stellen und Anfragen auf einen Blick.",
-      "pipeline": "Recruiting-Pipeline"
+      "pipeline": "Recruiting-Pipeline",
+      "nextUpdatesHint": "Anfragen mit neuen Statusmeldungen.",
+      "nextCreateJobHint": "Ohne Stelle gibt es keinen Stellenbezug für die Übereinstimmung.",
+      "nextMatchJobHint": "Kandidaten im Kontext Ihrer offenen Stelle ansehen.",
+      "nextDiscoverHint": "Veröffentlichte Profile im Marktplatz durchsuchen.",
+      "stepsOpen": "Offene Aufgaben, die Ihre Aufmerksamkeit erfordern."
     },
     "jobs": {
       "title": "Stellen",

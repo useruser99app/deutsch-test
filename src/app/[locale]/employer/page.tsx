@@ -1,6 +1,11 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getFormatter,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { requireRole } from "@/lib/auth";
+import { rtlLocales } from "@/i18n/routing";
 import {
   loadEmployerRequests,
   loadMarketplace,
@@ -14,6 +19,7 @@ import {
 } from "@/lib/notifications";
 import { formatDateValue } from "@/components/ui/useValueFormatter";
 import CandidateAvatar from "@/components/marketplace/CandidateAvatar";
+import Icon, { type IconName } from "@/components/shell/Icon";
 import PageHeader from "@/components/ui/PageHeader";
 import StatusBadge from "@/components/ui/StatusBadge";
 import EmptyState from "@/components/ui/EmptyState";
@@ -24,6 +30,24 @@ import PipelineBar from "@/components/dashboard/PipelineBar";
 
 /** Requests that are still running. Rejected is explicitly NOT active. */
 const ACTIVE_STATUSES = ["new", "reviewing", "approved"];
+
+/**
+ * Event glyph and tone per notification type. The tone follows the status
+ * the event reports, so the tile and the badge beside it always agree.
+ */
+const eventIcon: Record<string, IconName> = {
+  request_reviewing: "review",
+  request_approved: "requests",
+  request_rejected: "close",
+  request_introduced: "profile",
+};
+
+const eventTone: Record<string, string> = {
+  request_reviewing: "bg-accent-soft text-accent",
+  request_approved: "bg-positive-soft text-positive",
+  request_rejected: "bg-critical-soft text-critical",
+  request_introduced: "bg-positive-soft text-positive",
+};
 
 /**
  * The pipeline stages, in workflow order. These are the product's existing
@@ -52,6 +76,10 @@ export default async function EmployerDashboard({
   const tJobs = await getTranslations("employer.jobs");
   const tEnums = await getTranslations("enums");
   const tFields = await getTranslations("fields");
+  const format = await getFormatter();
+  // One timestamp for the whole render, so every relative time on the
+  // page is measured from the same instant.
+  const now = new Date();
 
   const [company, marketplace, requests, notifications, jobs] =
     await Promise.all([
@@ -106,14 +134,20 @@ export default async function EmployerDashboard({
   const nextSteps: {
     key: string;
     label: string;
+    hint: string;
+    icon: IconName;
     href: string;
+    count?: number;
     waiting?: boolean;
   }[] = [];
   if (unreadRequests.size > 0) {
     nextSteps.push({
       key: "updates",
       label: tDash("reviewUpdates", { count: unreadRequests.size }),
+      hint: tDash("nextUpdatesHint"),
+      icon: "requests",
       href: "/employer/requests",
+      count: unreadRequests.size,
       waiting: true,
     });
   }
@@ -121,6 +155,8 @@ export default async function EmployerDashboard({
     nextSteps.push({
       key: "createJob",
       label: tJobs("create"),
+      hint: tDash("nextCreateJobHint"),
+      icon: "jobs",
       href: "/employer/jobs/new",
     });
   } else if (openJobs.length > 0) {
@@ -129,6 +165,8 @@ export default async function EmployerDashboard({
     nextSteps.push({
       key: "matchJob",
       label: tJobs("suitableCandidates"),
+      hint: tDash("nextMatchJobHint"),
+      icon: "review",
       href: `/employer/candidates?job=${openJobs[0].id}`,
     });
   }
@@ -136,6 +174,8 @@ export default async function EmployerDashboard({
     nextSteps.push({
       key: "discover",
       label: tDash("discover"),
+      hint: tDash("nextDiscoverHint"),
+      icon: "discover",
       href: "/employer/candidates",
     });
   }
@@ -150,12 +190,17 @@ export default async function EmployerDashboard({
         description={tDash("subtitle")}
         size="display"
         actions={
-          <Link
-            href="/employer/candidates"
-            className={buttonClass("primary", "sm")}
-          >
-            {tDash("discover")}
-          </Link>
+          <>
+            <span className="hidden text-[13px] text-ink-500 sm:block">
+              {format.dateTime(now, { dateStyle: "full" })}
+            </span>
+            <Link
+              href="/employer/candidates"
+              className={buttonClass("primary", "sm")}
+            >
+              {tDash("discover")}
+            </Link>
+          </>
         }
       />
 
@@ -198,7 +243,7 @@ export default async function EmployerDashboard({
             {requests.length === 0 ? (
               <EmptyState message={tRequests("empty")} compact />
             ) : (
-              <PipelineBar stages={stages} />
+              <PipelineBar stages={stages} rtl={rtlLocales.includes(locale)} />
             )}
           </DashboardCard>
 
@@ -241,34 +286,63 @@ export default async function EmployerDashboard({
                           isUnread ? "bg-attention" : "bg-transparent"
                         }`}
                       />
-                      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5">
-                        <p className="min-w-0 text-[15px] font-semibold leading-5 text-ink-900">
-                          {tDash(`event.${event.type}`)}
-                        </p>
+                      <div className="flex items-start gap-3">
+                        <span
+                          aria-hidden
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-control ${
+                            eventTone[event.type] ?? "bg-ink-100 text-ink-600"
+                          }`}
+                        >
+                          <Icon
+                            name={eventIcon[event.type] ?? "requests"}
+                            className="h-4 w-4"
+                          />
+                        </span>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+                            <p className="min-w-0 text-[15px] font-semibold leading-5 text-ink-900">
+                              {tDash(`event.${event.type}`)}
+                            </p>
+                            {/* Relative time reads faster than a date on a
+                                feed; the exact timestamp stays in the title
+                                attribute for anyone who needs it. */}
+                            <span
+                              className="shrink-0 text-[12px] leading-5 text-ink-400"
+                              title={
+                                formatDateValue(event.created_at, locale) ??
+                                undefined
+                              }
+                            >
+                              {format.relativeTime(
+                                new Date(event.created_at),
+                                now,
+                              )}
+                            </span>
+                          </div>
+                          <p className="mt-0.5 text-[13px] leading-5 text-ink-500">
+                            <bdi className="font-mono">
+                              {info?.code ?? tRequests("candidateWithdrawn")}
+                            </bdi>
+                            {info?.occupation && (
+                              <>
+                                <span
+                                  aria-hidden
+                                  className="mx-1.5 text-ink-300"
+                                >
+                                  ·
+                                </span>
+                                <bdi>{info.occupation}</bdi>
+                              </>
+                            )}
+                          </p>
+                        </div>
+
                         <StatusBadge
                           status={notificationStatus[event.type]}
                           size="sm"
                         />
                       </div>
-                      {/* Context and time on their own line, so the event
-                          and what it happened to do not run together. */}
-                      <p className="mt-1 text-[13px] leading-5 text-ink-500">
-                        <bdi className="font-mono">
-                          {info?.code ?? tRequests("candidateWithdrawn")}
-                        </bdi>
-                        {info?.occupation && (
-                          <>
-                            <span aria-hidden className="mx-1.5 text-ink-300">
-                              ·
-                            </span>
-                            <bdi>{info.occupation}</bdi>
-                          </>
-                        )}
-                        <span aria-hidden className="mx-1.5 text-ink-300">
-                          ·
-                        </span>
-                        {formatDateValue(event.created_at, locale)}
-                      </p>
                     </li>
                   );
                 })}
@@ -357,21 +431,72 @@ export default async function EmployerDashboard({
         <div className="mt-4 space-y-4 lg:mt-0">
           {/* Omitted entirely when nothing real is open. */}
           {nextSteps.length > 0 && (
-            <DashboardCard title={tDash("nextActions")}>
+            <DashboardCard
+              title={tDash("nextActions")}
+              action={
+                <span className="rounded-pill bg-ink-100 px-2 py-0.5 text-[12px] font-semibold tabular-nums text-ink-600">
+                  {nextSteps.length}
+                </span>
+              }
+            >
+              <p className="t-meta -mt-1 mb-3">{tDash("stepsOpen")}</p>
               <ul className="space-y-2">
                 {nextSteps.map((step) => (
                   <li key={step.key}>
                     <Link
                       href={step.href}
-                      className={`flex items-center justify-between gap-2 rounded-control border px-3.5 py-2.5 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-3 rounded-control border px-3 py-2.5 transition-colors ${
                         step.waiting
-                          ? "border-attention/30 bg-attention-soft/70 text-attention hover:bg-attention-soft"
-                          : "border-hairline text-ink-700 hover:border-ink-300 hover:text-ink-900"
+                          ? "border-attention/30 bg-attention-soft/70 hover:bg-attention-soft"
+                          : "border-hairline hover:border-ink-300 hover:bg-surface-sunken"
                       }`}
                     >
-                      <span className="min-w-0">{step.label}</span>
-                      <span aria-hidden className="shrink-0 rtl:rotate-180">
-                        &#8594;
+                      <span
+                        aria-hidden
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-control ${
+                          step.waiting
+                            ? "bg-attention/12 text-attention"
+                            : "bg-accent-soft text-accent"
+                        }`}
+                      >
+                        <Icon name={step.icon} className="h-4 w-4" />
+                      </span>
+
+                      <span className="min-w-0 flex-1">
+                        <span
+                          className={`block text-sm font-semibold leading-5 ${
+                            step.waiting ? "text-attention" : "text-ink-900"
+                          }`}
+                        >
+                          {step.label}
+                        </span>
+                        {/* Why it is here. Derived from state, never a
+                            generic nudge. */}
+                        <span className="mt-0.5 block text-[12px] leading-4 text-ink-500">
+                          {step.hint}
+                        </span>
+                      </span>
+
+                      {step.count !== undefined && (
+                        <span className="shrink-0 rounded-pill bg-attention px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-white">
+                          {step.count}
+                        </span>
+                      )}
+                      <span
+                        aria-hidden
+                        className="shrink-0 text-ink-300 rtl:rotate-180"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4"
+                        >
+                          <path d="m9 6 6 6-6 6" />
+                        </svg>
                       </span>
                     </Link>
                   </li>
