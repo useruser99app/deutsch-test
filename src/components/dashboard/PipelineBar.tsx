@@ -1,15 +1,17 @@
 import StatusBadge from "@/components/ui/StatusBadge";
 
 /**
- * The introduction-request pipeline.
+ * The introduction-request pipeline, read as ONE process rather than five
+ * table cells.
  *
  * The stages ARE the workflow statuses this product already has — nothing
- * is added, merged or renamed. Each cell shows a real count and nothing
+ * is added, merged or renamed. Each stage shows a real count and nothing
  * else: no share, no conversion rate, no percentage, because a percentage
  * over a handful of requests says more than the data knows.
  *
- * It wraps instead of forcing five columns onto a phone, where a squeezed
- * horizontal pipeline is unreadable.
+ * The chevrons carry the direction of travel and are decorative only; they
+ * are hidden below `lg`, where the stages become a plain readable grid
+ * instead of a squeezed horizontal strip.
  */
 export default function PipelineBar({
   stages,
@@ -17,28 +19,42 @@ export default function PipelineBar({
   stages: { status: string; count: number }[];
 }) {
   return (
-    // Each cell draws its own end/bottom rule; the negative margins push the
-    // trailing row and column rules outside the clipped container. That keeps
-    // the grid clean at two, three or five columns without per-index logic,
-    // and the logical properties keep it correct in RTL.
-    <div className="overflow-hidden rounded-control border border-hairline">
-      <div className="-me-px -mb-px grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-        {stages.map((stage) => (
-          <div
-            key={stage.status}
-            className="border-b border-e border-hairline px-3 py-2.5"
-          >
+    <div className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-3 lg:flex lg:items-stretch lg:gap-0">
+      {stages.map((stage, index) => (
+        <div key={stage.status} className="flex min-w-0 items-center lg:flex-1">
+          <div className="min-w-0 flex-1 rounded-control bg-surface-sunken px-3 py-3 lg:px-3.5">
             <StatusBadge status={stage.status} size="sm" />
             <p
-              className={`mt-1.5 text-xl font-semibold tabular-nums ${
+              className={`mt-2 text-[1.625rem] font-semibold leading-8 tabular-nums tracking-[-0.02em] ${
                 stage.count === 0 ? "text-ink-300" : "text-ink-900"
               }`}
             >
               {stage.count}
             </p>
           </div>
-        ))}
-      </div>
+
+          {/* Direction of travel. Logical rotation keeps it pointing the
+              right way in RTL. */}
+          {index < stages.length - 1 && (
+            <span
+              aria-hidden
+              className="hidden shrink-0 px-1 text-ink-300 lg:block"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4 rtl:rotate-180"
+              >
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </span>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

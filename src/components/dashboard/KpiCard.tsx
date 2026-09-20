@@ -4,10 +4,10 @@ import Icon, { type IconName } from "@/components/shell/Icon";
 /**
  * One operational number.
  *
- * Compact on purpose: a counter is the starting point of a decision, not
- * the headline of the page. There is no trend line and no delta, because
- * nothing in the data model records a previous value — inventing one would
- * be the most convincing lie on the screen.
+ * The value is the card: it is set large and carries the ink, the label
+ * sits above it as secondary text. There is no trend line and no delta,
+ * because nothing in the data model records a previous value — inventing
+ * one would be the most convincing lie on the screen.
  */
 export default function KpiCard({
   label,
@@ -34,31 +34,24 @@ export default function KpiCard({
   return (
     <Link
       href={href}
-      className={`group flex items-start gap-2.5 rounded-card border px-3.5 py-2.5 shadow-card transition-colors ${
+      className={`group flex items-start justify-between gap-3 rounded-card border px-4 py-4 shadow-card transition-colors sm:px-5 ${
         isWaiting
           ? "border-attention/30 bg-attention-soft/70 hover:bg-attention-soft"
           : "border-hairline-strong bg-surface hover:border-ink-300"
       }`}
     >
-      <span
-        aria-hidden
-        className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-control ${
-          isWaiting
-            ? "bg-attention/10 text-attention"
-            : "bg-accent-soft text-accent"
-        }`}
-      >
-        <Icon name={icon} className="h-3.5 w-3.5" />
-      </span>
-
       <span className="min-w-0">
-        <span className={`mk-label block ${isWaiting ? "text-attention" : ""}`}>
+        <span
+          className={`block text-[13px] font-medium leading-4 ${
+            isWaiting ? "text-attention" : "text-ink-500"
+          }`}
+        >
           {label}
         </span>
         {/* bidi-ltr keeps "100+" from being reordered to "+100" in Arabic:
             the marker belongs after the digits in every language. */}
         <span
-          className={`bidi-ltr mt-0.5 block text-[1.375rem] font-semibold tabular-nums leading-7 ${
+          className={`bidi-ltr mt-1.5 block text-[2rem] font-semibold leading-9 tabular-nums tracking-[-0.02em] ${
             isWaiting ? "text-attention" : "text-ink-900"
           }`}
         >
@@ -67,7 +60,18 @@ export default function KpiCard({
               "100" would state a total the data does not support. */}
           {atLeast && <span aria-hidden>+</span>}
         </span>
-        {context && <span className="t-meta mt-0.5 block">{context}</span>}
+        {context && <span className="t-meta mt-1 block">{context}</span>}
+      </span>
+
+      <span
+        aria-hidden
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-control transition-colors ${
+          isWaiting
+            ? "bg-attention/12 text-attention"
+            : "bg-accent-soft text-accent group-hover:bg-accent group-hover:text-white"
+        }`}
+      >
+        <Icon name={icon} className="h-5 w-5" />
       </span>
     </Link>
   );

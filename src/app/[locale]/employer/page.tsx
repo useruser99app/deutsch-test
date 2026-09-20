@@ -13,6 +13,7 @@ import {
   unreadByRequest,
 } from "@/lib/notifications";
 import { formatDateValue } from "@/components/ui/useValueFormatter";
+import CandidateAvatar from "@/components/marketplace/CandidateAvatar";
 import PageHeader from "@/components/ui/PageHeader";
 import StatusBadge from "@/components/ui/StatusBadge";
 import EmptyState from "@/components/ui/EmptyState";
@@ -64,7 +65,7 @@ export default async function EmployerDashboard({
 
   const requestCounts = await loadRequestCountsByJob(
     supabase,
-    jobs.map((job) => job.id)
+    jobs.map((job) => job.id),
   );
 
   // Employer-safe labels for every event row. Nothing private is loaded,
@@ -73,11 +74,11 @@ export default async function EmployerDashboard({
     marketplace.rows.map((row) => [
       row.profile_id,
       { code: row.candidate_code, occupation: row.headline_occupation },
-    ])
+    ]),
   );
 
   const activeRequests = requests.filter((r) =>
-    ACTIVE_STATUSES.includes(r.status)
+    ACTIVE_STATUSES.includes(r.status),
   ).length;
   const introduced = requests.filter((r) => r.status === "introduced").length;
   const unread = notifications.filter((n) => !n.read_at);
@@ -140,11 +141,14 @@ export default async function EmployerDashboard({
   }
 
   return (
-    <>
+    // data-shell="wide" lets .shell-content give the dashboard more room
+    // from 1280px up — the same opt-in the marketplace uses.
+    <div data-shell="wide">
       <PageHeader
         eyebrow={company?.name ?? undefined}
         title={tDash("title")}
         description={tDash("subtitle")}
+        size="display"
         actions={
           <Link
             href="/employer/candidates"
@@ -158,7 +162,7 @@ export default async function EmployerDashboard({
       {/* KPI definitions are explicit: "open" excludes rejected, "new
           updates" counts unread notification events, not requests, and the
           candidate total is marked as a lower bound when the query caps. */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <KpiCard
           label={tDash("kpiAvailable")}
           value={marketplace.rows.length}
@@ -187,9 +191,9 @@ export default async function EmployerDashboard({
         />
       </div>
 
-      <div className="mt-4 lg:grid lg:grid-cols-[minmax(0,65fr)_minmax(18rem,35fr)] lg:items-start lg:gap-4">
+      <div className="mt-5 lg:grid lg:grid-cols-[minmax(0,68fr)_minmax(19rem,32fr)] lg:items-start lg:gap-5">
         {/* ---- Main column ------------------------------------------- */}
-        <div className="space-y-4">
+        <div className="space-y-5">
           <DashboardCard title={tDash("pipeline")}>
             {requests.length === 0 ? (
               <EmptyState message={tRequests("empty")} compact />
@@ -211,7 +215,7 @@ export default async function EmployerDashboard({
             bleed
           >
             {notifications.length === 0 ? (
-              <div className="px-4 py-3.5">
+              <div className="px-5 py-4">
                 <EmptyState message={tDash("noActivity")} compact />
               </div>
             ) : (
@@ -222,43 +226,49 @@ export default async function EmployerDashboard({
                   return (
                     <li
                       key={event.id}
-                      className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2.5 ${
+                      className={`relative px-5 py-3.5 ${
                         isUnread ? "bg-attention-soft/35" : ""
                       }`}
                     >
-                      <div className="flex min-w-0 items-start gap-2">
-                        {/* The unread marker replaces the separate "needs
-                            attention" panel: the same events were listed
-                            twice on this page. */}
-                        <span
-                          aria-hidden
-                          className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-pill ${
-                            isUnread ? "bg-attention" : "bg-transparent"
-                          }`}
-                        />
-                        <div className="min-w-0">
-                          <p className="mk-value font-medium">
-                            {tDash(`event.${event.type}`)}
-                          </p>
-                          <p className="t-meta mt-0.5">
-                            <bdi>
-                              {info?.code ?? tRequests("candidateWithdrawn")}
-                            </bdi>
-                            {info?.occupation && (
-                              <>
-                                {" · "}
-                                <bdi>{info.occupation}</bdi>
-                              </>
-                            )}
-                            {" · "}
-                            {formatDateValue(event.created_at, locale)}
-                          </p>
-                        </div>
-                      </div>
-                      <StatusBadge
-                        status={notificationStatus[event.type]}
-                        size="sm"
+                      {/* Unread is marked on the inline-start edge — the
+                          same language the marketplace uses for the
+                          selected row, and it replaces the separate
+                          "needs attention" panel that listed these events
+                          a second time. */}
+                      <span
+                        aria-hidden
+                        className={`absolute inset-y-0 start-0 w-[3px] ${
+                          isUnread ? "bg-attention" : "bg-transparent"
+                        }`}
                       />
+                      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5">
+                        <p className="min-w-0 text-[15px] font-semibold leading-5 text-ink-900">
+                          {tDash(`event.${event.type}`)}
+                        </p>
+                        <StatusBadge
+                          status={notificationStatus[event.type]}
+                          size="sm"
+                        />
+                      </div>
+                      {/* Context and time on their own line, so the event
+                          and what it happened to do not run together. */}
+                      <p className="mt-1 text-[13px] leading-5 text-ink-500">
+                        <bdi className="font-mono">
+                          {info?.code ?? tRequests("candidateWithdrawn")}
+                        </bdi>
+                        {info?.occupation && (
+                          <>
+                            <span aria-hidden className="mx-1.5 text-ink-300">
+                              ·
+                            </span>
+                            <bdi>{info.occupation}</bdi>
+                          </>
+                        )}
+                        <span aria-hidden className="mx-1.5 text-ink-300">
+                          ·
+                        </span>
+                        {formatDateValue(event.created_at, locale)}
+                      </p>
                     </li>
                   );
                 })}
@@ -279,7 +289,7 @@ export default async function EmployerDashboard({
             bleed
           >
             {newest.length === 0 ? (
-              <div className="px-4 py-3.5">
+              <div className="px-5 py-4">
                 <EmptyState message={tMarket("noApprenticeships")} compact />
               </div>
             ) : (
@@ -288,31 +298,52 @@ export default async function EmployerDashboard({
                   <li key={candidate.profile_id}>
                     <Link
                       href={`/employer/candidates?selected=${candidate.profile_id}`}
-                      className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2.5 transition-colors hover:bg-surface-sunken"
+                      className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-surface-sunken"
                     >
-                      <span className="min-w-0">
-                        <span className="mk-value block font-medium">
+                      {/* The same neutral tile the marketplace uses: no
+                          photo, no name, no initials of a name — the code
+                          and the (public) track are all it encodes. */}
+                      <CandidateAvatar
+                        candidateCode={candidate.candidate_code}
+                        candidateType={candidate.candidate_type}
+                        size="sm"
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[15px] font-semibold leading-5 text-ink-900">
                           <bdi>
                             {candidate.headline_occupation ??
                               tMarket("noOccupation")}
                           </bdi>
                         </span>
-                        <span className="t-meta mt-0.5 block">
-                          <bdi>{candidate.candidate_code}</bdi>
-                          {" · "}
+                        {/* Code, level and track on one meta line. As a
+                            separate right-hand column the track label
+                            squeezed the occupation into an ellipsis on a
+                            phone. */}
+                        <span className="mt-0.5 block text-[13px] leading-5 text-ink-500">
+                          <bdi className="font-mono">
+                            {candidate.candidate_code}
+                          </bdi>
+                          <span aria-hidden className="mx-1.5 text-ink-300">
+                            ·
+                          </span>
                           {tFields("german_level")}{" "}
                           <bdi>{candidate.german_level}</bdi>
+                          <span aria-hidden className="mx-1.5 text-ink-300">
+                            ·
+                          </span>
+                          <span
+                            className={`font-medium ${
+                              candidate.candidate_type ===
+                              "apprenticeship_candidate"
+                                ? "text-track-apprenticeship"
+                                : "text-track-skilled"
+                            }`}
+                          >
+                            {tEnums(
+                              `candidateType.${candidate.candidate_type}`,
+                            )}
+                          </span>
                         </span>
-                      </span>
-                      <span
-                        className={`shrink-0 text-[11px] font-medium ${
-                          candidate.candidate_type ===
-                          "apprenticeship_candidate"
-                            ? "text-track-apprenticeship"
-                            : "text-track-skilled"
-                        }`}
-                      >
-                        {tEnums(`candidateType.${candidate.candidate_type}`)}
                       </span>
                     </Link>
                   </li>
@@ -327,12 +358,12 @@ export default async function EmployerDashboard({
           {/* Omitted entirely when nothing real is open. */}
           {nextSteps.length > 0 && (
             <DashboardCard title={tDash("nextActions")}>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {nextSteps.map((step) => (
                   <li key={step.key}>
                     <Link
                       href={step.href}
-                      className={`flex items-center justify-between gap-2 rounded-control border px-3 py-2 text-sm font-medium transition-colors ${
+                      className={`flex items-center justify-between gap-2 rounded-control border px-3.5 py-2.5 text-sm font-medium transition-colors ${
                         step.waiting
                           ? "border-attention/30 bg-attention-soft/70 text-attention hover:bg-attention-soft"
                           : "border-hairline text-ink-700 hover:border-ink-300 hover:text-ink-900"
@@ -362,7 +393,7 @@ export default async function EmployerDashboard({
             bleed
           >
             {shownJobs.length === 0 ? (
-              <div className="px-4 py-3.5">
+              <div className="px-5 py-4">
                 <EmptyState
                   message={tJobs("empty")}
                   action={
@@ -382,15 +413,15 @@ export default async function EmployerDashboard({
                   <li key={job.id}>
                     <Link
                       href={`/employer/jobs/${job.id}`}
-                      className="block px-4 py-2.5 transition-colors hover:bg-surface-sunken"
+                      className="block px-5 py-3 transition-colors hover:bg-surface-sunken"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="mk-value min-w-0 font-medium">
+                        <span className="min-w-0 text-[15px] font-semibold leading-5 text-ink-900">
                           <bdi>{job.title}</bdi>
                         </span>
                         <StatusBadge status={job.status} size="sm" />
                       </div>
-                      <p className="t-meta mt-0.5">
+                      <p className="mt-1 text-[13px] leading-5 text-ink-500">
                         {tEnums(`jobType.${job.job_type}`)}
                         {" · "}
                         {tJobs("linkedRequests")}{" "}
@@ -406,6 +437,6 @@ export default async function EmployerDashboard({
           </DashboardCard>
         </div>
       </div>
-    </>
+    </div>
   );
 }
