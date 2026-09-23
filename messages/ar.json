@@ -707,5 +707,31 @@
       "evidenceMissing": "{count, plural, zero {لا بيانات ناقصة} one {بيان واحد ناقص} two {بيانان ناقصان} few {# بيانات ناقصة} many {# بيانًا ناقصًا} other {# بيان ناقص}}",
       "evidenceNone": "لا يمكن مقارنة أي من المتطلبات مع الملف المنشور."
     }
+  },
+  "placement": {
+    "title": "مسار التوظيف",
+    "currentPhase": "المرحلة الحالية",
+    "phase": {
+      "language_course": "دورة اللغة",
+      "telc": "telc",
+      "application_documents": "ملف التقديم",
+      "interviews": "المقابلات",
+      "contract": "العقد",
+      "pre_approval": "الموافقة المسبقة",
+      "visa": "التأشيرة",
+      "arrival": "الوصول / البدء"
+    },
+    "state": {
+      "done": "مكتملة",
+      "current": "حالية",
+      "open": "مفتوحة"
+    },
+    "notSet": "لم تُحدَّد أي مرحلة بعد.",
+    "notSetOption": "غير محددة",
+    "since": "منذ {date}",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ …",
+    "saved": "تم حفظ المرحلة.",
+    "failed": "تعذّر حفظ المرحلة."
   }
 }

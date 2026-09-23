@@ -17,6 +17,8 @@ import ProfileFields from "@/components/candidate/ProfileFields";
 import ReviewDecisionForm from "@/components/admin/ReviewDecisionForm";
 import PublicationControl from "@/components/admin/PublicationControl";
 import DocumentRow from "@/components/admin/DocumentRow";
+import PlacementPhaseForm from "@/components/admin/PlacementPhaseForm";
+import PlacementTimeline from "@/components/placement/PlacementTimeline";
 
 export default async function AdminCandidateDetailPage({
   params,
@@ -35,6 +37,7 @@ export default async function AdminCandidateDetailPage({
   const tCandidates = await getTranslations("admin.candidates");
   const tCommon = await getTranslations("common");
   const tPublication = await getTranslations("admin.publication");
+  const tPlacement = await getTranslations("placement");
 
   const snapshot = await loadCandidateSnapshot(supabase, candidateId);
   if (!snapshot) notFound();
@@ -227,6 +230,25 @@ export default async function AdminCandidateDetailPage({
             candidateId={candidateId}
             profileStatus={snapshot.profile?.profile_status ?? "draft"}
           />
+        </Panel>
+      </div>
+
+      {/* Placement process — after the key facts and the publication
+          control, before the detailed profile blocks. The timeline renders
+          from the stored phase; the form beneath it is the only way to
+          change it. */}
+      <div className="mt-6">
+        <Panel title={tPlacement("title")}>
+          <PlacementTimeline
+            current={candidate.placement_phase}
+            changedAt={candidate.placement_phase_changed_at}
+          />
+          <div className="mt-4 border-t border-hairline pt-4">
+            <PlacementPhaseForm
+              candidateId={candidateId}
+              current={candidate.placement_phase}
+            />
+          </div>
         </Panel>
       </div>
 

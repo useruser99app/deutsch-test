@@ -707,5 +707,31 @@
       "evidenceMissing": "{count, plural, one {# Angabe fehlt} other {# Angaben fehlen}}",
       "evidenceNone": "Keine der Anforderungen ist mit dem veröffentlichten Profil vergleichbar."
     }
+  },
+  "placement": {
+    "title": "Vermittlungsprozess",
+    "currentPhase": "Aktuelle Phase",
+    "phase": {
+      "language_course": "Sprachkurs",
+      "telc": "telc",
+      "application_documents": "Bewerbungsmappe",
+      "interviews": "Interviews",
+      "contract": "Vertrag",
+      "pre_approval": "Vorabzustimmung",
+      "visa": "Visum",
+      "arrival": "Ankunft / Start"
+    },
+    "state": {
+      "done": "Abgeschlossen",
+      "current": "Aktuell",
+      "open": "Offen"
+    },
+    "notSet": "Noch keine Phase festgelegt.",
+    "notSetOption": "Nicht festgelegt",
+    "since": "seit {date}",
+    "save": "Speichern",
+    "saving": "Wird gespeichert …",
+    "saved": "Phase gespeichert.",
+    "failed": "Die Phase konnte nicht gespeichert werden."
   }
 }

@@ -161,6 +161,41 @@ export interface AppUser {
   preferred_locale: LocaleCode;
 }
 
+/**
+ * The placement process, in order. The ORDER is the process: every phase
+ * before the current one is complete, every phase after it is open. Mirrors
+ * the enum public.placement_phase (migration 0012) — keep both in step.
+ */
+export const placementPhases = [
+  "language_course",
+  "telc",
+  "application_documents",
+  "interviews",
+  "contract",
+  "pre_approval",
+  "visa",
+  "arrival",
+] as const;
+export type PlacementPhase = (typeof placementPhases)[number];
+
+/** How one phase relates to a candidate's current phase. */
+export type PlacementPhaseState = "done" | "current" | "open";
+
+/**
+ * Derives each phase's state from the single stored current phase. Pure, so
+ * the same rule drives the admin editor now and a read-only candidate view
+ * later. With no phase set, every phase is open — nothing is assumed.
+ */
+export function placementPhaseStates(
+  current: PlacementPhase | null
+): { phase: PlacementPhase; state: PlacementPhaseState }[] {
+  const index = current ? placementPhases.indexOf(current) : -1;
+  return placementPhases.map((phase, i) => ({
+    phase,
+    state: index < 0 ? "open" : i < index ? "done" : i === index ? "current" : "open",
+  }));
+}
+
 export interface Candidate {
   id: string;
   user_id: string | null;
@@ -178,6 +213,9 @@ export interface Candidate {
   drivers_license: boolean | null;
   relocation_ready: boolean | null;
   status: string;
+  /** Set by admins only; NULL until the process has started. */
+  placement_phase: PlacementPhase | null;
+  placement_phase_changed_at: string | null;
   created_at: string;
   updated_at: string;
 }

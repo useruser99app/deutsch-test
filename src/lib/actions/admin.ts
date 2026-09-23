@@ -8,6 +8,7 @@ import {
   candidateTypes,
   interestRequestStatuses,
   localeCodes,
+  placementPhases,
   type InterestRequestStatus,
   type InviteActionState,
   type ProfileStatus,
@@ -455,4 +456,51 @@ export async function reviewInterestRequestAction(
     decision: nextStatus === "rejected" ? "rejected" : "approved",
     itemId: requestId,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Placement phase
+// ---------------------------------------------------------------------------
+
+export interface PlacementPhaseActionState {
+  status: "idle" | "success" | "error";
+}
+
+/**
+ * Sets a candidate's current placement phase.
+ *
+ * Writes exactly two columns — the phase and when it was set — and nothing
+ * else on the candidate row. It runs on the admin's own RLS session, like
+ * every other admin action, so the existing "admins manage candidates"
+ * policy is what authorises it. The value is checked against the enum here
+ * as well as in the database: free text never reaches the query.
+ *
+ * An empty selection clears the phase back to "not yet set".
+ */
+export async function updatePlacementPhaseAction(
+  _prev: PlacementPhaseActionState,
+  formData: FormData
+): Promise<PlacementPhaseActionState> {
+  const locale = text(formData, "locale");
+  const { supabase } = await requireRole(locale, "admin");
+
+  const candidateId = text(formData, "candidate_id");
+  const raw = text(formData, "placement_phase");
+  if (!candidateId) return { status: "error" };
+  if (raw && !(placementPhases as readonly string[]).includes(raw)) {
+    return { status: "error" };
+  }
+
+  const { error } = await supabase
+    .from("candidates")
+    .update({
+      placement_phase: raw || null,
+      placement_phase_changed_at: raw ? new Date().toISOString() : null,
+    })
+    .eq("id", candidateId);
+
+  if (error) return { status: "error" };
+
+  revalidatePath(`/${locale}/admin/candidates/${candidateId}`);
+  return { status: "success" };
 }

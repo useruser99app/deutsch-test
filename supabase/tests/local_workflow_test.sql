@@ -1219,5 +1219,89 @@ begin
   raise notice 'PASS: unpublishing removes the candidate from matching input';
 end $$;
 
+-- ---------------------------------------------------------------
+-- Placement phase (migration 0012): admin-only write, candidate
+-- read-only on its own row, never visible to employers
+-- ---------------------------------------------------------------
+reset role;
+do $$
+declare v public.placement_phase;
+begin
+  select placement_phase into v from public.candidates
+   where id = '20000000-0000-0000-0000-0000000000a1';
+  if v is not null then
+    raise exception 'FAIL: placement_phase should default to NULL, got %', v;
+  end if;
+  begin
+    update public.candidates set placement_phase = 'onboarding'
+     where id = '20000000-0000-0000-0000-0000000000a1';
+    raise exception 'FAIL: placement_phase accepted a value outside the enum';
+  exception when invalid_text_representation then null;
+  end;
+  raise notice 'PASS: placement_phase defaults to NULL and only accepts the enum';
+end $$;
+
+-- Admin sets the phase
+set role authenticated;
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000a1';
+do $$
+declare n int; v public.placement_phase;
+begin
+  update public.candidates
+     set placement_phase = 'interviews', placement_phase_changed_at = now()
+   where id = '20000000-0000-0000-0000-0000000000a1';
+  get diagnostics n = row_count;
+  if n <> 1 then raise exception 'FAIL: admin could not set placement_phase'; end if;
+  select placement_phase into v from public.candidates
+   where id = '20000000-0000-0000-0000-0000000000a1';
+  if v <> 'interviews' then
+    raise exception 'FAIL: placement_phase not stored, got %', v;
+  end if;
+  raise notice 'PASS: admin sets placement_phase';
+end $$;
+
+-- Candidate A reads its own phase but cannot change it
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000c1';
+do $$
+declare n int; v public.placement_phase;
+begin
+  select placement_phase into v from public.candidates
+   where id = '20000000-0000-0000-0000-0000000000a1';
+  if v is distinct from 'interviews' then
+    raise exception 'FAIL: candidate cannot read own placement_phase (got %)', v;
+  end if;
+  update public.candidates set placement_phase = 'arrival'
+   where id = '20000000-0000-0000-0000-0000000000a1';
+  get diagnostics n = row_count;
+  if n <> 0 then raise exception 'FAIL: candidate changed own placement_phase'; end if;
+  raise notice 'PASS: candidate reads own placement_phase read-only';
+end $$;
+
+-- Candidate B cannot see candidate A's phase
+set request.jwt.claim.sub to '00000000-0000-0000-0000-0000000000c2';
+do $$
+declare n int;
+begin
+  select count(*) into n from public.candidates
+   where id = '20000000-0000-0000-0000-0000000000a1';
+  if n <> 0 then raise exception 'FAIL: candidate B can read candidate A placement'; end if;
+  raise notice 'PASS: placement_phase is not visible to other candidates';
+end $$;
+
+-- The employer view never exposes the phase
+reset role;
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+     where table_schema = 'public'
+       and table_name = 'employer_candidate_profiles'
+       and column_name like 'placement_phase%'
+  ) then
+    raise exception 'FAIL: employer view exposes placement_phase';
+  end if;
+  raise notice 'PASS: employer view does not expose placement_phase';
+end $$;
+
 reset role;
 select 'ALL LOCAL WORKFLOW TESTS PASSED' as result;

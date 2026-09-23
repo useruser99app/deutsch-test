@@ -707,5 +707,31 @@
       "evidenceMissing": "{count, plural, one {# detail missing} other {# details missing}}",
       "evidenceNone": "None of the requirements can be compared with the published profile."
     }
+  },
+  "placement": {
+    "title": "Placement process",
+    "currentPhase": "Current phase",
+    "phase": {
+      "language_course": "Language course",
+      "telc": "telc",
+      "application_documents": "Application documents",
+      "interviews": "Interviews",
+      "contract": "Contract",
+      "pre_approval": "Pre-approval",
+      "visa": "Visa",
+      "arrival": "Arrival / start"
+    },
+    "state": {
+      "done": "Completed",
+      "current": "Current",
+      "open": "Open"
+    },
+    "notSet": "No phase set yet.",
+    "notSetOption": "Not set",
+    "since": "since {date}",
+    "save": "Save",
+    "saving": "Saving …",
+    "saved": "Phase saved.",
+    "failed": "The phase could not be saved."
   }
 }

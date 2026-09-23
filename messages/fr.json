@@ -707,5 +707,31 @@
       "evidenceMissing": "{count, plural, one {# information manquante} other {# informations manquantes}}",
       "evidenceNone": "Aucune exigence n'est comparable avec le profil publié."
     }
+  },
+  "placement": {
+    "title": "Processus de placement",
+    "currentPhase": "Phase actuelle",
+    "phase": {
+      "language_course": "Cours de langue",
+      "telc": "telc",
+      "application_documents": "Dossier de candidature",
+      "interviews": "Entretiens",
+      "contract": "Contrat",
+      "pre_approval": "Approbation préalable",
+      "visa": "Visa",
+      "arrival": "Arrivée / début"
+    },
+    "state": {
+      "done": "Terminée",
+      "current": "En cours",
+      "open": "À venir"
+    },
+    "notSet": "Aucune phase définie pour l'instant.",
+    "notSetOption": "Non définie",
+    "since": "depuis le {date}",
+    "save": "Enregistrer",
+    "saving": "Enregistrement …",
+    "saved": "Phase enregistrée.",
+    "failed": "La phase n'a pas pu être enregistrée."
   }
 }
