@@ -15,10 +15,12 @@ import { formatDateValue } from "@/components/ui/useValueFormatter";
  * earlier phases are done, the current one is highlighted, later ones are
  * open. With no phase set, all eight are open; nothing is assumed.
  *
- * Wide screens get one horizontal row; a phone gets a vertical list, where
- * eight labels side by side would be unreadable. Both are the same ordered
- * list, and each step names its state for assistive technology rather than
- * relying on colour.
+ * A wide container gets one horizontal row; anything narrower (phone,
+ * tablet, a narrow column) gets a vertical list, where eight labels side by
+ * side would collide. The switch follows the container, not the viewport,
+ * because the same component sits in differently wide pages. Both are the
+ * same ordered list, and each step names its state for assistive technology
+ * rather than relying on colour.
  */
 export default function PlacementTimeline({
   current,
@@ -41,22 +43,22 @@ export default function PlacementTimeline({
         : "border-2 border-ink-200 bg-surface";
 
   return (
-    <div>
-      <ol className="flex flex-col gap-0 sm:flex-row">
+    <div className="@container">
+      <ol className="flex flex-col gap-0 @4xl:flex-row">
         {steps.map(({ phase, state }, index) => {
           const last = index === steps.length - 1;
           return (
             <li
               key={phase}
               aria-current={state === "current" ? "step" : undefined}
-              className="relative flex min-w-0 gap-3 pb-4 sm:flex-1 sm:flex-col sm:items-center sm:gap-2 sm:pb-0 sm:text-center"
+              className="relative flex min-w-0 gap-3 pb-4 @4xl:flex-1 @4xl:flex-col @4xl:items-center @4xl:gap-2 @4xl:pb-0 @4xl:text-center"
             >
-              {/* Connector to the next step: down on a phone, across on a
-                  wide screen. Travelled once the next step is reached. */}
+              {/* Connector to the next step: down in the list, across in the
+                  row. Travelled once the next step is reached. */}
               {!last && (
                 <span
                   aria-hidden
-                  className={`absolute start-[0.6875rem] top-6 bottom-0 w-[2px] sm:start-1/2 sm:top-[0.6875rem] sm:bottom-auto sm:h-[2px] sm:w-full ${
+                  className={`absolute start-[0.6875rem] top-6 bottom-0 w-[2px] @4xl:start-1/2 @4xl:top-[0.6875rem] @4xl:bottom-auto @4xl:h-[2px] @4xl:w-full ${
                     steps[index + 1].state !== "open"
                       ? "bg-positive"
                       : "bg-ink-200"
@@ -88,7 +90,7 @@ export default function PlacementTimeline({
                 )}
               </span>
 
-              <span className="min-w-0 sm:px-1">
+              <span className="min-w-0 @4xl:px-1">
                 <span
                   className={`block text-[13px] leading-5 ${
                     state === "current"

@@ -12,6 +12,7 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import EmptyState from "@/components/ui/EmptyState";
 import { buttonClass } from "@/components/ui/button";
 import ProfileFields from "@/components/candidate/ProfileFields";
+import PlacementTimeline from "@/components/placement/PlacementTimeline";
 
 export default async function CandidateDashboard({
   params,
@@ -27,6 +28,7 @@ export default async function CandidateDashboard({
   const tReviews = await getTranslations("candidate.reviews");
   const tDocs = await getTranslations("candidate.documents");
   const tFields = await getTranslations("fields");
+  const tPlacement = await getTranslations("placement");
 
   const snapshot = await loadCandidateSnapshot(supabase);
   if (!snapshot) {
@@ -79,6 +81,17 @@ export default async function CandidateDashboard({
   return (
     <>
       <PageHeader title={t("greeting", { name: candidate.first_name })} />
+
+      {/* Where the placement stands. Read-only: the phase is set by admins
+          only, and this page offers no control for it. */}
+      <div className="mb-6">
+        <Panel title={tPlacement("title")}>
+          <PlacementTimeline
+            current={candidate.placement_phase}
+            changedAt={candidate.placement_phase_changed_at}
+          />
+        </Panel>
+      </div>
 
       {/*
         The candidate's own state, then the single next step. The order is
