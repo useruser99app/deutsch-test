@@ -390,7 +390,27 @@
       "employerEmail": "E-mail de l'employeur",
       "company": "Entreprise",
       "employerCreated": "Compte employeur créé.",
-      "error": "Échec de la création."
+      "error": "Échec de la création.",
+      "backToList": "Retour aux entreprises",
+      "details": "Données de l'entreprise",
+      "statusLabel": "Statut",
+      "createdAt": "Créée",
+      "updatedAt": "Dernière modification",
+      "members": "Membres",
+      "noMembers": "Aucun utilisateur n'est encore rattaché à cette entreprise.",
+      "memberEmail": "E-mail",
+      "memberRole": "Rôle",
+      "accountStatus": "Statut du compte",
+      "memberSince": "Membre depuis",
+      "role": {
+        "owner": "Propriétaire",
+        "member": "Membre"
+      },
+      "jobs": "Postes",
+      "noJobs": "Cette entreprise n'a encore créé aucun poste.",
+      "requests": "Demandes de présentation",
+      "noRequests": "Aucune demande de cette entreprise.",
+      "openInQueue": "Ouvrir dans la file"
     },
     "candidateDetail": {
       "backToList": "← Retour à la liste des candidats",
@@ -468,7 +488,12 @@
       "description": "Toutes les vacances des entreprises, pour le suivi opérationnel.",
       "company": "Entreprise",
       "empty": "Aucun poste n'a encore été créé.",
-      "ownershipNote": "Le poste appartient à l'entreprise. ALLEMARO le consulte ici sans le modifier."
+      "ownershipNote": "Le poste appartient à l'entreprise. ALLEMARO le consulte ici sans le modifier.",
+      "backToList": "Retour aux postes",
+      "details": "Informations sur le poste",
+      "updatedAt": "Dernière modification",
+      "requests": "Demandes de présentation pour ce poste",
+      "noRequests": "Aucune demande pour ce poste."
     }
   },
   "employer": {

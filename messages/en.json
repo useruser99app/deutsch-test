@@ -390,7 +390,27 @@
       "employerEmail": "Employer email",
       "company": "Company",
       "employerCreated": "Employer account created.",
-      "error": "Creation failed."
+      "error": "Creation failed.",
+      "backToList": "Back to companies",
+      "details": "Company data",
+      "statusLabel": "Status",
+      "createdAt": "Created",
+      "updatedAt": "Last changed",
+      "members": "Members",
+      "noMembers": "No user is assigned to this company yet.",
+      "memberEmail": "Email",
+      "memberRole": "Role",
+      "accountStatus": "Account status",
+      "memberSince": "Member since",
+      "role": {
+        "owner": "Owner",
+        "member": "Member"
+      },
+      "jobs": "Vacancies",
+      "noJobs": "This company has not created a vacancy yet.",
+      "requests": "Introduction requests",
+      "noRequests": "This company has no requests.",
+      "openInQueue": "Open in queue"
     },
     "candidateDetail": {
       "backToList": "← Back to candidate list",
@@ -468,7 +488,12 @@
       "description": "All company vacancies, for operational oversight.",
       "company": "Company",
       "empty": "No jobs have been created yet.",
-      "ownershipNote": "The vacancy belongs to the company. ALLEMARO only views it here and does not edit it."
+      "ownershipNote": "The vacancy belongs to the company. ALLEMARO only views it here and does not edit it.",
+      "backToList": "Back to vacancies",
+      "details": "Vacancy details",
+      "updatedAt": "Last changed",
+      "requests": "Introduction requests for this vacancy",
+      "noRequests": "There are no requests for this vacancy."
     }
   },
   "employer": {

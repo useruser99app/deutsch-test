@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { requireRole } from "@/lib/auth";
 import { loadAllJobs, loadRequestCountsByJob } from "@/lib/jobs-data";
 import { formatDateValue } from "@/components/ui/useValueFormatter";
@@ -25,7 +26,10 @@ export default async function AdminJobsPage({
   const tEnums = await getTranslations("enums");
 
   const jobs = await loadAllJobs(supabase);
-  const counts = await loadRequestCountsByJob(supabase, jobs.map((j) => j.id));
+  const counts = await loadRequestCountsByJob(
+    supabase,
+    jobs.map((j) => j.id),
+  );
 
   return (
     <>
@@ -40,31 +44,98 @@ export default async function AdminJobsPage({
             <table className="w-full min-w-[720px]">
               <thead>
                 <tr className="border-b border-hairline">
-                  <th className="t-label px-5 py-2.5 text-start">{t("company")}</th>
-                  <th className="t-label px-3 py-2.5 text-start">{tJobs("jobTitle")}</th>
-                  <th className="t-label px-3 py-2.5 text-start">{tJobs("jobType")}</th>
-                  <th className="t-label px-3 py-2.5 text-start">{tJobs("location")}</th>
-                  <th className="t-label px-3 py-2.5 text-start">{tJobs("status")}</th>
-                  <th className="t-label px-3 py-2.5 text-start">{tJobs("created")}</th>
-                  <th className="t-label px-5 py-2.5 text-start">{tJobs("linkedRequests")}</th>
+                  <th className="t-label px-5 py-2.5 text-start">
+                    {t("company")}
+                  </th>
+                  <th className="t-label px-3 py-2.5 text-start">
+                    {tJobs("jobTitle")}
+                  </th>
+                  <th className="t-label px-3 py-2.5 text-start">
+                    {tJobs("jobType")}
+                  </th>
+                  <th className="t-label px-3 py-2.5 text-start">
+                    {tJobs("location")}
+                  </th>
+                  <th className="t-label px-3 py-2.5 text-start">
+                    {tJobs("status")}
+                  </th>
+                  <th className="t-label px-3 py-2.5 text-start">
+                    {tJobs("created")}
+                  </th>
+                  <th className="t-label px-5 py-2.5 text-start">
+                    {tJobs("linkedRequests")}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-hairline">
-                {jobs.map((job) => (
-                  <tr key={job.id} className="transition-colors hover:bg-ink-50">
-                    <td className="px-5 py-2.5 text-sm font-medium text-ink-900">
-                      <bdi>{job.companies?.name ?? "—"}</bdi>
-                    </td>
-                    <td className="px-3 py-2.5 text-sm"><bdi>{job.title}</bdi></td>
-                    <td className="px-3 py-2.5 t-meta">{tEnums(`jobType.${job.job_type}`)}</td>
-                    <td className="px-3 py-2.5 t-meta"><bdi>{job.location ?? "—"}</bdi></td>
-                    <td className="px-3 py-2.5"><StatusBadge status={job.status} size="sm" /></td>
-                    <td className="px-3 py-2.5 t-meta">{formatDateValue(job.created_at, locale)}</td>
-                    <td className="px-5 py-2.5 text-sm tabular-nums text-ink-800">
-                      {counts.get(job.id) ?? 0}
-                    </td>
-                  </tr>
-                ))}
+                {jobs.map((job) => {
+                  const href = `/admin/jobs/${job.id}`;
+                  /**
+                   * A table row cannot be a link, so every cell carries one
+                   * to the same detail page and the padding sits on the link:
+                   * the whole row is the target, with no dead gaps. Only the
+                   * title link is focusable and announced; the others are
+                   * removed from the tab order so a keyboard user meets one
+                   * stop per row, not seven.
+                   */
+                  const cell = (
+                    content: React.ReactNode,
+                    className: string,
+                    primary = false,
+                  ) => (
+                    <Link
+                      href={href}
+                      tabIndex={primary ? undefined : -1}
+                      aria-hidden={primary ? undefined : true}
+                      className={`block ${className}`}
+                    >
+                      {content}
+                    </Link>
+                  );
+                  return (
+                    <tr
+                      key={job.id}
+                      className="group cursor-pointer transition-colors hover:bg-surface-sunken"
+                    >
+                      <td className="p-0 text-sm font-medium text-ink-900">
+                        {cell(
+                          <bdi>{job.companies?.name ?? "—"}</bdi>,
+                          "px-5 py-2.5",
+                        )}
+                      </td>
+                      <td className="p-0 text-sm">
+                        {cell(
+                          <bdi className="group-hover:text-accent">
+                            {job.title}
+                          </bdi>,
+                          "px-3 py-2.5",
+                          true,
+                        )}
+                      </td>
+                      <td className="p-0 t-meta">
+                        {cell(tEnums(`jobType.${job.job_type}`), "px-3 py-2.5")}
+                      </td>
+                      <td className="p-0 t-meta">
+                        {cell(<bdi>{job.location ?? "—"}</bdi>, "px-3 py-2.5")}
+                      </td>
+                      <td className="p-0">
+                        {cell(
+                          <StatusBadge status={job.status} size="sm" />,
+                          "px-3 py-2.5",
+                        )}
+                      </td>
+                      <td className="p-0 t-meta">
+                        {cell(
+                          formatDateValue(job.created_at, locale),
+                          "px-3 py-2.5",
+                        )}
+                      </td>
+                      <td className="p-0 text-sm tabular-nums text-ink-800">
+                        {cell(counts.get(job.id) ?? 0, "px-5 py-2.5")}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

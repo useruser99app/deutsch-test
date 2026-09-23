@@ -339,10 +339,12 @@ const REQUEST_SELECT = `
 
 export async function loadInterestRequests(
   supabase: SupabaseClient,
-  filters: { status?: string } = {}
+  filters: { status?: string; companyId?: string; jobId?: string } = {}
 ): Promise<InterestRequestRow[]> {
   let query = supabase.from("interest_requests").select(REQUEST_SELECT);
   if (filters.status) query = query.eq("status", filters.status);
+  if (filters.companyId) query = query.eq("company_id", filters.companyId);
+  if (filters.jobId) query = query.eq("job_id", filters.jobId);
 
   const { data } = await query.order("created_at", { ascending: false }).limit(200);
   return (data ?? []) as unknown as InterestRequestRow[];
@@ -370,4 +372,53 @@ export async function countNewInterestRequests(
     .select("id", { count: "exact", head: true })
     .eq("status", "new");
   return count ?? 0;
+}
+
+// ---------------------------------------------------------------------------
+// Company detail (admin)
+// ---------------------------------------------------------------------------
+
+export interface AdminCompany {
+  id: string;
+  name: string;
+  website: string | null;
+  industry: string | null;
+  country: string;
+  city: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/** One company with every column the schema holds, or null. */
+export async function loadAdminCompany(
+  supabase: SupabaseClient,
+  companyId: string
+): Promise<AdminCompany | null> {
+  const { data } = await supabase
+    .from("companies")
+    .select("id, name, website, industry, country, city, status, created_at, updated_at")
+    .eq("id", companyId)
+    .maybeSingle();
+  return (data as AdminCompany | null) ?? null;
+}
+
+export interface CompanyMemberRow {
+  id: string;
+  member_role: string;
+  created_at: string;
+  app_users: { email: string; account_status: string } | null;
+}
+
+/** The employer accounts attached to one company. */
+export async function loadCompanyMembers(
+  supabase: SupabaseClient,
+  companyId: string
+): Promise<CompanyMemberRow[]> {
+  const { data } = await supabase
+    .from("company_members")
+    .select("id, member_role, created_at, app_users(email, account_status)")
+    .eq("company_id", companyId)
+    .order("created_at", { ascending: true });
+  return (data ?? []) as unknown as CompanyMemberRow[];
 }

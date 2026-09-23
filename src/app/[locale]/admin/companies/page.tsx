@@ -1,9 +1,11 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { requireRole } from "@/lib/auth";
 import { createCompany } from "@/lib/actions/admin";
 import PageHeader from "@/components/ui/PageHeader";
 import Panel from "@/components/ui/Panel";
 import EmptyState from "@/components/ui/EmptyState";
+import StatusBadge from "@/components/ui/StatusBadge";
 import { buttonClass, controlClass } from "@/components/ui/button";
 import CreateEmployerForm from "@/components/CreateEmployerForm";
 
@@ -67,18 +69,40 @@ export default async function AdminCompaniesPage({
         ) : (
           <ul className="divide-y divide-hairline">
             {rows.map((company) => (
-              <li
-                key={company.id}
-                className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
-              >
-                <div className="min-w-0">
-                  <p className="t-entity text-[15px]">{company.name}</p>
-                  <p className="t-meta mt-0.5">
-                    {[company.city, company.country, company.industry]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </p>
-                </div>
+              <li key={company.id}>
+                {/* The whole row is the link — not a small text target. */}
+                <Link
+                  href={`/admin/companies/${company.id}`}
+                  className="group flex items-center gap-3 px-5 py-4 transition-colors hover:bg-surface-sunken"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="t-entity text-[15px] group-hover:text-accent">
+                      <bdi>{company.name}</bdi>
+                    </p>
+                    <p className="t-meta mt-0.5">
+                      {[company.city, company.country, company.industry]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  </div>
+                  <StatusBadge status={company.status} size="sm" />
+                  <span
+                    aria-hidden
+                    className="shrink-0 text-ink-300 transition-colors group-hover:text-accent rtl:rotate-180"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-4 w-4"
+                    >
+                      <path d="m9 6 6 6-6 6" />
+                    </svg>
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>

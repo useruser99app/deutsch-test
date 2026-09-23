@@ -390,7 +390,27 @@
       "employerEmail": "E-Mail des Arbeitgebers",
       "company": "Unternehmen",
       "employerCreated": "Arbeitgeberkonto angelegt.",
-      "error": "Anlegen fehlgeschlagen."
+      "error": "Anlegen fehlgeschlagen.",
+      "backToList": "Zurück zu den Unternehmen",
+      "details": "Stammdaten",
+      "statusLabel": "Status",
+      "createdAt": "Angelegt",
+      "updatedAt": "Zuletzt geändert",
+      "members": "Mitglieder",
+      "noMembers": "Diesem Unternehmen ist noch kein Benutzer zugeordnet.",
+      "memberEmail": "E-Mail",
+      "memberRole": "Rolle",
+      "accountStatus": "Kontostatus",
+      "memberSince": "Mitglied seit",
+      "role": {
+        "owner": "Inhaber",
+        "member": "Mitglied"
+      },
+      "jobs": "Stellen",
+      "noJobs": "Dieses Unternehmen hat noch keine Stelle angelegt.",
+      "requests": "Vorstellungsanfragen",
+      "noRequests": "Von diesem Unternehmen liegen keine Anfragen vor.",
+      "openInQueue": "In der Queue öffnen"
     },
     "candidateDetail": {
       "backToList": "← Zurück zur Kandidatenliste",
@@ -468,7 +488,12 @@
       "description": "Alle Vakanzen der Unternehmen, zur operativen Übersicht.",
       "company": "Unternehmen",
       "empty": "Es wurden noch keine Stellen angelegt.",
-      "ownershipNote": "Die Stelle gehört dem Unternehmen. ALLEMARO sieht sie hier nur zur Übersicht und bearbeitet sie nicht."
+      "ownershipNote": "Die Stelle gehört dem Unternehmen. ALLEMARO sieht sie hier nur zur Übersicht und bearbeitet sie nicht.",
+      "backToList": "Zurück zu den Stellen",
+      "details": "Stelleninformationen",
+      "updatedAt": "Zuletzt geändert",
+      "requests": "Vorstellungsanfragen zu dieser Stelle",
+      "noRequests": "Zu dieser Stelle liegen keine Anfragen vor."
     }
   },
   "employer": {

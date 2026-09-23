@@ -98,14 +98,31 @@ export interface AdminJobRow extends Job {
 
 export async function loadAllJobs(
   supabase: SupabaseClient,
-  filters: JobFilters = {}
+  filters: JobFilters & { companyId?: string } = {}
 ): Promise<AdminJobRow[]> {
   let query = supabase
     .from("jobs")
     .select(`${JOB_SELECT}, companies(name, city)`);
   if (filters.status) query = query.eq("status", filters.status);
   if (filters.jobType) query = query.eq("job_type", filters.jobType);
+  if (filters.companyId) query = query.eq("company_id", filters.companyId);
 
   const { data } = await query.order("created_at", { ascending: false }).limit(200);
   return (data ?? []) as unknown as AdminJobRow[];
+}
+
+/**
+ * One vacancy for the admin detail view, with its company. Admin RLS reads
+ * every job; a missing or foreign id simply returns null.
+ */
+export async function loadAdminJob(
+  supabase: SupabaseClient,
+  jobId: string
+): Promise<AdminJobRow | null> {
+  const { data } = await supabase
+    .from("jobs")
+    .select(`${JOB_SELECT}, companies(name, city)`)
+    .eq("id", jobId)
+    .maybeSingle();
+  return (data as unknown as AdminJobRow | null) ?? null;
 }
