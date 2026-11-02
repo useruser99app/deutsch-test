@@ -97,8 +97,7 @@ export async function loadCandidateList(
     );
   }
 
-  const [listResult, changeResult, documentResult] = await Promise.all([
-    query.order("candidate_code").limit(CANDIDATE_LIST_LIMIT),
+  const pendingResult = Promise.all([
     supabase
       .from("candidate_change_items")
       .select("candidate_id")
@@ -107,25 +106,36 @@ export async function loadCandidateList(
       .from("candidate_documents")
       .select("candidate_id")
       .eq("verification_status", "pending_review"),
+  ]).then(([changeResult, documentResult]) => ({
+    pendingChanges: countBy(changeResult.data),
+    pendingDocuments: countBy(documentResult.data),
+  }));
+
+  // "Pending only" must narrow the query itself, before the limit — filtering
+  // the limited rows afterwards would drop matches beyond the first page.
+  if (filters.pendingOnly) {
+    const { pendingChanges, pendingDocuments } = await pendingResult;
+    const pendingIds = [
+      ...new Set([...pendingChanges.keys(), ...pendingDocuments.keys()]),
+    ];
+    if (pendingIds.length === 0) {
+      return { rows: [], pendingChanges, pendingDocuments, truncated: false };
+    }
+    query = query.in("id", pendingIds);
+  }
+
+  const [listResult, { pendingChanges, pendingDocuments }] = await Promise.all([
+    query.order("candidate_code").limit(CANDIDATE_LIST_LIMIT),
+    pendingResult,
   ]);
 
-  const pendingChanges = countBy(changeResult.data);
-  const pendingDocuments = countBy(documentResult.data);
-
-  let rows = (listResult.data ?? []) as unknown as CandidateListRow[];
-  if (filters.pendingOnly) {
-    rows = rows.filter(
-      (row) =>
-        (pendingChanges.get(row.id) ?? 0) > 0 ||
-        (pendingDocuments.get(row.id) ?? 0) > 0
-    );
-  }
+  const rows = (listResult.data ?? []) as unknown as CandidateListRow[];
 
   return {
     rows,
     pendingChanges,
     pendingDocuments,
-    truncated: (listResult.data ?? []).length === CANDIDATE_LIST_LIMIT,
+    truncated: rows.length === CANDIDATE_LIST_LIMIT,
   };
 }
 
