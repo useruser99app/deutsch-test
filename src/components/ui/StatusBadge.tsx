@@ -16,6 +16,8 @@ const tones: Record<string, Tone> = {
   reviewing: "accent",
   introduced: "positive",
   rejected: "critical",
+  // Vacancy lifecycle: an open job is live. "closed" stays neutral.
+  open: "positive",
   suspended: "critical",
   superseded: "neutral",
   draft: "neutral",
