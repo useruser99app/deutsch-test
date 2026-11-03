@@ -684,7 +684,12 @@
       "recruiting": "Recrutement",
       "viewRequests": "Voir les demandes",
       "findCandidates": "Trouver des candidats adaptés",
-      "matchingProfiles": "{count, plural, =0 {Aucun profil publié adapté pour le moment} one {# profil publié adapté} other {# profils publiés adaptés}}"
+      "matchingProfiles": "{count, plural, =0 {Aucun profil publié adapté pour le moment} one {# profil publié adapté} other {# profils publiés adaptés}}",
+      "factGerman": "Niveau d'allemand",
+      "factExperience": "Expérience minimale",
+      "factEntry": "Entrée en poste",
+      "factLocation": "Lieu",
+      "openInMarketplace": "Voir sur la place de marché"
     },
     "fit": {
       "explanation": "La correspondance est calculée de façon déterministe à partir des informations publiées. Sans IA et sans jugement sur la personne.",

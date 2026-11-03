@@ -14,7 +14,6 @@ import PageHeader from "@/components/ui/PageHeader";
 import StatusBadge from "@/components/ui/StatusBadge";
 import EmptyState from "@/components/ui/EmptyState";
 import { buttonClass } from "@/components/ui/button";
-import { InfoGrid, InfoItem } from "@/components/ui/InfoGrid";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import CandidateAvatar from "@/components/marketplace/CandidateAvatar";
 import FitSummary from "@/components/employer/FitSummary";
@@ -70,6 +69,56 @@ export default async function EmployerJobDetailPage({
   const place = [job.location, countryName(job.country, locale)].filter(
     (part): part is string => Boolean(part),
   );
+  type Fact = { label: string; value: React.ReactNode; icon: FactIconName };
+  const facts: Fact[] = [];
+  if (job.profession_or_training_occupation) {
+    facts.push({
+      label: isApprenticeship ? t("targetOccupation") : tFields("profession"),
+      value: <bdi>{job.profession_or_training_occupation}</bdi>,
+      icon: "occupation",
+    });
+  }
+  if (job.required_german_level) {
+    facts.push({
+      label: t("factGerman"),
+      value: <bdi>{job.required_german_level}</bdi>,
+      icon: "language",
+    });
+  }
+  if (!isApprenticeship && job.minimum_experience_years !== null) {
+    facts.push({
+      label: t("factExperience"),
+      value: tMkt("years", { count: job.minimum_experience_years }),
+      icon: "experience",
+    });
+  }
+  if (job.training_start_date) {
+    facts.push({
+      label: isApprenticeship ? t("trainingStart") : t("factEntry"),
+      value: date(job.training_start_date) ?? job.training_start_date,
+      icon: "calendar",
+    });
+  }
+  if (job.employment_type) {
+    facts.push({
+      label: t("employmentType"),
+      value: tEnums.has(`employmentType.${job.employment_type}`)
+        ? tEnums(`employmentType.${job.employment_type}`)
+        : job.employment_type,
+      icon: "employment",
+    });
+  }
+  facts.push({
+    label: t("factLocation"),
+    value: place.map((part, index) => (
+      <span key={part}>
+        {index > 0 && ", "}
+        <bdi>{part}</bdi>
+      </span>
+    )),
+    icon: "location",
+  });
+
   // The marketplace with this vacancy as its matching context.
   const marketplaceHref = `/employer/candidates?type=${candidateType}&job=${job.id}`;
 
@@ -89,12 +138,18 @@ export default async function EmployerJobDetailPage({
           </Link>
         }
         actions={
-          <Link
-            href={editing ? `/employer/jobs/${job.id}` : `/employer/jobs/${job.id}?edit=1`}
-            className={buttonClass("secondary", "sm")}
-          >
-            {editing ? t("cancelEdit") : t("edit")}
-          </Link>
+          <>
+            <Link
+              href={editing ? `/employer/jobs/${job.id}` : `/employer/jobs/${job.id}?edit=1`}
+              className={buttonClass("secondary", "md")}
+            >
+              {editing ? t("cancelEdit") : t("edit")}
+            </Link>
+            {/* The page's primary step, as in the marketplace detail. */}
+            <Link href={marketplaceHref} className={buttonClass("primary", "md")}>
+              {t("findCandidates")}
+            </Link>
+          </>
         }
       />
 
@@ -132,39 +187,26 @@ export default async function EmployerJobDetailPage({
           ) : (
             <>
               <DashboardCard title={t("requirements")}>
-                <InfoGrid columns={3}>
-                  {job.profession_or_training_occupation && (
-                    <InfoItem
-                      label={isApprenticeship ? t("targetOccupation") : tFields("profession")}
+                {/* One compact fact strip, as in the marketplace detail:
+                    icon, short label, value. Only stated facts appear. */}
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-3 sm:gap-x-0 lg:grid-cols-4">
+                  {facts.map((fact) => (
+                    <div
+                      key={fact.label}
+                      className="flex min-w-0 items-start gap-2.5 sm:border-s sm:border-hairline sm:px-4 sm:max-lg:[&:nth-child(3n+1)]:border-s-0 sm:max-lg:[&:nth-child(3n+1)]:ps-0 lg:[&:nth-child(4n+1)]:border-s-0 lg:[&:nth-child(4n+1)]:ps-0"
                     >
-                      {job.profession_or_training_occupation}
-                    </InfoItem>
-                  )}
-                  {job.required_german_level && (
-                    <InfoItem label={t("requiredGerman")}>
-                      {job.required_german_level}
-                    </InfoItem>
-                  )}
-                  {!isApprenticeship && job.minimum_experience_years !== null && (
-                    <InfoItem label={t("minExperience")}>
-                      {tMkt("years", { count: job.minimum_experience_years })}
-                    </InfoItem>
-                  )}
-                  {job.training_start_date && (
-                    <InfoItem label={isApprenticeship ? t("trainingStart") : t("entryDate")}>
-                      {date(job.training_start_date) ?? job.training_start_date}
-                    </InfoItem>
-                  )}
-                  {job.employment_type && (
-                    <InfoItem label={t("employmentType")}>
-                      {tEnums.has(`employmentType.${job.employment_type}`)
-                        ? tEnums(`employmentType.${job.employment_type}`)
-                        : job.employment_type}
-                    </InfoItem>
-                  )}
-                  {job.location && <InfoItem label={t("location")}>{job.location}</InfoItem>}
-                  <InfoItem label={t("country")}>{countryName(job.country, locale)}</InfoItem>
-                </InfoGrid>
+                      <span aria-hidden className="mt-0.5 shrink-0 text-ink-400">
+                        <FactIcon name={fact.icon} />
+                      </span>
+                      <div className="min-w-0">
+                        <dt className="text-[12px] leading-4 text-ink-500">{fact.label}</dt>
+                        <dd className="mt-0.5 break-words text-[14px] font-medium leading-5 text-ink-900">
+                          {fact.value}
+                        </dd>
+                      </div>
+                    </div>
+                  ))}
+                </dl>
               </DashboardCard>
 
               {job.description && (
@@ -204,15 +246,18 @@ export default async function EmployerJobDetailPage({
               </span>
             </Link>
 
-            <div className="px-5 py-4">
+            <div className="px-5 py-3.5">
               <p className="text-[13px] leading-5 text-ink-700">
                 {t("matchingProfiles", { count: ranked.length })}
               </p>
               <Link
                 href={marketplaceHref}
-                className={buttonClass("primary", "md", "mt-3 w-full")}
+                className="mt-1 inline-flex items-center gap-1 text-[13px] font-medium text-accent hover:underline"
               >
-                {t("findCandidates")}
+                {t("openInMarketplace")}
+                <span aria-hidden className="rtl:rotate-180">
+                  &#8594;
+                </span>
               </Link>
             </div>
           </DashboardCard>
@@ -306,5 +351,63 @@ export default async function EmployerJobDetailPage({
 
       </div>
     </div>
+  );
+}
+
+type FactIconName =
+  | "occupation"
+  | "language"
+  | "experience"
+  | "calendar"
+  | "employment"
+  | "location";
+
+const factPaths: Record<FactIconName, React.ReactNode> = {
+  occupation: (
+    <>
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18" />
+    </>
+  ),
+  language: <path d="M21 12a8 8 0 0 1-11.7 7.1L4 20l1-4.7A8 8 0 1 1 21 12z" />,
+  experience: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M3 10h18M8 3v4M16 3v4" />
+    </>
+  ),
+  employment: (
+    <>
+      <rect x="4" y="3" width="16" height="18" rx="2" />
+      <path d="M8 8h8M8 12h8M8 16h5" />
+    </>
+  ),
+  location: (
+    <>
+      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </>
+  ),
+};
+
+function FactIcon({ name }: { name: FactIconName }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-[18px] w-[18px]"
+    >
+      {factPaths[name]}
+    </svg>
   );
 }

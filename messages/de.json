@@ -684,7 +684,12 @@
       "recruiting": "Recruiting",
       "viewRequests": "Zu den Anfragen",
       "findCandidates": "Passende Kandidaten finden",
-      "matchingProfiles": "{count, plural, =0 {Zurzeit kein passendes veröffentlichtes Profil} one {# passendes veröffentlichtes Profil} other {# passende veröffentlichte Profile}}"
+      "matchingProfiles": "{count, plural, =0 {Zurzeit kein passendes veröffentlichtes Profil} one {# passendes veröffentlichtes Profil} other {# passende veröffentlichte Profile}}",
+      "factGerman": "Deutschniveau",
+      "factExperience": "Mindest-Erfahrung",
+      "factEntry": "Eintritt",
+      "factLocation": "Standort",
+      "openInMarketplace": "Im Marktplatz ansehen"
     },
     "fit": {
       "explanation": "Die Übereinstimmung wird deterministisch aus den veröffentlichten Angaben berechnet. Keine KI, keine Bewertung der Person.",

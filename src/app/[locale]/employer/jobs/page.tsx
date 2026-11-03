@@ -35,6 +35,24 @@ const statusMeta: Record<JobStatus, { tone: OpsTone; icon: IconName }> = {
   archived: { tone: "neutral", icon: "documents" },
 };
 
+/** Compact phone tiles reuse the counter tones. */
+const compactActive: Record<OpsTone, string> = {
+  neutral: "border-ink-300 bg-ink-50",
+  attention: "border-attention/40 bg-attention-soft/60",
+  accent: "border-accent/45 bg-accent-soft/60",
+  positive: "border-positive/40 bg-positive-soft/60",
+  teal: "border-teal/40 bg-teal-soft/60",
+  critical: "border-critical/40 bg-critical-soft/60",
+};
+const compactDot: Record<OpsTone, string> = {
+  neutral: "bg-ink-400",
+  attention: "bg-attention",
+  accent: "bg-accent",
+  positive: "bg-positive",
+  teal: "bg-teal",
+  critical: "bg-critical",
+};
+
 /** Workflow order: what is live first, what is filed away last. */
 const FLOW: JobStatus[] = ["open", "draft", "closed", "archived"];
 
@@ -178,8 +196,46 @@ export default async function EmployerJobsPage({
         }
       />
 
-      {/* ---- Counters: real totals, each one a status filter ------------ */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      {/* ---- Counters: real totals, each one a status filter ------------
+          Below 640px the same five filters as compact tiles: number and
+          status only, so the list starts on the first screen. */}
+      <nav aria-label={t("status")} className="grid grid-cols-3 gap-2 sm:hidden">
+        {[
+          { key: "all", label: t("kpiTotal"), value: all.length, tone: "neutral" as OpsTone, active: !status, target: null },
+          ...FLOW.map((value) => ({
+            key: value,
+            label: tStatus(value),
+            value: statusCounts.get(value) ?? 0,
+            tone: statusMeta[value].tone,
+            active: status === value,
+            target: value as string | null,
+          })),
+        ].map((tile) => (
+          <Link
+            key={tile.key}
+            href={href({ status: tile.target })}
+            aria-current={tile.active ? "true" : undefined}
+            className={`rounded-control border px-2.5 py-2 transition-colors ${
+              tile.active
+                ? compactActive[tile.tone]
+                : "border-hairline-strong bg-surface"
+            }`}
+          >
+            <span className="block text-[17px] font-semibold leading-6 tabular-nums text-ink-900">
+              {tile.value}
+            </span>
+            <span className="flex items-center gap-1.5 text-[12px] leading-4 text-ink-600">
+              <span
+                aria-hidden
+                className={`h-1.5 w-1.5 shrink-0 rounded-pill ${compactDot[tile.tone]}`}
+              />
+              <span className="truncate">{tile.label}</span>
+            </span>
+          </Link>
+        ))}
+      </nav>
+
+      <div className="hidden gap-3 sm:grid sm:grid-cols-3 lg:grid-cols-5">
         <OpsStatCard
           label={t("kpiTotal")}
           hint={t("hintTotal")}
